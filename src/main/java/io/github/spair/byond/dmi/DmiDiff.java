@@ -12,13 +12,6 @@ public class DmiDiff {
 
     public DmiDiff() { }
 
-    public DmiDiff(boolean same, DmiMeta originalMeta, DmiMeta modifiedMeta, List<DiffEntry> diffEntries) {
-        this.same = same;
-        this.originalMeta = originalMeta;
-        this.modifiedMeta = modifiedMeta;
-        this.diffEntries = diffEntries;
-    }
-
     public boolean isSame() {
         return same;
     }

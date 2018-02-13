@@ -1,15 +1,15 @@
 package io.github.spair.byond.dmi;
 
 public enum SpriteDir {
-    NORTH(1, "N", 2),
     SOUTH(2, "S", 1),
+    NORTH(1, "N", 2),
     EAST(4, "E", 3),
     WEST(8, "W", 4),
 
-    NORTHEAST(5, "NE", 7),
-    NORTHWEST(9, "NW", 8),
     SOUTHEAST(6, "SE", 5),
-    SOUTHWEST(10, "SW", 6);
+    SOUTHWEST(10, "SW", 6),
+    NORTHEAST(5, "NE", 7),
+    NORTHWEST(9, "NW", 8);
 
     public final int dirValue;
     public final String shortName;

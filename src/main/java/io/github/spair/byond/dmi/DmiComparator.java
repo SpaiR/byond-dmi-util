@@ -35,7 +35,7 @@ public final class DmiComparator {
             final DmiState modifiedState = modifiedStates.get(stateName);
 
             if (Objects.nonNull(modifiedState)) {
-                diffEntries.addAll(findOriginalAndModifiedStatesDiff(originalState, modifiedState));
+                diffEntries.addAll(findOriginalAndModifiedStateDiff(originalState, modifiedState));
             } else {
                 diffEntries.addAll(listOnlyOneStateSprites(originalState, true));
             }
@@ -67,7 +67,7 @@ public final class DmiComparator {
         return diffs;
     }
 
-    private static List<DmiDiff.DiffEntry> findOriginalAndModifiedStatesDiff(DmiState originalState, DmiState modifiedState) {
+    private static List<DmiDiff.DiffEntry> findOriginalAndModifiedStateDiff(DmiState originalState, DmiState modifiedState) {
         List<DmiDiff.DiffEntry> diffs = new ArrayList<>();
 
         final String stateName = originalState.getMetadata().getName();
