@@ -5,7 +5,7 @@ import java.util.*;
 
 final class StateExtractor {
 
-    static Map<String, DmiState> extractStates(BufferedImage dmiImage, DmiMeta dmiMeta) throws DuplicateStateNameException {
+    static Map<String, DmiState> extractStates(BufferedImage dmiImage, DmiMeta dmiMeta) {
         final int dmiWidth = dmiImage.getWidth();
         final int spriteWidth = dmiMeta.getSpritesWidth();
         final int spriteHeight = dmiMeta.getSpritesHeight();
@@ -19,10 +19,7 @@ final class StateExtractor {
         Map<String, DmiState> dmiStates = new HashMap<>();
 
         for (DmiMeta.DmiMetaEntry metaEntry : dmiMeta.getEntries()) {
-            if (dmiStates.containsKey(metaEntry.getName())) {
-                throw new DuplicateStateNameException("DMI contains states with duplicate names", metaEntry.getName());
-            }
-
+            final boolean stateNameDuplicate = dmiStates.containsKey(metaEntry.getName());
             List<DmiSprite> allSprites = new ArrayList<>();
 
             for (int frameNumber = 1; frameNumber <= metaEntry.getFrames(); frameNumber++) {
@@ -47,10 +44,25 @@ final class StateExtractor {
                 }
             }
 
-            dmiStates.put(metaEntry.getName(), new DmiState(metaEntry, distributeAllSpritesInMap(allSprites)));
+            dmiStates.put(metaEntry.getName(), new DmiState(metaEntry, distributeAllSpritesInMap(allSprites), stateNameDuplicate));
         }
 
         return dmiStates;
+    }
+
+    static void processDuplicates(Dmi dmi) {
+        Set<String> duplicateStatesNames = new HashSet<>();
+
+        dmi.getStates().forEach((stateName, dmiState) -> {
+            if (dmiState.isDuplicate()) {
+                duplicateStatesNames.add(stateName);
+            }
+        });
+
+        if (duplicateStatesNames.size() > 0) {
+            dmi.setDuplicateStatesNames(duplicateStatesNames);
+            dmi.setHasDuplicates(true);
+        }
     }
 
     private static BufferedImage cropSpriteImage(BufferedImage dmiImage, int width, int height, int xPos, int yPos) {

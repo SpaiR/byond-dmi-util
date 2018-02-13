@@ -32,9 +32,11 @@ public class DmiSlurperTest {
         DmiSlurper.slurpUp(new File("non existent path"));
     }
 
-    @Test(expected = DuplicateStateNameException.class)
+    @Test
     public void testSlurpUpWithDuplicateStates() throws Exception {
-        DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_duplicate_states.dmi"));
+        Dmi dmi = DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_duplicate_states.dmi"));
+        assertEquals(1, dmi.getDuplicateStatesNames().size());
+        assertTrue(dmi.isHasDuplicates());
     }
 
     private void commonDmiAssertion(Dmi dmi) {

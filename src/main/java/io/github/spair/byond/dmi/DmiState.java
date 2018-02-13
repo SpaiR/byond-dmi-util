@@ -8,13 +8,14 @@ public class DmiState {
 
     private DmiMeta.DmiMetaEntry metadata;
     private Map<SpriteDir, List<DmiSprite>> sprites;
-
+    private boolean isDuplicate;
 
     public DmiState() { }
 
-    public DmiState(DmiMeta.DmiMetaEntry metadata, Map<SpriteDir, List<DmiSprite>> sprites) {
+    public DmiState(DmiMeta.DmiMetaEntry metadata, Map<SpriteDir, List<DmiSprite>> sprites, boolean isDuplicate) {
         this.metadata = metadata;
         this.sprites = sprites;
+        this.isDuplicate = isDuplicate;
     }
 
     public DmiMeta.DmiMetaEntry getMetadata() {
@@ -33,25 +34,35 @@ public class DmiState {
         this.sprites = sprites;
     }
 
+    public boolean isDuplicate() {
+        return isDuplicate;
+    }
+
+    public void setDuplicate(boolean isDuplicate) {
+        this.isDuplicate = isDuplicate;
+    }
+
     @Override
     public String toString() {
         return "DmiState{" +
                 "metadata=" + metadata +
                 ", sprites=" + sprites +
+                ", isDuplicate=" + isDuplicate +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof DmiState)) return false;
         DmiState dmiState = (DmiState) o;
-        return Objects.equals(metadata, dmiState.metadata) &&
+        return isDuplicate == dmiState.isDuplicate &&
+                Objects.equals(metadata, dmiState.metadata) &&
                 Objects.equals(sprites, dmiState.sprites);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(metadata, sprites);
+        return Objects.hash(metadata, sprites, isDuplicate);
     }
 }
