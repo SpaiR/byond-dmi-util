@@ -3,6 +3,7 @@ package io.github.spair.byond.dmi;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,5 +27,19 @@ public class Dmi {
         this.height = height;
         this.metadata = metadata;
         this.states = states;
+    }
+
+    public void processDuplicates() {
+        duplicateStatesNames = new HashSet<>();
+
+        states.forEach((stateName, dmiState) -> {
+            if (dmiState.isDuplicate()) {
+                duplicateStatesNames.add(stateName);
+            }
+        });
+
+        if (duplicateStatesNames.size() > 0) {
+            hasDuplicates = true;
+        }
     }
 }

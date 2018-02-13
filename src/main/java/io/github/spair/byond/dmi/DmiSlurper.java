@@ -33,7 +33,7 @@ public final class DmiSlurper {
             Map<String, DmiState> dmiStates = StateExtractor.extractStates(dmiImage, dmiMeta);
 
             Dmi dmi = new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
-            StateExtractor.processDuplicates(dmi);
+            dmi.processDuplicates();
 
             return dmi;
         } catch (IOException e) {

@@ -40,43 +40,4 @@ public class StateExtractorTest {
 
         assertEquals(states.get("down").getSprites().get(SpriteDir.SOUTH).get(0), states.get("down (M)").getSprites().get(SpriteDir.SOUTH).get(0));
     }
-
-    @Test
-    public void testStateExtractorWhenExists() {
-        DmiState dmiState1 = new DmiState();
-        dmiState1.setDuplicate(true);
-        dmiState1.setMetadata(new DmiMeta.DmiMetaEntry("1", 0, 0, null, false, false, false));
-
-        DmiState dmiState2 = new DmiState();
-        dmiState2.setDuplicate(true);
-        dmiState2.setMetadata(new DmiMeta.DmiMetaEntry("2", 0, 0, null, false, false, false));
-
-        DmiState dmiState3 = new DmiState();
-        dmiState3.setDuplicate(false);
-        dmiState3.setMetadata(new DmiMeta.DmiMetaEntry("3", 0, 0, null, false, false, false));
-
-        Map<String, DmiState> states = new HashMap<>();
-        states.put("1", dmiState1);
-        states.put("2", dmiState2);
-        states.put("3", dmiState3);
-
-        Dmi dmi = new Dmi();
-        dmi.setStates(states);
-
-        StateExtractor.processDuplicates(dmi);
-
-        assertTrue(dmi.isHasDuplicates());
-        assertEquals(new HashSet<>(Arrays.asList("1", "2")), dmi.getDuplicateStatesNames());
-    }
-
-    @Test
-    public void testStateExtractorWhenNotExists() {
-        Dmi dmi = new Dmi();
-        dmi.setStates(new HashMap<>());
-
-        StateExtractor.processDuplicates(dmi);
-
-        assertFalse(dmi.isHasDuplicates());
-        assertNull(dmi.getDuplicateStatesNames());
-    }
 }

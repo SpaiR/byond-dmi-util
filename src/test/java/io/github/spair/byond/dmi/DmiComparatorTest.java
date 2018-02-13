@@ -59,7 +59,7 @@ public class DmiComparatorTest {
 
         assertTrue(diff.isSame());
         assertEquals(diff.getOriginalMeta(), diff.getModifiedMeta());
-        assertEquals(0, diff.getDiffEntries().size());
+        assertTrue(diff.getDiffEntries().isEmpty());
     }
 
     private List<DmiDiff.DiffEntry> getExpectedEntries() {

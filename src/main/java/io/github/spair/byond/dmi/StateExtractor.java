@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.HashSet;
 import java.util.TreeMap;
 import java.util.Comparator;
 
@@ -56,21 +54,6 @@ final class StateExtractor {
         }
 
         return dmiStates;
-    }
-
-    static void processDuplicates(final Dmi dmi) {
-        Set<String> duplicateStatesNames = new HashSet<>();
-
-        dmi.getStates().forEach((stateName, dmiState) -> {
-            if (dmiState.isDuplicate()) {
-                duplicateStatesNames.add(stateName);
-            }
-        });
-
-        if (duplicateStatesNames.size() > 0) {
-            dmi.setDuplicateStatesNames(duplicateStatesNames);
-            dmi.setHasDuplicates(true);
-        }
     }
 
     private static BufferedImage cropSpriteImage(
