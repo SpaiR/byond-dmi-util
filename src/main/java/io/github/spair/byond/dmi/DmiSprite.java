@@ -64,6 +64,9 @@ public class DmiSprite {
     }
 
     private boolean isEqualSprite(BufferedImage spriteToCompare) {
+        if (sprite == spriteToCompare)
+            return true;
+
         if (sprite.getHeight() != spriteToCompare.getHeight() || sprite.getWidth() != spriteToCompare.getWidth())
             return false;
 
