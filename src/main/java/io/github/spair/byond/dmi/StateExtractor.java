@@ -1,11 +1,18 @@
 package io.github.spair.byond.dmi;
 
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.TreeMap;
+import java.util.Comparator;
 
 final class StateExtractor {
 
-    static Map<String, DmiState> extractStates(BufferedImage dmiImage, DmiMeta dmiMeta) {
+    static Map<String, DmiState> extractStates(final BufferedImage dmiImage, final  DmiMeta dmiMeta) {
         final int dmiWidth = dmiImage.getWidth();
         final int spriteWidth = dmiMeta.getSpritesWidth();
         final int spriteHeight = dmiMeta.getSpritesHeight();
@@ -44,13 +51,14 @@ final class StateExtractor {
                 }
             }
 
-            dmiStates.put(metaEntry.getName(), new DmiState(metaEntry, distributeAllSpritesInMap(allSprites), stateNameDuplicate));
+            dmiStates.put(metaEntry.getName(),
+                    new DmiState(metaEntry, distributeAllSpritesInMap(allSprites), stateNameDuplicate));
         }
 
         return dmiStates;
     }
 
-    static void processDuplicates(Dmi dmi) {
+    static void processDuplicates(final Dmi dmi) {
         Set<String> duplicateStatesNames = new HashSet<>();
 
         dmi.getStates().forEach((stateName, dmiState) -> {
@@ -65,13 +73,18 @@ final class StateExtractor {
         }
     }
 
-    private static BufferedImage cropSpriteImage(BufferedImage dmiImage, int width, int height, int xPos, int yPos) {
+    private static BufferedImage cropSpriteImage(
+            final BufferedImage dmiImage, final int width, final int height, final int xPos, final int yPos) {
         BufferedImage dst = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        dst.getGraphics().drawImage(dmiImage, 0, 0, width, height, xPos, yPos, xPos + width, yPos + height, null);
+
+        dst.getGraphics().drawImage(
+                dmiImage, 0, 0, width, height, xPos, yPos, xPos + width, yPos + height, null
+        );
+
         return dst;
     }
 
-    private static Map<SpriteDir, List<DmiSprite>> distributeAllSpritesInMap(List<DmiSprite> allSprites) {
+    private static Map<SpriteDir, List<DmiSprite>> distributeAllSpritesInMap(final List<DmiSprite> allSprites) {
         Map<SpriteDir, List<DmiSprite>> spriteMap = new TreeMap<>(Comparator.comparingInt(dir -> dir.compareWeight));
 
         for (DmiSprite sprite : allSprites) {
@@ -82,4 +95,6 @@ final class StateExtractor {
 
         return spriteMap;
     }
+
+    private StateExtractor() { }
 }

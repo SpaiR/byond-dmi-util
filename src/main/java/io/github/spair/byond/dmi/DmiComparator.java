@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 public final class DmiComparator {
 
-    public static DmiDiff compare(Dmi original, Dmi modified) {
+    public static DmiDiff compare(final Dmi original, final Dmi modified) {
         DmiDiff dmiDiff = new DmiDiff();
 
         final DmiMeta originalMetadata = original.getMetadata();
@@ -25,7 +25,7 @@ public final class DmiComparator {
         return dmiDiff;
     }
 
-    private static List<DmiDiff.DiffEntry> getDiffList(Dmi originalDmi, Dmi modifiedDmi) {
+    private static List<DmiDiff.DiffEntry> getDiffList(final Dmi originalDmi, final Dmi modifiedDmi) {
         List<DmiDiff.DiffEntry> diffEntries = new ArrayList<>();
 
         final Map<String, DmiState> originalStates = originalDmi.getStates();
@@ -50,7 +50,7 @@ public final class DmiComparator {
         return diffEntries;
     }
 
-    private static List<DmiDiff.DiffEntry> listOnlyOneStateSprites(DmiState state, boolean isOriginal) {
+    private static List<DmiDiff.DiffEntry> listOnlyOneStateSprites(final DmiState state, final boolean isOriginal) {
         List<DmiDiff.DiffEntry> diffs = new ArrayList<>();
         final String stateName = state.getMetadata().getName();
 
@@ -67,7 +67,8 @@ public final class DmiComparator {
         return diffs;
     }
 
-    private static List<DmiDiff.DiffEntry> findOriginalAndModifiedStateDiff(DmiState originalState, DmiState modifiedState) {
+    private static List<DmiDiff.DiffEntry> findOriginalAndModifiedStateDiff(
+            final DmiState originalState, final DmiState modifiedState) {
         List<DmiDiff.DiffEntry> diffs = new ArrayList<>();
 
         final String stateName = originalState.getMetadata().getName();
@@ -118,4 +119,6 @@ public final class DmiComparator {
 
         return diffs;
     }
+
+    private DmiComparator() { }
 }

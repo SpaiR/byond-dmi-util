@@ -9,7 +9,11 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,8 +21,8 @@ final class MetaExtractor {
 
     private static final String PNG_MIME = "image/png";
 
-    private static final String META_EL_TAG_NAME = "TextEntry";
-    private static final String META_ATTRIBUTE_NAME = "value";
+    private static final String META_ELEMENT_TAG = "TextEntry";
+    private static final String META_ATTRIBUTE = "value";
 
     private static final Pattern W_H_PATTERN = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
     private static final Pattern STATE_PATTERN = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
@@ -34,7 +38,7 @@ final class MetaExtractor {
 
     private static final String MOVEMENT_SUFFIX = " (M)";
 
-    static DmiMeta extractMetadata(InputStream input) {
+    static DmiMeta extractMetadata(final InputStream input) {
         try (ImageInputStream imageInputStream = ImageIO.createImageInputStream(input)) {
             Iterator<ImageReader> readers = ImageIO.getImageReadersByMIMEType(PNG_MIME);
             ImageReader reader = readers.next();
@@ -44,10 +48,11 @@ final class MetaExtractor {
             IIOImage image = reader.readAll(0, null);
             IIOMetadata metadata = image.getMetadata();
 
-            IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(IIOMetadataFormatImpl.standardMetadataFormatName);
-            IIOMetadataNode text = (IIOMetadataNode) root.getElementsByTagName(META_EL_TAG_NAME).item(0);
+            String metadataFormatName = IIOMetadataFormatImpl.standardMetadataFormatName;
+            IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(metadataFormatName);
+            IIOMetadataNode text = (IIOMetadataNode) root.getElementsByTagName(META_ELEMENT_TAG).item(0);
 
-            String metadataText = text.getAttribute(META_ATTRIBUTE_NAME);
+            String metadataText = text.getAttribute(META_ATTRIBUTE);
 
             return parseMetadataText(metadataText);
         } catch (IOException e) {
@@ -55,7 +60,7 @@ final class MetaExtractor {
         }
     }
 
-    private static DmiMeta parseMetadataText(String metadataText) {
+    private static DmiMeta parseMetadataText(final String metadataText) {
         DmiMeta metadata = new DmiMeta();
         Matcher widthHeight = W_H_PATTERN.matcher(metadataText);
 
@@ -91,7 +96,7 @@ final class MetaExtractor {
         return metadata;
     }
 
-    private static DmiMeta.DmiMetaEntry parseState(String stateText) {
+    private static DmiMeta.DmiMetaEntry parseState(final String stateText) {
         DmiMeta.DmiMetaEntry metaEntry = new DmiMeta.DmiMetaEntry();
         Matcher stateParam = PARAM_PATTERN.matcher(stateText);
 
@@ -123,13 +128,17 @@ final class MetaExtractor {
                 case REWIND:
                     metaEntry.setRewind(isValueTrue(paramValue));
                     break;
+                default:
+                    throw new IllegalArgumentException("Invalid metadata format detected and can't be read");
             }
         }
 
         return metaEntry;
     }
 
-    private static boolean isValueTrue(String value) {
+    private static boolean isValueTrue(final String value) {
         return "1".equals(value);
     }
+
+    private MetaExtractor() { }
 }

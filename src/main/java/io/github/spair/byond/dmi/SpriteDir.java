@@ -25,13 +25,13 @@ public enum SpriteDir {
     private static final int NORTHEAST_DIR_COUNT = 7;
     private static final int NORTHWEST_DIR_COUNT = 8;
 
-    SpriteDir(int dirValue, String shortName, int compareWeight) {
+    SpriteDir(final int dirValue, final String shortName, final int compareWeight) {
         this.dirValue = dirValue;
         this.shortName = shortName;
         this.compareWeight = compareWeight;
     }
 
-    static SpriteDir valueOf(int dirCount) {
+    static SpriteDir valueOf(final int dirCount) {
         switch (dirCount) {
             case SOUTH_DIR_COUNT:
                 return SOUTH;

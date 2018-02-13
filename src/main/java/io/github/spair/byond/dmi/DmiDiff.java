@@ -1,8 +1,12 @@
 package io.github.spair.byond.dmi;
 
+import lombok.Data;
+
 import java.util.List;
 import java.util.Objects;
 
+@Data
+@SuppressWarnings("WeakerAccess")
 public class DmiDiff {
 
     private boolean same;
@@ -10,66 +14,7 @@ public class DmiDiff {
     private DmiMeta modifiedMeta;
     private List<DiffEntry> diffEntries;
 
-    public DmiDiff() { }
-
-    public boolean isSame() {
-        return same;
-    }
-
-    public void setSame(boolean same) {
-        this.same = same;
-    }
-
-    public DmiMeta getOriginalMeta() {
-        return originalMeta;
-    }
-
-    public void setOriginalMeta(DmiMeta originalMeta) {
-        this.originalMeta = originalMeta;
-    }
-
-    public DmiMeta getModifiedMeta() {
-        return modifiedMeta;
-    }
-
-    public void setModifiedMeta(DmiMeta modifiedMeta) {
-        this.modifiedMeta = modifiedMeta;
-    }
-
-    public List<DiffEntry> getDiffEntries() {
-        return diffEntries;
-    }
-
-    public void setDiffEntries(List<DiffEntry> diffEntries) {
-        this.diffEntries = diffEntries;
-    }
-
-    @Override
-    public String toString() {
-        return "DmiDiff{" +
-                "same=" + same +
-                ", originalMeta=" + originalMeta +
-                ", modifiedMeta=" + modifiedMeta +
-                ", diffEntries=" + diffEntries +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        DmiDiff dmiDiff = (DmiDiff) o;
-        return same == dmiDiff.same &&
-                Objects.equals(originalMeta, dmiDiff.originalMeta) &&
-                Objects.equals(modifiedMeta, dmiDiff.modifiedMeta) &&
-                Objects.equals(diffEntries, dmiDiff.diffEntries);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(same, originalMeta, modifiedMeta, diffEntries);
-    }
-
+    @Data
     public static class DiffEntry {
 
         private String stateName;
@@ -77,7 +22,7 @@ public class DmiDiff {
         private DmiSprite modifiedSprite;
         private Status status;
 
-        public DiffEntry(String stateName, DmiSprite originalSprite, DmiSprite modifiedSprite) {
+        public DiffEntry(final String stateName, final DmiSprite originalSprite, final DmiSprite modifiedSprite) {
             this.stateName = stateName;
             this.originalSprite = originalSprite;
             this.modifiedSprite = modifiedSprite;
@@ -91,64 +36,6 @@ public class DmiDiff {
             } else {
                 throw new IllegalArgumentException("Original and Modified sprites are null. State name: " + stateName);
             }
-        }
-
-        public String getStateName() {
-            return stateName;
-        }
-
-        public void setStateName(String stateName) {
-            this.stateName = stateName;
-        }
-
-        public DmiSprite getOriginalSprite() {
-            return originalSprite;
-        }
-
-        public void setOriginalSprite(DmiSprite originalSprite) {
-            this.originalSprite = originalSprite;
-        }
-
-        public DmiSprite getModifiedSprite() {
-            return modifiedSprite;
-        }
-
-        public void setModifiedSprite(DmiSprite modifiedSprite) {
-            this.modifiedSprite = modifiedSprite;
-        }
-
-        public Status getStatus() {
-            return status;
-        }
-
-        public void setStatus(Status status) {
-            this.status = status;
-        }
-
-        @Override
-        public String toString() {
-            return "DiffEntry{" +
-                    "stateName='" + stateName + '\'' +
-                    ", originalSprite=" + originalSprite +
-                    ", modifiedSprite=" + modifiedSprite +
-                    ", status=" + status +
-                    '}';
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            DiffEntry diffEntry = (DiffEntry) o;
-            return Objects.equals(stateName, diffEntry.stateName) &&
-                    Objects.equals(originalSprite, diffEntry.originalSprite) &&
-                    Objects.equals(modifiedSprite, diffEntry.modifiedSprite) &&
-                    status == diffEntry.status;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(stateName, originalSprite, modifiedSprite, status);
         }
     }
 
