@@ -5,12 +5,9 @@ import org.junit.Test;
 import javax.imageio.ImageIO;
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class StateExtractorTest {
 

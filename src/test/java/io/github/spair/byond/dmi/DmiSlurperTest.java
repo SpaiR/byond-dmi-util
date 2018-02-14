@@ -1,7 +1,6 @@
 package io.github.spair.byond.dmi;
 
 import org.junit.Test;
-import org.junit.experimental.theories.suppliers.TestedOn;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,7 +13,7 @@ import static org.junit.Assert.*;
 public class DmiSlurperTest {
 
     @Test
-    public void testSlurpUpFromFile() throws Exception {
+    public void testSlurpUpFromFile() {
         File dmiFile = new File("src/test/resources/rollerbed_original.dmi");
         Dmi dmi = DmiSlurper.slurpUp(dmiFile);
         commonDmiAssertion(dmi);
@@ -28,12 +27,12 @@ public class DmiSlurperTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSlurpUpWithNiFileException() throws Exception {
+    public void testSlurpUpWithNiFileException() {
         DmiSlurper.slurpUp(new File("non existent path"));
     }
 
     @Test
-    public void testSlurpUpWithDuplicateStates() throws Exception {
+    public void testSlurpUpWithDuplicateStates() {
         Dmi dmi = DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_duplicate_states.dmi"));
         assertEquals(1, dmi.getDuplicateStatesNames().size());
         assertTrue(dmi.isHasDuplicates());

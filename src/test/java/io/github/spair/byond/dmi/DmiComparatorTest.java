@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
 public class DmiComparatorTest {
 
     @Test
-    public void testCompareWhenNotSame() throws Exception {
+    public void testCompareWhenNotSame() {
         Dmi original = DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_original.dmi"));
         Dmi modified = DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_original_diff.dmi"));
 
@@ -52,7 +52,7 @@ public class DmiComparatorTest {
     }
 
     @Test
-    public void testCompareWhenSame() throws Exception {
+    public void testCompareWhenSame() {
         Dmi dmi = DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_original.dmi"));
 
         DmiDiff diff = DmiComparator.compare(dmi, dmi);
