@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 public class DmiTest {
 
     @Test
-    public void testProcessDuplicatesWhenExists() {
+    public void testCheckForDuplicatesWhenExists() {
         DmiState dmiState1 = new DmiState();
         dmiState1.setDuplicate(true);
         dmiState1.setMetadata(new DmiMeta.DmiMetaEntry("1", 0, 0, null, false, false, false));
@@ -33,18 +33,18 @@ public class DmiTest {
         Dmi dmi = new Dmi();
         dmi.setStates(states);
 
-        dmi.processDuplicates();
+        dmi.checkForDuplicates();
 
         assertTrue(dmi.isHasDuplicates());
         assertEquals(new HashSet<>(Arrays.asList("1", "2")), dmi.getDuplicateStatesNames());
     }
 
     @Test
-    public void testProcessDuplicatesWhenNotExists() {
+    public void testCheckForDuplicatesWhenNotExists() {
         Dmi dmi = new Dmi();
         dmi.setStates(new HashMap<>());
 
-        dmi.processDuplicates();
+        dmi.checkForDuplicates();
 
         assertFalse(dmi.isHasDuplicates());
         assertTrue(dmi.getDuplicateStatesNames().isEmpty());
