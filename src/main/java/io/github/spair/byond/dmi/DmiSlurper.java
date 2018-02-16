@@ -18,7 +18,7 @@ public final class DmiSlurper {
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("Provided DMI file doesn't exist");
         } catch (IOException e) {
-            throw new IllegalArgumentException("Provided DMI cant be read");
+            throw new IllegalArgumentException("Provided DMI can't be read");
         }
     }
 
@@ -37,7 +37,7 @@ public final class DmiSlurper {
 
             return dmi;
         } catch (IOException e) {
-            throw new IllegalArgumentException("Provided DMI cant be read");
+            throw new IllegalArgumentException("Provided DMI can't be read");
         }
     }
 

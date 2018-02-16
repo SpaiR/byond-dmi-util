@@ -4,7 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Objects;
 
 @Data
@@ -15,6 +21,19 @@ public class DmiSprite {
     private BufferedImage sprite;
     private SpriteDir spriteDir;
     private int spriteFrameNum;
+
+    public String getSpriteAsBase64() {
+        if (Objects.nonNull(sprite)) {
+            try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+                ImageIO.write(sprite, "PNG", Base64.getEncoder().wrap(os));
+                return os.toString(StandardCharsets.UTF_8.name());
+            } catch (IOException e) {
+                throw new UncheckedIOException(e);
+            }
+        } else {
+            return null;
+        }
+    }
 
     @Override
     public String toString() {
