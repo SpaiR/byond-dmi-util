@@ -24,7 +24,6 @@ final class StateExtractor {
         Map<String, DmiState> dmiStates = new HashMap<>();
 
         for (DmiMeta.DmiMetaEntry metaEntry : dmiMeta.getEntries()) {
-            final boolean stateNameDuplicate = dmiStates.containsKey(metaEntry.getName());
             List<DmiSprite> allSprites = new ArrayList<>();
 
             for (int frameNumber = 1; frameNumber <= metaEntry.getFrames(); frameNumber++) {
@@ -49,8 +48,9 @@ final class StateExtractor {
                 }
             }
 
+            final boolean isDuplicatedStateName = dmiStates.containsKey(metaEntry.getName());
             dmiStates.put(metaEntry.getName(),
-                    new DmiState(metaEntry, distributeAllSpritesInMap(allSprites), stateNameDuplicate));
+                    new DmiState(metaEntry, distributeAllSpritesInMap(allSprites), isDuplicatedStateName));
         }
 
         return dmiStates;
