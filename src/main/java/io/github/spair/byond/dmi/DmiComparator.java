@@ -20,7 +20,7 @@ public final class DmiComparator {
         dmiDiff.setOriginalMeta(originalMetadata);
         dmiDiff.setModifiedMeta(modifiedMetadata);
 
-        List<DmiDiff.DiffEntry> diffList = new ArrayList<>(getDiffList(original, modified));
+        final List<DmiDiff.DiffEntry> diffList = new ArrayList<>(getDiffList(original, modified));
 
         dmiDiff.setDiffEntries(diffList);
         dmiDiff.setSame(Objects.equals(originalMetadata, modifiedMetadata) && diffList.isEmpty());
@@ -86,7 +86,7 @@ public final class DmiComparator {
         final int modifiedDirsCount = modifiedStateSprites.size();
 
         originalStateSprites.forEach((spriteDir, originalSprites) -> {
-            List<DmiSprite> modifiedSprites = modifiedStateSprites.getOrDefault(spriteDir, new ArrayList<>());
+            final List<DmiSprite> modifiedSprites = modifiedStateSprites.getOrDefault(spriteDir, new ArrayList<>());
 
             final int originalSpritesCount = originalSprites.size();
             final int modifiedSpritesCount = modifiedSprites.size();

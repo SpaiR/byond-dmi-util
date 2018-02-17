@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 @Data
@@ -32,11 +33,13 @@ public class Dmi {
     public void checkForDuplicates() {
         duplicateStatesNames = new HashSet<>();
 
-        states.forEach((stateName, dmiState) -> {
-            if (dmiState.isDuplicate()) {
-                duplicateStatesNames.add(stateName);
-            }
-        });
+        if (Objects.nonNull(states)) {
+            states.forEach((stateName, dmiState) -> {
+                if (dmiState.isDuplicate()) {
+                    duplicateStatesNames.add(stateName);
+                }
+            });
+        }
 
         hasDuplicates = duplicateStatesNames.size() > 0;
     }
