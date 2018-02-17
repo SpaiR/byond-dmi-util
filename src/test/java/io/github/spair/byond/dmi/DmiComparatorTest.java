@@ -10,10 +10,13 @@ import static org.junit.Assert.*;
 
 public class DmiComparatorTest {
 
+    private static final String ROLLERBED_ORIGINAL_PATH = "src/test/resources/rollerbed_original.dmi";
+    private static final String ROLLERBED_DIFF_PATH = "src/test/resources/rollerbed_original_diff.dmi";
+
     @Test
     public void testCompareWhenNotSame() {
-        Dmi original = DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_original.dmi"));
-        Dmi modified = DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_original_diff.dmi"));
+        Dmi original = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
+        Dmi modified = DmiSlurper.slurpUp(new File(ROLLERBED_DIFF_PATH));
 
         DmiDiff diff = DmiComparator.compare(original, modified);
 
@@ -53,13 +56,36 @@ public class DmiComparatorTest {
 
     @Test
     public void testCompareWhenSame() {
-        Dmi dmi = DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_original.dmi"));
-
+        Dmi dmi = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
         DmiDiff diff = DmiComparator.compare(dmi, dmi);
 
         assertTrue(diff.isSame());
         assertEquals(diff.getOriginalMeta(), diff.getModifiedMeta());
         assertTrue(diff.getDiffEntries().isEmpty());
+    }
+
+    @Test
+    public void testCompareWhenModifiedNull() {
+        Dmi dmi = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
+        DmiDiff diff = DmiComparator.compare(dmi, null);
+
+        assertEquals(17, diff.getDiffEntries().size());
+        assertNotNull(diff.getOriginalMeta());
+        assertNull(diff.getModifiedMeta());
+
+        diff.getDiffEntries().forEach(diffEntry -> assertEquals(DmiDiff.Status.DELETED, diffEntry.getStatus()));
+    }
+
+    @Test
+    public void testCompareWhenOriginalNull() {
+        Dmi dmi = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
+        DmiDiff diff = DmiComparator.compare(null, dmi);
+
+        assertEquals(17, diff.getDiffEntries().size());
+        assertNotNull(diff.getModifiedMeta());
+        assertNull(diff.getOriginalMeta());
+
+        diff.getDiffEntries().forEach(diffEntry -> assertEquals(DmiDiff.Status.CREATED, diffEntry.getStatus()));
     }
 
     private List<DmiDiff.DiffEntry> getExpectedEntries() {

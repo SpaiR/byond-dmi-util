@@ -18,7 +18,7 @@ public class Dmi {
     private DmiMeta metadata;
     private Map<String, DmiState> states;
     private boolean hasDuplicates;
-    private Set<String> duplicateStatesNames = new HashSet<>();
+    private Set<String> duplicateStatesNames;
 
     public Dmi(final String name, final int width, final int height,
                final DmiMeta metadata, final Map<String, DmiState> states) {
@@ -30,7 +30,7 @@ public class Dmi {
     }
 
     public void checkForDuplicates() {
-        duplicateStatesNames.clear();
+        duplicateStatesNames = new HashSet<>();
 
         states.forEach((stateName, dmiState) -> {
             if (dmiState.isDuplicate()) {

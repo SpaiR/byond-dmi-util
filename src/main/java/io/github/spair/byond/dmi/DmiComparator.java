@@ -1,18 +1,21 @@
 package io.github.spair.byond.dmi;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public final class DmiComparator {
 
-    public static DmiDiff compare(final Dmi original, final Dmi modified) {
+    public static DmiDiff compare(@Nullable final Dmi original, @Nullable final Dmi modified) {
         DmiDiff dmiDiff = new DmiDiff();
 
-        final DmiMeta originalMetadata = original.getMetadata();
-        final DmiMeta modifiedMetadata = modified.getMetadata();
+        final DmiMeta originalMetadata = extractMetadataOrNull(original);
+        final DmiMeta modifiedMetadata = extractMetadataOrNull(modified);
 
         dmiDiff.setOriginalMeta(originalMetadata);
         dmiDiff.setModifiedMeta(modifiedMetadata);
@@ -25,11 +28,14 @@ public final class DmiComparator {
         return dmiDiff;
     }
 
-    private static List<DmiDiff.DiffEntry> getDiffList(final Dmi originalDmi, final Dmi modifiedDmi) {
+    private static List<DmiDiff.DiffEntry> getDiffList(
+            @Nullable final Dmi originalDmi, @Nullable final Dmi modifiedDmi) {
         List<DmiDiff.DiffEntry> diffEntries = new ArrayList<>();
 
-        final Map<String, DmiState> originalStates = originalDmi.getStates();
-        final Map<String, DmiState> modifiedStates = modifiedDmi.getStates();
+        final Map<String, DmiState> originalStates = Optional
+                .ofNullable(extractStatesOrNull(originalDmi)).orElse(new HashMap<>());
+        final Map<String, DmiState> modifiedStates = Optional
+                .ofNullable(extractStatesOrNull(modifiedDmi)).orElse(new HashMap<>());
 
         originalStates.forEach((stateName, originalState) -> {
             final DmiState modifiedState = modifiedStates.get(stateName);
@@ -118,6 +124,22 @@ public final class DmiComparator {
         }
 
         return diffs;
+    }
+
+    private static DmiMeta extractMetadataOrNull(final Dmi dmi) {
+        if (Objects.nonNull(dmi)) {
+            return dmi.getMetadata();
+        } else {
+            return null;
+        }
+    }
+
+    private static Map<String, DmiState> extractStatesOrNull(final Dmi dmi) {
+        if (Objects.nonNull(dmi)) {
+            return dmi.getStates();
+        } else {
+            return null;
+        }
     }
 
     private DmiComparator() { }
