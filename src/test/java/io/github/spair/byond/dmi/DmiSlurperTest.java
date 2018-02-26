@@ -4,6 +4,8 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -16,6 +18,13 @@ public class DmiSlurperTest {
     public void testSlurpUpFromFile() {
         File dmiFile = new File("src/test/resources/rollerbed_original.dmi");
         Dmi dmi = DmiSlurper.slurpUp(dmiFile);
+        commonDmiAssertion(dmi);
+    }
+
+    @Test
+    public void testSlurpUpFromBase64Content() throws Exception {
+        String filePath = "src/test/resources/rollerbed_original_base64.txt";
+        Dmi dmi = DmiSlurper.slurpUp("rollerbed_original.dmi", new String(Files.readAllBytes(Paths.get(filePath))));
         commonDmiAssertion(dmi);
     }
 

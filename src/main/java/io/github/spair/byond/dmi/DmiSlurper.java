@@ -7,7 +7,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.BufferedInputStream;
+import java.util.Base64;
 import java.util.Map;
 
 public final class DmiSlurper {
@@ -19,6 +21,14 @@ public final class DmiSlurper {
             throw new IllegalArgumentException("Provided DMI file doesn't exist");
         } catch (IOException e) {
             throw new IllegalArgumentException("Provided DMI can't be read");
+        }
+    }
+
+    public static Dmi slurpUp(final String dmiName, final String base64content) {
+        try (InputStream input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
+            return slurpUp(dmiName, input);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Provided base64 content can't be read");
         }
     }
 
