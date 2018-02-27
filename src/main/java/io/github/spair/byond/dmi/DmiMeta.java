@@ -28,5 +28,6 @@ public class DmiMeta {
         private boolean loop;
         private boolean movement;
         private boolean rewind;
+        private int[] hotspot;
     }
 }

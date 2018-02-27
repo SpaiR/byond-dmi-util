@@ -35,6 +35,7 @@ final class MetaExtractor {
     private static final String LOOP = "loop";
     private static final String MOVEMENT = "movement";
     private static final String REWIND = "rewind";
+    private static final String HOTSPOT = "hotspot";
 
     private static final String MOVEMENT_SUFFIX = " (M)";
 
@@ -127,6 +128,10 @@ final class MetaExtractor {
                     break;
                 case REWIND:
                     metaEntry.setRewind(isValueTrue(paramValue));
+                    break;
+                case HOTSPOT:
+                    String[] hotspot = paramValue.split(",");
+                    metaEntry.setHotspot(Arrays.stream(hotspot).mapToInt(Integer::parseInt).toArray());
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid metadata format detected and can't be read");

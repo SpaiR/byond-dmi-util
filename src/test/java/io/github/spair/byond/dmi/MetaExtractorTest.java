@@ -18,8 +18,8 @@ public class MetaExtractorTest {
         expectedMeta.setSpritesHeight(32);
         expectedMeta.setEntries(
                 Arrays.asList(
-                        new DmiMeta.DmiMetaEntry("down", 1, 1, null, false, false, false),
-                        new DmiMeta.DmiMetaEntry("down (M)", 1, 1, null, false, true, false)
+                        new DmiMeta.DmiMetaEntry("down", 1, 1, null, false, false, false, null),
+                        new DmiMeta.DmiMetaEntry("down (M)", 1, 1, null, false, true, false, null)
                 )
         );
 

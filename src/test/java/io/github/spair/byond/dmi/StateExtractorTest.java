@@ -19,8 +19,8 @@ public class StateExtractorTest {
         meta.setSpritesHeight(32);
         meta.setEntries(
                 Arrays.asList(
-                        new DmiMeta.DmiMetaEntry("down", 1, 1, null, false, false, false),
-                        new DmiMeta.DmiMetaEntry("down (M)", 1, 1, null, false, true, false)
+                        new DmiMeta.DmiMetaEntry("down", 1, 1, null, false, false, false, null),
+                        new DmiMeta.DmiMetaEntry("down (M)", 1, 1, null, false, true, false, null)
                 )
         );
 
