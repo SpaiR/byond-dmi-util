@@ -1,29 +1,23 @@
 package io.github.spair.byond.dmi;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
-import java.util.Objects;
 import java.util.Optional;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public final class DmiComparator {
 
+    @Nonnull
     public static DmiDiff compare(@Nullable final Dmi original, @Nullable final Dmi modified) {
-        DmiDiff dmiDiff = new DmiDiff();
+        DmiDiff dmiDiff = new DmiDiff(new ArrayList<>(getDiffList(original, modified)));
 
-        final DmiMeta originalMetadata = extractMetadataOrNull(original);
-        final DmiMeta modifiedMetadata = extractMetadataOrNull(modified);
-
-        dmiDiff.setOriginalMeta(originalMetadata);
-        dmiDiff.setModifiedMeta(modifiedMetadata);
-
-        final List<DmiDiff.DiffEntry> diffList = new ArrayList<>(getDiffList(original, modified));
-
-        dmiDiff.setDiffEntries(diffList);
-        dmiDiff.setSame(Objects.equals(originalMetadata, modifiedMetadata) && diffList.isEmpty());
+        dmiDiff.setOriginalMeta(extractMetadataOrNull(original));
+        dmiDiff.setModifiedMeta(extractMetadataOrNull(modified));
 
         return dmiDiff;
     }
@@ -33,9 +27,9 @@ public final class DmiComparator {
         List<DmiDiff.DiffEntry> diffEntries = new ArrayList<>();
 
         final Map<String, DmiState> originalStates = Optional
-                .ofNullable(extractStatesOrNull(originalDmi)).orElse(new HashMap<>());
+                .ofNullable(extractStatesOrNull(originalDmi)).orElse(Collections.emptyMap());
         final Map<String, DmiState> modifiedStates = Optional
-                .ofNullable(extractStatesOrNull(modifiedDmi)).orElse(new HashMap<>());
+                .ofNullable(extractStatesOrNull(modifiedDmi)).orElse(Collections.emptyMap());
 
         originalStates.forEach((stateName, originalState) -> {
             final DmiState modifiedState = modifiedStates.get(stateName);
@@ -142,5 +136,6 @@ public final class DmiComparator {
         }
     }
 
-    private DmiComparator() { }
+    private DmiComparator() {
+    }
 }

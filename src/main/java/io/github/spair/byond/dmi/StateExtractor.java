@@ -1,16 +1,16 @@
 package io.github.spair.byond.dmi;
 
 import java.awt.image.BufferedImage;
-import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.ArrayList;
 import java.util.TreeMap;
 import java.util.Comparator;
 
 final class StateExtractor {
 
-    static Map<String, DmiState> extractStates(final BufferedImage dmiImage, final  DmiMeta dmiMeta) {
+    static Map<String, DmiState> extractStates(final BufferedImage dmiImage, final DmiMeta dmiMeta) {
         final int dmiWidth = dmiImage.getWidth();
         final int spriteWidth = dmiMeta.getSpritesWidth();
         final int spriteHeight = dmiMeta.getSpritesHeight();
@@ -28,14 +28,8 @@ final class StateExtractor {
 
             for (int frameNumber = 1; frameNumber <= metaEntry.getFrames(); frameNumber++) {
                 for (int dirCount = 1; dirCount <= metaEntry.getDirs(); dirCount++) {
-                    DmiSprite sprite = new DmiSprite();
-                    BufferedImage spriteImage = cropSpriteImage(dmiImage, spriteWidth, spriteHeight, xPos, yPos);
-
-                    sprite.setSprite(spriteImage);
-                    sprite.setSpriteFrameNum(frameNumber);
-                    sprite.setSpriteDir(SpriteDir.valueOf(dirCount));
-
-                    allSprites.add(sprite);
+                    final BufferedImage spriteImage = cropSpriteImage(dmiImage, spriteWidth, spriteHeight, xPos, yPos);
+                    allSprites.add(new DmiSprite(spriteImage, SpriteDir.valueOf(dirCount), frameNumber));
 
                     if (spriteIndex < spritesInARow) {
                         spriteIndex++;
@@ -48,9 +42,13 @@ final class StateExtractor {
                 }
             }
 
-            final boolean isDuplicatedStateName = dmiStates.containsKey(metaEntry.getName());
-            dmiStates.put(metaEntry.getName(),
-                    new DmiState(metaEntry, distributeAllSpritesInMap(allSprites), isDuplicatedStateName));
+            DmiState dmiState = new DmiState();
+
+            dmiState.setMetadata(metaEntry);
+            dmiState.setSprites(distributeAllSpritesInMap(allSprites));
+            dmiState.setDuplicate(dmiStates.containsKey(metaEntry.getName()));
+
+            dmiStates.put(metaEntry.getName(), dmiState);
         }
 
         return dmiStates;
@@ -79,5 +77,6 @@ final class StateExtractor {
         return spriteMap;
     }
 
-    private StateExtractor() { }
+    private StateExtractor() {
+    }
 }

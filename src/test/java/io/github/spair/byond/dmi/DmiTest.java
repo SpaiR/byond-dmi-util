@@ -33,8 +33,6 @@ public class DmiTest {
         Dmi dmi = new Dmi();
         dmi.setStates(states);
 
-        dmi.checkForDuplicates();
-
         assertTrue(dmi.isHasDuplicates());
         assertEquals(new HashSet<>(Arrays.asList("1", "2")), dmi.getDuplicateStatesNames());
     }
@@ -43,8 +41,6 @@ public class DmiTest {
     public void testCheckForDuplicatesWhenNotExists() {
         Dmi dmi = new Dmi();
         dmi.setStates(new HashMap<>());
-
-        dmi.checkForDuplicates();
 
         assertFalse(dmi.isHasDuplicates());
         assertTrue(dmi.getDuplicateStatesNames().isEmpty());

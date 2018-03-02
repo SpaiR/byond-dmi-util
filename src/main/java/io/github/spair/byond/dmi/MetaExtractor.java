@@ -9,11 +9,11 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -145,5 +145,6 @@ final class MetaExtractor {
         return "1".equals(value);
     }
 
-    private MetaExtractor() { }
+    private MetaExtractor() {
+    }
 }

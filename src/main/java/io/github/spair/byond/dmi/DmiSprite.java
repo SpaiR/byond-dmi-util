@@ -2,8 +2,8 @@ package io.github.spair.byond.dmi;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
@@ -14,24 +14,21 @@ import java.util.Base64;
 import java.util.Objects;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class DmiSprite {
 
+    @Nonnull
     private BufferedImage sprite;
+    @Nonnull
     private SpriteDir spriteDir;
     private int spriteFrameNum;
 
     public String getSpriteAsBase64() {
-        if (Objects.nonNull(sprite)) {
-            try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-                ImageIO.write(sprite, "PNG", Base64.getEncoder().wrap(os));
-                return os.toString(StandardCharsets.UTF_8.name());
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
-        } else {
-            return null;
+        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+            ImageIO.write(sprite, "PNG", Base64.getEncoder().wrap(os));
+            return os.toString(StandardCharsets.UTF_8.name());
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
     }
 

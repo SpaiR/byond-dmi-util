@@ -1,5 +1,6 @@
 package io.github.spair.byond.dmi;
 
+import javax.annotation.Nonnull;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 public final class DmiSlurper {
 
+    @Nonnull
     public static Dmi slurpUp(final File dmiFile) {
         try (InputStream input = new FileInputStream(dmiFile)) {
             return slurpUp(dmiFile.getName(), input);
@@ -24,6 +26,7 @@ public final class DmiSlurper {
         }
     }
 
+    @Nonnull
     public static Dmi slurpUp(final String dmiName, final String base64content) {
         try (InputStream input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
             return slurpUp(dmiName, input);
@@ -32,6 +35,7 @@ public final class DmiSlurper {
         }
     }
 
+    @Nonnull
     public static Dmi slurpUp(final String dmiName, final InputStream input) {
         try (BufferedInputStream bufferedInput = new BufferedInputStream(input)) {
             bufferedInput.mark(input.available());
@@ -42,14 +46,12 @@ public final class DmiSlurper {
             DmiMeta dmiMeta = MetaExtractor.extractMetadata(bufferedInput);
             Map<String, DmiState> dmiStates = StateExtractor.extractStates(dmiImage, dmiMeta);
 
-            Dmi dmi = new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
-            dmi.checkForDuplicates();
-
-            return dmi;
+            return new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
         } catch (IOException e) {
             throw new IllegalArgumentException("Provided DMI can't be read");
         }
     }
 
-    private DmiSlurper() { }
+    private DmiSlurper() {
+    }
 }

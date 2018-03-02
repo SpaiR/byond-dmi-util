@@ -19,35 +19,22 @@ public class DmiSpriteTest {
 
     @Test
     public void testEquals() throws Exception {
-        DmiSprite cat1 = new DmiSprite();
-        cat1.setSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)));
-
-        DmiSprite cat2 = new DmiSprite();
-        cat2.setSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)));
-
+        DmiSprite cat1 = new DmiSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)), SpriteDir.SOUTH, 0);
+        DmiSprite cat2 = new DmiSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)), SpriteDir.SOUTH, 0);
         assertEquals(cat1, cat2);
     }
 
     @Test
     public void testEqualsWithDifferentImages() throws Exception {
-        DmiSprite cat1 = new DmiSprite();
-        cat1.setSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)));
-
-        DmiSprite cat2 = new DmiSprite();
-        cat2.setSprite(ImageIO.read(new File(DIFF_CAT_IMAGE_PATH)));
-
+        DmiSprite cat1 = new DmiSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)), SpriteDir.SOUTH, 0);
+        DmiSprite cat2 = new DmiSprite(ImageIO.read(new File(DIFF_CAT_IMAGE_PATH)), SpriteDir.SOUTH, 0);
         assertNotEquals(cat1, cat2);
     }
 
     @Test
-    public void testEqualsWithDifferentFields() {
-        DmiSprite dmiSprite1 = new DmiSprite();
-        dmiSprite1.setSpriteDir(SpriteDir.SOUTH);
-        dmiSprite1.setSpriteFrameNum(1);
-
-        DmiSprite dmiSprite2 = new DmiSprite();
-        dmiSprite2.setSpriteDir(SpriteDir.NORTH);
-        dmiSprite2.setSpriteFrameNum(1);
+    public void testEqualsWithDifferentFields() throws Exception {
+        DmiSprite dmiSprite1 = new DmiSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)), SpriteDir.SOUTH, 0);
+        DmiSprite dmiSprite2 = new DmiSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)), SpriteDir.NORTH, 0);
 
         assertNotEquals(dmiSprite1, dmiSprite2);
 
@@ -60,18 +47,11 @@ public class DmiSpriteTest {
 
     @Test
     public void testGetSpriteAsBase64() throws Exception {
-        DmiSprite sprite = new DmiSprite();
-        sprite.setSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)));
+        DmiSprite sprite = new DmiSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)), SpriteDir.SOUTH, 0);
 
         String expectedBase64 = new String (Files.readAllBytes(new File(BASE_64_CAT_PATH).toPath()), Charset.forName("UTF-8"));
         String compareToBase64 = sprite.getSpriteAsBase64();
 
         assertEquals(expectedBase64, compareToBase64);
-    }
-
-    @Test
-    public void testGetSpriteAsBase64WhenSpriteNull() {
-        DmiSprite sprite = new DmiSprite();
-        assertNull(sprite.getSpriteAsBase64());
     }
 }

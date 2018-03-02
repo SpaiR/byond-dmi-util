@@ -2,6 +2,8 @@ package io.github.spair.byond.dmi;
 
 import lombok.Data;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
@@ -9,20 +11,31 @@ import java.util.Objects;
 @SuppressWarnings("WeakerAccess")
 public class DmiDiff {
 
-    private boolean same;
+    @Nullable
     private DmiMeta originalMeta;
+    @Nullable
     private DmiMeta modifiedMeta;
+    @Nonnull
     private List<DiffEntry> diffEntries;
+
+    public boolean isSame() {
+        return Objects.equals(originalMeta, modifiedMeta) && diffEntries.isEmpty();
+    }
 
     @Data
     public static class DiffEntry {
 
+        @Nonnull
         private String stateName;
+        @Nullable
         private DmiSprite originalSprite;
+        @Nullable
         private DmiSprite modifiedSprite;
         private Status status;
 
-        public DiffEntry(final String stateName, final DmiSprite originalSprite, final DmiSprite modifiedSprite) {
+        public DiffEntry(@Nonnull final String stateName,
+                         @Nullable final DmiSprite originalSprite,
+                         @Nullable final DmiSprite modifiedSprite) {
             this.stateName = stateName;
             this.originalSprite = originalSprite;
             this.modifiedSprite = modifiedSprite;

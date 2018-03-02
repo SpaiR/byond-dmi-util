@@ -16,6 +16,8 @@ public enum SpriteDir {
 
     final int compareWeight;
 
+    // During DMI slurping all dirs are passed in `for(i = 0; i <= n; i++)` cycle.
+    // Those constants are determine the order in which dirs are placed.
     private static final int SOUTH_DIR_COUNT = 1;
     private static final int NORTH_DIR_COUNT = 2;
     private static final int EAST_DIR_COUNT = 3;
