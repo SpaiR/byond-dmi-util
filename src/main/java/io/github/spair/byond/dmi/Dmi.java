@@ -1,7 +1,9 @@
 package io.github.spair.byond.dmi;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
@@ -23,6 +25,7 @@ public class Dmi {
     @Nonnull
     private Map<String, DmiState> states = new HashMap<>();
     @Nonnull
+    @Setter(AccessLevel.NONE)
     private Set<String> duplicateStatesNames = new HashSet<>();
 
     public Dmi(@Nonnull final String name, final int width, final int height,
@@ -45,6 +48,7 @@ public class Dmi {
     }
 
     private void checkDuplicates() {
+        duplicateStatesNames.clear();
         states.forEach((stateName, dmiState) -> {
             if (dmiState.isDuplicate()) {
                 duplicateStatesNames.add(stateName);
