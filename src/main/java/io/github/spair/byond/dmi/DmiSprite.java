@@ -9,7 +9,6 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Objects;
 
@@ -25,8 +24,8 @@ public class DmiSprite {
 
     public String getSpriteAsBase64() {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            ImageIO.write(sprite, "PNG", Base64.getEncoder().wrap(os));
-            return os.toString(StandardCharsets.UTF_8.name());
+            ImageIO.write(sprite, "PNG", os);
+            return Base64.getEncoder().encodeToString(os.toByteArray());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }

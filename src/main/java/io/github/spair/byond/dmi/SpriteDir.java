@@ -1,6 +1,7 @@
 package io.github.spair.byond.dmi;
 
 public enum SpriteDir {
+
     SOUTH(2, "S", 1),
     NORTH(1, "N", 2),
     EAST(4, "E", 3),

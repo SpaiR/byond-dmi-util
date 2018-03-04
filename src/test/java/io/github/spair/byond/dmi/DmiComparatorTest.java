@@ -23,7 +23,7 @@ public class DmiComparatorTest {
         DmiDiff diff = DmiComparator.compare(original, modified);
 
         assertFalse(diff.isSame());
-        assertNotEquals(diff.getOriginalMeta(), diff.getModifiedMeta());
+        assertNotEquals(diff.getOldMeta(), diff.getNewMeta());
         assertEquals(21, diff.getDiffEntries().size());
 
         List<DmiDiff.DiffEntry> expectedEntries = getExpectedEntries();
@@ -37,31 +37,31 @@ public class DmiComparatorTest {
 
             switch (expectedEntry.getStatus()) {
                 case CREATED:
-                    assertNull(compareToEntry.getOriginalSprite());
-                    assertNotNull(expectedEntry.getModifiedSprite());
-                    assertNotNull(compareToEntry.getModifiedSprite());
+                    assertNull(compareToEntry.getOldSprite());
+                    assertNotNull(expectedEntry.getNewSprite());
+                    assertNotNull(compareToEntry.getNewSprite());
 
-                    assertEquals(expectedEntry.getModifiedSprite().getSpriteDir(), compareToEntry.getModifiedSprite().getSpriteDir());
-                    assertEquals(expectedEntry.getModifiedSprite().getSpriteFrameNum(), compareToEntry.getModifiedSprite().getSpriteFrameNum());
+                    assertEquals(expectedEntry.getNewSprite().getSpriteDir(), compareToEntry.getNewSprite().getSpriteDir());
+                    assertEquals(expectedEntry.getNewSprite().getSpriteFrameNum(), compareToEntry.getNewSprite().getSpriteFrameNum());
                     break;
                 case MODIFIED:
-                    assertNotNull(expectedEntry.getOriginalSprite());
-                    assertNotNull(compareToEntry.getOriginalSprite());
-                    assertNotNull(expectedEntry.getModifiedSprite());
-                    assertNotNull(compareToEntry.getModifiedSprite());
+                    assertNotNull(expectedEntry.getOldSprite());
+                    assertNotNull(compareToEntry.getOldSprite());
+                    assertNotNull(expectedEntry.getNewSprite());
+                    assertNotNull(compareToEntry.getNewSprite());
 
-                    assertEquals(expectedEntry.getOriginalSprite().getSpriteDir(), compareToEntry.getOriginalSprite().getSpriteDir());
-                    assertEquals(expectedEntry.getOriginalSprite().getSpriteFrameNum(), compareToEntry.getOriginalSprite().getSpriteFrameNum());
-                    assertEquals(expectedEntry.getModifiedSprite().getSpriteDir(), compareToEntry.getModifiedSprite().getSpriteDir());
-                    assertEquals(expectedEntry.getModifiedSprite().getSpriteFrameNum(), compareToEntry.getModifiedSprite().getSpriteFrameNum());
+                    assertEquals(expectedEntry.getOldSprite().getSpriteDir(), compareToEntry.getOldSprite().getSpriteDir());
+                    assertEquals(expectedEntry.getOldSprite().getSpriteFrameNum(), compareToEntry.getOldSprite().getSpriteFrameNum());
+                    assertEquals(expectedEntry.getNewSprite().getSpriteDir(), compareToEntry.getNewSprite().getSpriteDir());
+                    assertEquals(expectedEntry.getNewSprite().getSpriteFrameNum(), compareToEntry.getNewSprite().getSpriteFrameNum());
                     break;
                 case DELETED:
-                    assertNull(compareToEntry.getModifiedSprite());
-                    assertNotNull(expectedEntry.getOriginalSprite());
-                    assertNotNull(compareToEntry.getOriginalSprite());
+                    assertNull(compareToEntry.getNewSprite());
+                    assertNotNull(expectedEntry.getOldSprite());
+                    assertNotNull(compareToEntry.getOldSprite());
 
-                    assertEquals(expectedEntry.getOriginalSprite().getSpriteDir(), compareToEntry.getOriginalSprite().getSpriteDir());
-                    assertEquals(expectedEntry.getOriginalSprite().getSpriteFrameNum(), compareToEntry.getOriginalSprite().getSpriteFrameNum());
+                    assertEquals(expectedEntry.getOldSprite().getSpriteDir(), compareToEntry.getOldSprite().getSpriteDir());
+                    assertEquals(expectedEntry.getOldSprite().getSpriteFrameNum(), compareToEntry.getOldSprite().getSpriteFrameNum());
                     break;
             }
         }
@@ -73,7 +73,7 @@ public class DmiComparatorTest {
         DmiDiff diff = DmiComparator.compare(dmi, dmi);
 
         assertTrue(diff.isSame());
-        assertEquals(diff.getOriginalMeta(), diff.getModifiedMeta());
+        assertEquals(diff.getOldMeta(), diff.getNewMeta());
         assertTrue(diff.getDiffEntries().isEmpty());
     }
 
@@ -83,8 +83,8 @@ public class DmiComparatorTest {
         DmiDiff diff = DmiComparator.compare(dmi, null);
 
         assertEquals(17, diff.getDiffEntries().size());
-        assertNotNull(diff.getOriginalMeta());
-        assertNull(diff.getModifiedMeta());
+        assertNotNull(diff.getOldMeta());
+        assertNull(diff.getNewMeta());
 
         diff.getDiffEntries().forEach(diffEntry -> assertEquals(DmiDiff.Status.DELETED, diffEntry.getStatus()));
     }
@@ -95,8 +95,8 @@ public class DmiComparatorTest {
         DmiDiff diff = DmiComparator.compare(null, dmi);
 
         assertEquals(17, diff.getDiffEntries().size());
-        assertNotNull(diff.getModifiedMeta());
-        assertNull(diff.getOriginalMeta());
+        assertNotNull(diff.getNewMeta());
+        assertNull(diff.getOldMeta());
 
         diff.getDiffEntries().forEach(diffEntry -> assertEquals(DmiDiff.Status.CREATED, diffEntry.getStatus()));
     }

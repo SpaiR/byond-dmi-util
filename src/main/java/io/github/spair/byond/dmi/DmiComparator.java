@@ -13,50 +13,49 @@ import java.util.stream.Collectors;
 public final class DmiComparator {
 
     @Nonnull
-    public static DmiDiff compare(@Nullable final Dmi original, @Nullable final Dmi modified) {
-        DmiDiff dmiDiff = new DmiDiff(new ArrayList<>(getDiffList(original, modified)));
+    public static DmiDiff compare(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
+        DmiDiff dmiDiff = new DmiDiff(getDiffList(oldDmi, newDmi));
 
-        dmiDiff.setOriginalMeta(extractMetadataOrNull(original));
-        dmiDiff.setModifiedMeta(extractMetadataOrNull(modified));
+        dmiDiff.setOldMeta(extractMetadataOrNull(oldDmi));
+        dmiDiff.setNewMeta(extractMetadataOrNull(newDmi));
 
         return dmiDiff;
     }
 
-    private static List<DmiDiff.DiffEntry> getDiffList(
-            @Nullable final Dmi originalDmi, @Nullable final Dmi modifiedDmi) {
+    private static List<DmiDiff.DiffEntry> getDiffList(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
         List<DmiDiff.DiffEntry> diffEntries = new ArrayList<>();
 
-        final Map<String, DmiState> originalStates = Optional
-                .ofNullable(extractStatesOrNull(originalDmi)).orElse(Collections.emptyMap());
-        final Map<String, DmiState> modifiedStates = Optional
-                .ofNullable(extractStatesOrNull(modifiedDmi)).orElse(Collections.emptyMap());
+        final Map<String, DmiState> oldStates = Optional
+                .ofNullable(extractStatesOrNull(oldDmi)).orElse(Collections.emptyMap());
+        final Map<String, DmiState> newStates = Optional
+                .ofNullable(extractStatesOrNull(newDmi)).orElse(Collections.emptyMap());
 
-        originalStates.forEach((stateName, originalState) -> {
-            final DmiState modifiedState = modifiedStates.get(stateName);
+        oldStates.forEach((stateName, oldState) -> {
+            final DmiState newState = newStates.get(stateName);
 
-            if (Objects.nonNull(modifiedState)) {
-                diffEntries.addAll(findOriginalAndModifiedStateDiff(originalState, modifiedState));
+            if (Objects.nonNull(newState)) {
+                diffEntries.addAll(findOldAndNewStateDiff(oldState, newState));
             } else {
-                diffEntries.addAll(listOnlyOneStateSprites(originalState, true));
+                diffEntries.addAll(listOnlyOneStateSprites(oldState, true));
             }
         });
 
-        modifiedStates.forEach((stateName, modifiedState) -> {
-            if (!originalStates.containsKey(stateName)) {
-                diffEntries.addAll(listOnlyOneStateSprites(modifiedState, false));
+        newStates.forEach((stateName, newState) -> {
+            if (!oldStates.containsKey(stateName)) {
+                diffEntries.addAll(listOnlyOneStateSprites(newState, false));
             }
         });
 
         return diffEntries;
     }
 
-    private static List<DmiDiff.DiffEntry> listOnlyOneStateSprites(final DmiState state, final boolean isOriginal) {
+    private static List<DmiDiff.DiffEntry> listOnlyOneStateSprites(final DmiState state, final boolean isOldState) {
         List<DmiDiff.DiffEntry> diffs = new ArrayList<>();
         final String stateName = state.getMetadata().getName();
 
         state.getSprites().forEach((spriteDir, stateSprite) ->
                 stateSprite.forEach(sprite -> {
-                    if (isOriginal) {
+                    if (isOldState) {
                         diffs.add(new DmiDiff.DiffEntry(stateName, sprite, null));
                     } else {
                         diffs.add(new DmiDiff.DiffEntry(stateName, null, sprite));
@@ -67,52 +66,51 @@ public final class DmiComparator {
         return diffs;
     }
 
-    private static List<DmiDiff.DiffEntry> findOriginalAndModifiedStateDiff(
-            final DmiState originalState, final DmiState modifiedState) {
+    private static List<DmiDiff.DiffEntry> findOldAndNewStateDiff(final DmiState oldState, final DmiState newState) {
         List<DmiDiff.DiffEntry> diffs = new ArrayList<>();
 
-        final String stateName = originalState.getMetadata().getName();
+        final String stateName = oldState.getMetadata().getName();
 
-        final Map<SpriteDir, List<DmiSprite>> originalStateSprites = originalState.getSprites();
-        final Map<SpriteDir, List<DmiSprite>> modifiedStateSprites = modifiedState.getSprites();
+        final Map<SpriteDir, List<DmiSprite>> oldStateSprites = oldState.getSprites();
+        final Map<SpriteDir, List<DmiSprite>> newStateSprites = newState.getSprites();
 
-        final int originalDirsCount = originalStateSprites.size();
-        final int modifiedDirsCount = modifiedStateSprites.size();
+        oldStateSprites.forEach((spriteDir, oldSprites) -> {
+            final List<DmiSprite> newSprites = newStateSprites.getOrDefault(spriteDir, Collections.emptyList());
 
-        originalStateSprites.forEach((spriteDir, originalSprites) -> {
-            final List<DmiSprite> modifiedSprites = modifiedStateSprites.getOrDefault(spriteDir, new ArrayList<>());
+            final int oldSpritesCount = oldSprites.size();
+            final int newSpritesCount = newSprites.size();
 
-            final int originalSpritesCount = originalSprites.size();
-            final int modifiedSpritesCount = modifiedSprites.size();
+            for (int frameNumber = 0; frameNumber < oldSpritesCount; frameNumber++) {
+                DmiSprite oldSprite = oldSprites.get(frameNumber);
+                DmiSprite newSprite;
 
-            for (int frameNumber = 0; frameNumber < originalSpritesCount; frameNumber++) {
-                DmiSprite originalSprite = originalSprites.get(frameNumber);
-                DmiSprite modifiedSprite;
-
-                if (frameNumber <= (modifiedSpritesCount - 1)) {
-                    modifiedSprite = modifiedSprites.get(frameNumber);
+                if (frameNumber <= (newSpritesCount - 1)) {
+                    newSprite = newSprites.get(frameNumber);
                 } else {
-                    modifiedSprite = null;
+                    newSprite = null;
                 }
 
-                if (!originalSprite.equals(modifiedSprite)) {
-                    diffs.add(new DmiDiff.DiffEntry(stateName, originalSprite, modifiedSprite));
+                if (!oldSprite.equals(newSprite)) {
+                    diffs.add(new DmiDiff.DiffEntry(stateName, oldSprite, newSprite));
                 }
             }
 
-            if (originalSpritesCount < modifiedSpritesCount) {
-                for (int frameNumber = originalSpritesCount; frameNumber < modifiedSpritesCount; frameNumber++) {
-                    diffs.add(new DmiDiff.DiffEntry(stateName, null, modifiedSprites.get(frameNumber)));
+            if (oldSpritesCount < newSpritesCount) {
+                for (int frameNumber = oldSpritesCount; frameNumber < newSpritesCount; frameNumber++) {
+                    diffs.add(new DmiDiff.DiffEntry(stateName, null, newSprites.get(frameNumber)));
                 }
             }
         });
 
-        if (originalDirsCount < modifiedDirsCount) {
-            modifiedStateSprites.keySet()
-                    .stream().filter(d -> !originalStateSprites.keySet().contains(d)).collect(Collectors.toSet())
+        final int oldDirsCount = oldStateSprites.size();
+        final int newDirsCount = newStateSprites.size();
+
+        if (oldDirsCount < newDirsCount) {
+            newStateSprites.keySet()
+                    .stream().filter(d -> !oldStateSprites.keySet().contains(d)).collect(Collectors.toSet())
                     .forEach(spriteDir ->
-                            modifiedStateSprites.get(spriteDir).forEach(modifiedSprite ->
-                                    diffs.add(new DmiDiff.DiffEntry(stateName, null, modifiedSprite))
+                            newStateSprites.get(spriteDir).forEach(newSprite ->
+                                    diffs.add(new DmiDiff.DiffEntry(stateName, null, newSprite))
                             )
                     );
         }

@@ -29,6 +29,7 @@ final class StateExtractor {
             for (int frameNumber = 1; frameNumber <= metaEntry.getFrames(); frameNumber++) {
                 for (int dirCount = 1; dirCount <= metaEntry.getDirs(); dirCount++) {
                     final BufferedImage spriteImage = cropSpriteImage(dmiImage, spriteWidth, spriteHeight, xPos, yPos);
+
                     allSprites.add(new DmiSprite(spriteImage, SpriteDir.valueOf(dirCount), frameNumber));
 
                     if (spriteIndex < spritesInARow) {

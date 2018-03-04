@@ -9,7 +9,6 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Objects;
 import java.util.List;
 import java.util.ArrayList;
@@ -40,22 +39,25 @@ final class MetaExtractor {
     private static final String MOVEMENT_SUFFIX = " (M)";
 
     static DmiMeta extractMetadata(final InputStream input) {
+        IIOMetadata metadata = readMetadata(input);
+
+        String metadataFormatName = IIOMetadataFormatImpl.standardMetadataFormatName;
+        IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(metadataFormatName);
+        IIOMetadataNode text = (IIOMetadataNode) root.getElementsByTagName(META_ELEMENT_TAG).item(0);
+
+        String metadataText = text.getAttribute(META_ATTRIBUTE);
+
+        return parseMetadataText(metadataText);
+    }
+
+    private static IIOMetadata readMetadata(final InputStream input) {
         try (ImageInputStream imageInputStream = ImageIO.createImageInputStream(input)) {
-            Iterator<ImageReader> readers = ImageIO.getImageReadersByMIMEType(PNG_MIME);
-            ImageReader reader = readers.next();
+            ImageReader reader = ImageIO.getImageReadersByMIMEType(PNG_MIME).next();
 
             reader.setInput(imageInputStream, true);
-
             IIOImage image = reader.readAll(0, null);
-            IIOMetadata metadata = image.getMetadata();
 
-            String metadataFormatName = IIOMetadataFormatImpl.standardMetadataFormatName;
-            IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(metadataFormatName);
-            IIOMetadataNode text = (IIOMetadataNode) root.getElementsByTagName(META_ELEMENT_TAG).item(0);
-
-            String metadataText = text.getAttribute(META_ATTRIBUTE);
-
-            return parseMetadataText(metadataText);
+            return image.getMetadata();
         } catch (IOException e) {
             throw new IllegalArgumentException("DMI metadata can't be read", e);
         }
@@ -117,8 +119,7 @@ final class MetaExtractor {
                     metaEntry.setFrames(Integer.parseInt(paramValue));
                     break;
                 case DELAY:
-                    String[] delays = paramValue.split(",");
-                    metaEntry.setDelay(Arrays.stream(delays).mapToInt(Integer::parseInt).toArray());
+                    metaEntry.setDelay(intArrayFromString(paramValue));
                     break;
                 case LOOP:
                     metaEntry.setLoop(isValueTrue(paramValue));
@@ -130,8 +131,7 @@ final class MetaExtractor {
                     metaEntry.setRewind(isValueTrue(paramValue));
                     break;
                 case HOTSPOT:
-                    String[] hotspot = paramValue.split(",");
-                    metaEntry.setHotspot(Arrays.stream(hotspot).mapToInt(Integer::parseInt).toArray());
+                    metaEntry.setHotspot(intArrayFromString(paramValue));
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid metadata format detected and can't be read");
@@ -143,6 +143,10 @@ final class MetaExtractor {
 
     private static boolean isValueTrue(final String value) {
         return "1".equals(value);
+    }
+
+    private static int[] intArrayFromString(final String str) {
+        return Arrays.stream(str.split(",")).mapToInt(Integer::parseInt).toArray();
     }
 
     private MetaExtractor() {

@@ -12,14 +12,14 @@ import java.util.Objects;
 public class DmiDiff {
 
     @Nullable
-    private DmiMeta originalMeta;
+    private DmiMeta oldMeta;
     @Nullable
-    private DmiMeta modifiedMeta;
+    private DmiMeta newMeta;
     @Nonnull
     private List<DiffEntry> diffEntries;
 
     public boolean isSame() {
-        return Objects.equals(originalMeta, modifiedMeta) && diffEntries.isEmpty();
+        return Objects.equals(oldMeta, newMeta) && diffEntries.isEmpty();
     }
 
     @Data
@@ -28,23 +28,23 @@ public class DmiDiff {
         @Nonnull
         private String stateName;
         @Nullable
-        private DmiSprite originalSprite;
+        private DmiSprite oldSprite;
         @Nullable
-        private DmiSprite modifiedSprite;
+        private DmiSprite newSprite;
         private Status status;
 
         public DiffEntry(@Nonnull final String stateName,
-                         @Nullable final DmiSprite originalSprite,
-                         @Nullable final DmiSprite modifiedSprite) {
+                         @Nullable final DmiSprite oldSprite,
+                         @Nullable final DmiSprite newSprite) {
             this.stateName = stateName;
-            this.originalSprite = originalSprite;
-            this.modifiedSprite = modifiedSprite;
+            this.oldSprite = oldSprite;
+            this.newSprite = newSprite;
 
-            if (Objects.nonNull(originalSprite) && Objects.nonNull(modifiedSprite)) {
+            if (Objects.nonNull(oldSprite) && Objects.nonNull(newSprite)) {
                 status = Status.MODIFIED;
-            } else if (Objects.isNull(originalSprite) && Objects.nonNull(modifiedSprite)) {
+            } else if (Objects.isNull(oldSprite) && Objects.nonNull(newSprite)) {
                 status = Status.CREATED;
-            } else if (Objects.nonNull(originalSprite)) {
+            } else if (Objects.nonNull(oldSprite)) {
                 status = Status.DELETED;
             } else {
                 throw new IllegalArgumentException("Original and Modified sprites are null. State name: " + stateName);
