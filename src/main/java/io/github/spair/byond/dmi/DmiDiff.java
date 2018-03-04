@@ -1,6 +1,8 @@
 package io.github.spair.byond.dmi;
 
+import lombok.AccessLevel;
 import lombok.Data;
+import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,6 +33,7 @@ public class DmiDiff {
         private DmiSprite oldSprite;
         @Nullable
         private DmiSprite newSprite;
+        @Setter(AccessLevel.NONE)
         private Status status;
 
         public DiffEntry(@Nonnull final String stateName,
