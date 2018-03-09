@@ -24,10 +24,10 @@ public class DmiMeta {
         private String name;
         private int dirs;
         private int frames;
-        private int[] delay;
+        private double[] delay;
         private boolean loop;
         private boolean movement;
         private boolean rewind;
-        private int[] hotspot;
+        private double[] hotspot;
     }
 }

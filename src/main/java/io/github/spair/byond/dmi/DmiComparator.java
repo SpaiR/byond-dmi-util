@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class DmiComparator {
@@ -16,8 +17,8 @@ public final class DmiComparator {
     public static DmiDiff compare(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
         DmiDiff dmiDiff = new DmiDiff(getDiffList(oldDmi, newDmi));
 
-        dmiDiff.setOldMeta(extractMetadataOrNull(oldDmi));
-        dmiDiff.setNewMeta(extractMetadataOrNull(newDmi));
+        dmiDiff.setOldMeta(extractOrNull(oldDmi, Dmi::getMetadata));
+        dmiDiff.setNewMeta(extractOrNull(newDmi, Dmi::getMetadata));
 
         return dmiDiff;
     }
@@ -26,9 +27,9 @@ public final class DmiComparator {
         List<DmiDiff.DiffEntry> diffEntries = new ArrayList<>();
 
         final Map<String, DmiState> oldStates = Optional
-                .ofNullable(extractStatesOrNull(oldDmi)).orElse(Collections.emptyMap());
+                .ofNullable(extractOrNull(oldDmi, Dmi::getStates)).orElse(Collections.emptyMap());
         final Map<String, DmiState> newStates = Optional
-                .ofNullable(extractStatesOrNull(newDmi)).orElse(Collections.emptyMap());
+                .ofNullable(extractOrNull(newDmi, Dmi::getStates)).orElse(Collections.emptyMap());
 
         oldStates.forEach((stateName, oldState) -> {
             final DmiState newState = newStates.get(stateName);
@@ -82,12 +83,10 @@ public final class DmiComparator {
 
             for (int frameNumber = 0; frameNumber < oldSpritesCount; frameNumber++) {
                 DmiSprite oldSprite = oldSprites.get(frameNumber);
-                DmiSprite newSprite;
+                DmiSprite newSprite = null;
 
                 if (frameNumber <= (newSpritesCount - 1)) {
                     newSprite = newSprites.get(frameNumber);
-                } else {
-                    newSprite = null;
                 }
 
                 if (!oldSprite.equals(newSprite)) {
@@ -118,17 +117,9 @@ public final class DmiComparator {
         return diffs;
     }
 
-    private static DmiMeta extractMetadataOrNull(final Dmi dmi) {
+    private static <V> V extractOrNull(final Dmi dmi, final Function<Dmi, V> function) {
         if (Objects.nonNull(dmi)) {
-            return dmi.getMetadata();
-        } else {
-            return null;
-        }
-    }
-
-    private static Map<String, DmiState> extractStatesOrNull(final Dmi dmi) {
-        if (Objects.nonNull(dmi)) {
-            return dmi.getStates();
+            return function.apply(dmi);
         } else {
             return null;
         }

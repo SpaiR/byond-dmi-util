@@ -119,7 +119,7 @@ final class MetaExtractor {
                     metaEntry.setFrames(Integer.parseInt(paramValue));
                     break;
                 case DELAY:
-                    metaEntry.setDelay(intArrayFromString(paramValue));
+                    metaEntry.setDelay(doubleArrayFromString(paramValue));
                     break;
                 case LOOP:
                     metaEntry.setLoop(isValueTrue(paramValue));
@@ -131,7 +131,7 @@ final class MetaExtractor {
                     metaEntry.setRewind(isValueTrue(paramValue));
                     break;
                 case HOTSPOT:
-                    metaEntry.setHotspot(intArrayFromString(paramValue));
+                    metaEntry.setHotspot(doubleArrayFromString(paramValue));
                     break;
                 default:
                     throw new IllegalArgumentException("Invalid metadata format detected and can't be read");
@@ -145,8 +145,8 @@ final class MetaExtractor {
         return "1".equals(value);
     }
 
-    private static int[] intArrayFromString(final String str) {
-        return Arrays.stream(str.split(",")).mapToInt(Integer::parseInt).toArray();
+    private static double[] doubleArrayFromString(final String str) {
+        return Arrays.stream(str.split(",")).mapToDouble(Double::parseDouble).toArray();
     }
 
     private MetaExtractor() {

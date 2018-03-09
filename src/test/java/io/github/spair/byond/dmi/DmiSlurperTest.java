@@ -82,7 +82,7 @@ public class DmiSlurperTest {
         assertEquals("folded", foldedStateMeta.getName());
         assertEquals(4, foldedStateMeta.getDirs());
         assertEquals(3, foldedStateMeta.getFrames());
-        assertArrayEquals(new int[]{1, 1, 1, 1, 1, 1},foldedStateMeta.getDelay());
+        assertArrayEquals(new double[]{1, 1, 1, 1, 1, 1},foldedStateMeta.getDelay(), 0);
         assertFalse(foldedStateMeta.isLoop());
         assertFalse(foldedStateMeta.isMovement());
         assertFalse(foldedStateMeta.isRewind());
