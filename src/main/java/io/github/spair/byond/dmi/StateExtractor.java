@@ -1,5 +1,6 @@
 package io.github.spair.byond.dmi;
 
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.Map;
 import java.util.HashMap;
@@ -59,9 +60,9 @@ final class StateExtractor {
             final BufferedImage dmiImage, final int width, final int height, final int xPos, final int yPos) {
         BufferedImage dst = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
-        dst.getGraphics().drawImage(
-                dmiImage, 0, 0, width, height, xPos, yPos, xPos + width, yPos + height, null
-        );
+        Graphics graphics = dst.getGraphics();
+        graphics.drawImage(dmiImage, 0, 0, width, height, xPos, yPos, xPos + width, yPos + height, null);
+        graphics.dispose();
 
         return dst;
     }
