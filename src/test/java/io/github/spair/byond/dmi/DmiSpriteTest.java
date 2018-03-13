@@ -4,13 +4,11 @@ import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.io.File;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
 
 public class DmiSpriteTest {
 

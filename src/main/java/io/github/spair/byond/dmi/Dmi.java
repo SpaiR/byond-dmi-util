@@ -16,6 +16,8 @@ import java.util.Set;
 @SuppressWarnings("WeakerAccess")
 public class Dmi {
 
+    public static final int MAX_STATES = 512;
+
     @Nonnull
     private String name = "";
     private int width;
@@ -45,6 +47,10 @@ public class Dmi {
 
     public boolean isHasDuplicates() {
         return !duplicateStatesNames.isEmpty();
+    }
+
+    public boolean isStateOverflow() {
+        return states.size() > MAX_STATES;
     }
 
     private void checkDuplicates() {

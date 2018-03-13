@@ -45,4 +45,20 @@ public class DmiTest {
         assertFalse(dmi.isHasDuplicates());
         assertTrue(dmi.getDuplicateStatesNames().isEmpty());
     }
+
+    @Test
+    public void testIsStateOverflow() {
+        Dmi dmi = new Dmi();
+        dmi.setStates(new HashMap<>());
+
+        assertFalse(dmi.isStateOverflow());
+
+        Map<String, DmiState> states = new HashMap<>();
+        for (int i = 0; i < 513; i++) {
+            states.put(String.valueOf(i), new DmiState());
+        }
+        dmi.setStates(states);
+
+        assertTrue(dmi.isStateOverflow());
+    }
 }
