@@ -16,6 +16,10 @@ import java.util.Set;
 @SuppressWarnings("WeakerAccess")
 public class Dmi {
 
+    /**
+     * The number of states one Dmi file can store. More states than that value won't work properly.
+     * Default: 512
+     */
     public static final int MAX_STATES = 512;
 
     @Nonnull

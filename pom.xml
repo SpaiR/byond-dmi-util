@@ -64,6 +64,18 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.0-M1</version>
+                <configuration>
+                    <show>private</show>
+                    <sourceFileExcludes>
+                        <sourceFileExclude>io/github/spair/byond/dmi/MetaExtractor.java</sourceFileExclude>
+                        <sourceFileExclude>io/github/spair/byond/dmi/StateExtractor.java</sourceFileExclude>
+                    </sourceFileExcludes>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
