@@ -13,8 +13,15 @@ import java.io.BufferedInputStream;
 import java.util.Base64;
 import java.util.Map;
 
+/**
+ * Util class to extract {@link io.github.spair.byond.dmi.Dmi} object from file/base64 string/raw input stream.
+ */
 public final class DmiSlurper {
 
+    /**
+     * @param dmiFile file to deserialize
+     * @return {@link io.github.spair.byond.dmi.Dmi} object
+     */
     @Nonnull
     public static Dmi slurpUp(final File dmiFile) {
         try (InputStream input = new FileInputStream(dmiFile)) {
@@ -26,6 +33,11 @@ public final class DmiSlurper {
         }
     }
 
+    /**
+     * @param dmiName the name of resulted {@link io.github.spair.byond.dmi.Dmi} object
+     * @param base64content base64 string to deserialize
+     * @return {@link io.github.spair.byond.dmi.Dmi} object
+     */
     @Nonnull
     public static Dmi slurpUp(final String dmiName, final String base64content) {
         try (InputStream input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
@@ -35,6 +47,11 @@ public final class DmiSlurper {
         }
     }
 
+    /**
+     * @param dmiName the name of resulted {@link io.github.spair.byond.dmi.Dmi} object
+     * @param input raw input stream to deserialize
+     * @return {@link io.github.spair.byond.dmi.Dmi} object
+     */
     @Nonnull
     public static Dmi slurpUp(final String dmiName, final InputStream input) {
         try (BufferedInputStream bufferedInput = new BufferedInputStream(input)) {

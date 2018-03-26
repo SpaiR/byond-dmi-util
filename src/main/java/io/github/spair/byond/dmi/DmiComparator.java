@@ -11,8 +11,20 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+/**
+ * Util class to compare two {@link io.github.spair.byond.dmi.Dmi} objects and get result of comparison
+ * as {@link io.github.spair.byond.dmi.DmiDiff}.
+ */
 public final class DmiComparator {
 
+    /**
+     * Compares two {@link io.github.spair.byond.dmi.Dmi} objects. One of argument may be null,
+     * which will be interpreted as if another Dmi created if null is the first parameter or deleted if vice versa.
+     *
+     * @param oldDmi old {@link io.github.spair.byond.dmi.Dmi} object or null
+     * @param newDmi new {@link io.github.spair.byond.dmi.Dmi} object or null
+     * @return {@link io.github.spair.byond.dmi.DmiDiff} object
+     */
     @Nonnull
     public static DmiDiff compare(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
         DmiDiff dmiDiff = new DmiDiff(getDiffList(oldDmi, newDmi));

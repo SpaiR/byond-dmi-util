@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
-@SuppressWarnings("WeakerAccess")
 public class DmiDiff {
 
     @Nullable
@@ -20,11 +19,16 @@ public class DmiDiff {
     @Nonnull
     private List<DiffEntry> diffEntries;
 
+    /**
+     * Shows that current diff was generated from the same Dmi's.
+     * @return true, if Dmi's are the same, otherwise false
+     */
     public boolean isSame() {
         return Objects.equals(oldMeta, newMeta) && diffEntries.isEmpty();
     }
 
     @Data
+    @SuppressWarnings("WeakerAccess")
     public static class DiffEntry {
 
         @Nonnull

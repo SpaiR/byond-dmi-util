@@ -13,12 +13,11 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-@SuppressWarnings("WeakerAccess")
 public class Dmi {
 
     /**
-     * The number of states one Dmi file can store. More states than that value won't work properly.
-     * Default: 512
+     * <p>The number of states one Dmi file can store. More states than that value won't work properly.
+     * <p><b>Default:</b> 512
      */
     public static final int MAX_STATES = 512;
 
@@ -49,10 +48,18 @@ public class Dmi {
         checkDuplicates();
     }
 
+    /**
+     * Shows if there are states, which have duplicate names in current Dmi.
+     * @return true if there are duplicates, otherwise false
+     */
     public boolean isHasDuplicates() {
         return !duplicateStatesNames.isEmpty();
     }
 
+    /**
+     * Shows if the number of states more than {@link #MAX_STATES}.
+     * @return true if too many states, otherwise false
+     */
     public boolean isStateOverflow() {
         return states.size() > MAX_STATES;
     }
