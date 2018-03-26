@@ -19,13 +19,13 @@ Library deployed to Maven Central and JCenter repositories.
 <dependency>
     <groupId>io.github.spair</groupId>
     <artifactId>byond-dmi-util</artifactId>
-    <version>1.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 
 #### build.gradle:
 ```
-compile 'io.github.spair:byond-dmi-util:1.0'
+compile 'io.github.spair:byond-dmi-util:1.0.1'
 ```
 
 ## How To Use
@@ -47,4 +47,4 @@ Class used to compare two dmi's and show difference between them.
  As a result of comparison `DmiDiff` object returns.
  
  
-More could be found in JavaDoc.
+More could be found in [JavaDoc](https://www.javadoc.io/doc/io.github.spair/byond-dmi-util).
