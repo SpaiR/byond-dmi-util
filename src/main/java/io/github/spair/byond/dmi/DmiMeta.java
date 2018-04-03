@@ -9,25 +9,10 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("WeakerAccess")
 public class DmiMeta {
 
     private int spritesWidth;
     private int spritesHeight;
-    private List<DmiMetaEntry> entries;
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @SuppressWarnings("WeakerAccess")
-    public static class DmiMetaEntry {
-
-        private String name;
-        private int dirs;
-        private int frames;
-        private double[] delay;
-        private boolean loop;
-        private boolean movement;
-        private boolean rewind;
-        private double[] hotspot;
-    }
+    private List<Meta> metas;
 }

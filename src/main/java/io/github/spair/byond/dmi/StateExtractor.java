@@ -11,7 +11,10 @@ import java.util.Comparator;
 
 final class StateExtractor {
 
-    static Map<String, DmiState> extractStates(final BufferedImage dmiImage, final DmiMeta dmiMeta) {
+    StateExtractor() {
+    }
+
+    Map<String, DmiState> extractStates(final BufferedImage dmiImage, final DmiMeta dmiMeta) {
         final int dmiWidth = dmiImage.getWidth();
         final int spriteWidth = dmiMeta.getSpritesWidth();
         final int spriteHeight = dmiMeta.getSpritesHeight();
@@ -24,7 +27,7 @@ final class StateExtractor {
 
         Map<String, DmiState> dmiStates = new HashMap<>();
 
-        for (DmiMeta.DmiMetaEntry metaEntry : dmiMeta.getEntries()) {
+        for (Meta metaEntry : dmiMeta.getMetas()) {
             List<DmiSprite> allSprites = new ArrayList<>();
 
             for (int frameNumber = 1; frameNumber <= metaEntry.getFrames(); frameNumber++) {
@@ -46,7 +49,7 @@ final class StateExtractor {
 
             DmiState dmiState = new DmiState();
 
-            dmiState.setMetadata(metaEntry);
+            dmiState.setMeta(metaEntry);
             dmiState.setSprites(distributeAllSpritesInMap(allSprites));
             dmiState.setDuplicate(dmiStates.containsKey(metaEntry.getName()));
 
@@ -56,7 +59,7 @@ final class StateExtractor {
         return dmiStates;
     }
 
-    private static BufferedImage cropSpriteImage(
+    private BufferedImage cropSpriteImage(
             final BufferedImage dmiImage, final int width, final int height, final int xPos, final int yPos) {
         BufferedImage dst = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -67,18 +70,15 @@ final class StateExtractor {
         return dst;
     }
 
-    private static Map<SpriteDir, List<DmiSprite>> distributeAllSpritesInMap(final List<DmiSprite> allSprites) {
+    private Map<SpriteDir, List<DmiSprite>> distributeAllSpritesInMap(final List<DmiSprite> allSprites) {
         Map<SpriteDir, List<DmiSprite>> spriteMap = new TreeMap<>(Comparator.comparingInt(dir -> dir.compareWeight));
 
         for (DmiSprite sprite : allSprites) {
-            List<DmiSprite> spritesInDir = spriteMap.getOrDefault(sprite.getSpriteDir(), new ArrayList<>());
+            List<DmiSprite> spritesInDir = spriteMap.getOrDefault(sprite.getDir(), new ArrayList<>());
             spritesInDir.add(sprite);
-            spriteMap.putIfAbsent(sprite.getSpriteDir(), spritesInDir);
+            spriteMap.putIfAbsent(sprite.getDir(), spritesInDir);
         }
 
         return spriteMap;
-    }
-
-    private StateExtractor() {
     }
 }

@@ -1,8 +1,6 @@
 package io.github.spair.byond.dmi;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -12,54 +10,15 @@ import java.util.Objects;
 @Data
 public class DmiDiff {
 
-    @Nullable
-    private DmiMeta oldMeta;
-    @Nullable
-    private DmiMeta newMeta;
-    @Nonnull
-    private List<DiffEntry> diffEntries;
+    @Nullable private DmiMeta oldMeta;
+    @Nullable private DmiMeta newMeta;
+    @Nonnull private List<Diff> diffs;
 
     /**
      * Shows that current diff was generated from the same Dmi's.
-     * @return true, if Dmi's are the same, otherwise false
+     * @return true, if Dmi's was the same, otherwise false
      */
     public boolean isSame() {
-        return Objects.equals(oldMeta, newMeta) && diffEntries.isEmpty();
-    }
-
-    @Data
-    @SuppressWarnings("WeakerAccess")
-    public static class DiffEntry {
-
-        @Nonnull
-        private String stateName;
-        @Nullable
-        private DmiSprite oldSprite;
-        @Nullable
-        private DmiSprite newSprite;
-        @Setter(AccessLevel.NONE)
-        private Status status;
-
-        public DiffEntry(@Nonnull final String stateName,
-                         @Nullable final DmiSprite oldSprite,
-                         @Nullable final DmiSprite newSprite) {
-            this.stateName = stateName;
-            this.oldSprite = oldSprite;
-            this.newSprite = newSprite;
-
-            if (Objects.nonNull(oldSprite) && Objects.nonNull(newSprite)) {
-                status = Status.MODIFIED;
-            } else if (Objects.isNull(oldSprite) && Objects.nonNull(newSprite)) {
-                status = Status.CREATED;
-            } else if (Objects.nonNull(oldSprite)) {
-                status = Status.DELETED;
-            } else {
-                throw new IllegalArgumentException("Original and Modified sprites are null. State name: " + stateName);
-            }
-        }
-    }
-
-    public enum Status {
-        CREATED, MODIFIED, DELETED
+        return Objects.equals(oldMeta, newMeta) && diffs.isEmpty();
     }
 }

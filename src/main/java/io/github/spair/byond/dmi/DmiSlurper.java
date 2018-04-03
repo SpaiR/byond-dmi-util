@@ -14,16 +14,19 @@ import java.util.Base64;
 import java.util.Map;
 
 /**
- * Util class to extract {@link io.github.spair.byond.dmi.Dmi} object from file/base64 string/raw input stream.
+ * Singleton class to extract {@link io.github.spair.byond.dmi.Dmi} object from file/base64 string/raw input stream.
  */
 public final class DmiSlurper {
+
+    private final MetaExtractor metaExtractor = new MetaExtractor();
+    private final StateExtractor stateExtractor = new StateExtractor();
 
     /**
      * @param dmiFile file to deserialize
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
     @Nonnull
-    public static Dmi slurpUp(final File dmiFile) {
+    public Dmi slurpUp(final File dmiFile) {
         try (InputStream input = new FileInputStream(dmiFile)) {
             return slurpUp(dmiFile.getName(), input);
         } catch (FileNotFoundException e) {
@@ -39,7 +42,7 @@ public final class DmiSlurper {
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
     @Nonnull
-    public static Dmi slurpUp(final String dmiName, final String base64content) {
+    public Dmi slurpUp(final String dmiName, final String base64content) {
         try (InputStream input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
             return slurpUp(dmiName, input);
         } catch (IOException e) {
@@ -53,15 +56,15 @@ public final class DmiSlurper {
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
     @Nonnull
-    public static Dmi slurpUp(final String dmiName, final InputStream input) {
+    public Dmi slurpUp(final String dmiName, final InputStream input) {
         try (BufferedInputStream bufferedInput = new BufferedInputStream(input)) {
             bufferedInput.mark(input.available());
 
             BufferedImage dmiImage = ImageIO.read(bufferedInput);
             bufferedInput.reset();
 
-            DmiMeta dmiMeta = MetaExtractor.extractMetadata(bufferedInput);
-            Map<String, DmiState> dmiStates = StateExtractor.extractStates(dmiImage, dmiMeta);
+            DmiMeta dmiMeta = metaExtractor.extractMetadata(bufferedInput);
+            Map<String, DmiState> dmiStates = stateExtractor.extractStates(dmiImage, dmiMeta);
 
             return new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
         } catch (IOException e) {
@@ -70,5 +73,17 @@ public final class DmiSlurper {
     }
 
     private DmiSlurper() {
+    }
+
+    /**
+     * Method to get singleton instance of DmiSlurper object.
+     * @return DmiSlurper object instance
+     */
+    public static DmiSlurper getInstance() {
+        return SingletonHolder.HOLDER_INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final DmiSlurper HOLDER_INSTANCE = new DmiSlurper();
     }
 }

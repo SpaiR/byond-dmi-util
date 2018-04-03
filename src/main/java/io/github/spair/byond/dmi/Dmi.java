@@ -21,17 +21,14 @@ public class Dmi {
      */
     public static final int MAX_STATES = 512;
 
-    @Nonnull
-    private String name = "";
+    @Nonnull private String name = "";
     private int width;
     private int height;
-    @Nonnull
-    private DmiMeta metadata = new DmiMeta();
-    @Nonnull
-    private Map<String, DmiState> states = new HashMap<>();
-    @Nonnull
+    @Nonnull private DmiMeta metadata = new DmiMeta();
+    @Nonnull private Map<String, DmiState> states = new HashMap<>();
+
     @Setter(AccessLevel.NONE)
-    private Set<String> duplicateStatesNames = new HashSet<>();
+    @Nonnull private Set<String> duplicateStatesNames = new HashSet<>();
 
     public Dmi(@Nonnull final String name, final int width, final int height,
                @Nonnull final DmiMeta metadata, @Nonnull final Map<String, DmiState> states) {

@@ -17,23 +17,23 @@ public class StateExtractorTest {
 
         meta.setSpritesWidth(32);
         meta.setSpritesHeight(32);
-        meta.setEntries(
+        meta.setMetas(
                 Arrays.asList(
-                        new DmiMeta.DmiMetaEntry("down", 1, 1, null, false, false, false, null),
-                        new DmiMeta.DmiMetaEntry("down (M)", 1, 1, null, false, true, false, null)
+                        new Meta("down", 1, 1, null, false, false, false, null),
+                        new Meta("down (M)", 1, 1, null, false, true, false, null)
                 )
         );
 
-        Map<String, DmiState> states = StateExtractor.extractStates(ImageIO.read(new File("src/test/resources/rollerbed_with_move.dmi")), meta);
+        Map<String, DmiState> states = new StateExtractor().extractStates(ImageIO.read(new File("src/test/resources/rollerbed_with_move.dmi")), meta);
 
-        assertEquals(meta.getEntries().get(0), states.get("down").getMetadata());
-        assertEquals(meta.getEntries().get(1), states.get("down (M)").getMetadata());
+        assertEquals(meta.getMetas().get(0), states.get("down").getMeta());
+        assertEquals(meta.getMetas().get(1), states.get("down (M)").getMeta());
 
         assertEquals(1, states.get("down").getSprites().size());
         assertEquals(1, states.get("down (M)").getSprites().size());
 
-        assertEquals(SpriteDir.SOUTH, states.get("down").getSprites().get(SpriteDir.SOUTH).get(0).getSpriteDir());
-        assertEquals(SpriteDir.SOUTH, states.get("down (M)").getSprites().get(SpriteDir.SOUTH).get(0).getSpriteDir());
+        assertEquals(SpriteDir.SOUTH, states.get("down").getSprites().get(SpriteDir.SOUTH).get(0).getDir());
+        assertEquals(SpriteDir.SOUTH, states.get("down (M)").getSprites().get(SpriteDir.SOUTH).get(0).getDir());
 
         assertEquals(states.get("down").getSprites().get(SpriteDir.SOUTH).get(0), states.get("down (M)").getSprites().get(SpriteDir.SOUTH).get(0));
     }

@@ -16,14 +16,14 @@ public class MetaExtractorTest {
 
         expectedMeta.setSpritesWidth(32);
         expectedMeta.setSpritesHeight(32);
-        expectedMeta.setEntries(
+        expectedMeta.setMetas(
                 Arrays.asList(
-                        new DmiMeta.DmiMetaEntry("down", 1, 1, null, false, false, false, null),
-                        new DmiMeta.DmiMetaEntry("down (M)", 1, 1, null, false, true, false, null)
+                        new Meta("down", 1, 1, null, false, false, false, null),
+                        new Meta("down (M)", 1, 1, null, false, true, false, null)
                 )
         );
 
-        DmiMeta metaToCompare = MetaExtractor.extractMetadata(new FileInputStream(new File("src/test/resources/rollerbed_with_move.dmi")));
+        DmiMeta metaToCompare = new MetaExtractor().extractMetadata(new FileInputStream(new File("src/test/resources/rollerbed_with_move.dmi")));
 
         assertEquals(expectedMeta, metaToCompare);
     }

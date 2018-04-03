@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Util class to compare two {@link io.github.spair.byond.dmi.Dmi} objects and get result of comparison
+ * Singleton class to compare two {@link io.github.spair.byond.dmi.Dmi} objects and get result of comparison
  * as {@link io.github.spair.byond.dmi.DmiDiff}.
  */
 public final class DmiComparator {
@@ -26,7 +26,7 @@ public final class DmiComparator {
      * @return {@link io.github.spair.byond.dmi.DmiDiff} object
      */
     @Nonnull
-    public static DmiDiff compare(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
+    public DmiDiff compare(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
         DmiDiff dmiDiff = new DmiDiff(getDiffList(oldDmi, newDmi));
 
         dmiDiff.setOldMeta(extractOrNull(oldDmi, Dmi::getMetadata));
@@ -35,8 +35,8 @@ public final class DmiComparator {
         return dmiDiff;
     }
 
-    private static List<DmiDiff.DiffEntry> getDiffList(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
-        List<DmiDiff.DiffEntry> diffEntries = new ArrayList<>();
+    private List<Diff> getDiffList(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
+        List<Diff> diffEntries = new ArrayList<>();
 
         final Map<String, DmiState> oldStates = Optional
                 .ofNullable(extractOrNull(oldDmi, Dmi::getStates)).orElse(Collections.emptyMap());
@@ -62,16 +62,16 @@ public final class DmiComparator {
         return diffEntries;
     }
 
-    private static List<DmiDiff.DiffEntry> listOnlyOneStateSprites(final DmiState state, final boolean isOldState) {
-        List<DmiDiff.DiffEntry> diffs = new ArrayList<>();
-        final String stateName = state.getMetadata().getName();
+    private List<Diff> listOnlyOneStateSprites(final DmiState state, final boolean isOldState) {
+        List<Diff> diffs = new ArrayList<>();
+        final String stateName = state.getMeta().getName();
 
         state.getSprites().forEach((spriteDir, stateSprite) ->
                 stateSprite.forEach(sprite -> {
                     if (isOldState) {
-                        diffs.add(new DmiDiff.DiffEntry(stateName, sprite, null));
+                        diffs.add(new Diff(stateName, sprite, null));
                     } else {
-                        diffs.add(new DmiDiff.DiffEntry(stateName, null, sprite));
+                        diffs.add(new Diff(stateName, null, sprite));
                     }
                 })
         );
@@ -79,10 +79,10 @@ public final class DmiComparator {
         return diffs;
     }
 
-    private static List<DmiDiff.DiffEntry> findOldAndNewStateDiff(final DmiState oldState, final DmiState newState) {
-        List<DmiDiff.DiffEntry> diffs = new ArrayList<>();
+    private List<Diff> findOldAndNewStateDiff(final DmiState oldState, final DmiState newState) {
+        List<Diff> diffs = new ArrayList<>();
 
-        final String stateName = oldState.getMetadata().getName();
+        final String stateName = oldState.getMeta().getName();
 
         final Map<SpriteDir, List<DmiSprite>> oldStateSprites = oldState.getSprites();
         final Map<SpriteDir, List<DmiSprite>> newStateSprites = newState.getSprites();
@@ -102,13 +102,13 @@ public final class DmiComparator {
                 }
 
                 if (!oldSprite.equals(newSprite)) {
-                    diffs.add(new DmiDiff.DiffEntry(stateName, oldSprite, newSprite));
+                    diffs.add(new Diff(stateName, oldSprite, newSprite));
                 }
             }
 
             if (oldSpritesCount < newSpritesCount) {
                 for (int frameNumber = oldSpritesCount; frameNumber < newSpritesCount; frameNumber++) {
-                    diffs.add(new DmiDiff.DiffEntry(stateName, null, newSprites.get(frameNumber)));
+                    diffs.add(new Diff(stateName, null, newSprites.get(frameNumber)));
                 }
             }
         });
@@ -121,7 +121,7 @@ public final class DmiComparator {
                     .stream().filter(d -> !oldStateSprites.keySet().contains(d)).collect(Collectors.toSet())
                     .forEach(spriteDir ->
                             newStateSprites.get(spriteDir).forEach(newSprite ->
-                                    diffs.add(new DmiDiff.DiffEntry(stateName, null, newSprite))
+                                    diffs.add(new Diff(stateName, null, newSprite))
                             )
                     );
         }
@@ -129,7 +129,7 @@ public final class DmiComparator {
         return diffs;
     }
 
-    private static <V> V extractOrNull(final Dmi dmi, final Function<Dmi, V> function) {
+    private <V> V extractOrNull(final Dmi dmi, final Function<Dmi, V> function) {
         if (Objects.nonNull(dmi)) {
             return function.apply(dmi);
         } else {
@@ -138,5 +138,17 @@ public final class DmiComparator {
     }
 
     private DmiComparator() {
+    }
+
+    /**
+     * Method to get singleton instance of DmiComparator object.
+     * @return DmiComparator object instance
+     */
+    public static DmiComparator getInstance() {
+        return SingletonHolder.HOLDER_INSTANCE;
+    }
+
+    private static class SingletonHolder {
+        private static final DmiComparator HOLDER_INSTANCE = new DmiComparator();
     }
 }

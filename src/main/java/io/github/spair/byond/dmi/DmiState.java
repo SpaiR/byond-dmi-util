@@ -13,7 +13,7 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public class DmiState {
 
-    private DmiMeta.DmiMetaEntry metadata;
+    private Meta meta;
     private Map<SpriteDir, List<DmiSprite>> sprites;
     private boolean isDuplicate;
 }

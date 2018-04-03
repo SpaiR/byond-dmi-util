@@ -16,11 +16,9 @@ import java.util.Objects;
 @AllArgsConstructor
 public class DmiSprite {
 
-    @Nonnull
-    private BufferedImage sprite;
-    @Nonnull
-    private SpriteDir spriteDir;
-    private int spriteFrameNum;
+    @Nonnull private BufferedImage sprite;
+    @Nonnull private SpriteDir dir;
+    private int frameNum;
 
     public String getSpriteAsBase64() {
         try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
@@ -35,8 +33,8 @@ public class DmiSprite {
     public String toString() {
         return "DmiSprite{"
                 + "sprite=binary-image"
-                + ", spriteDir=" + spriteDir
-                + ", spriteFrameNum=" + spriteFrameNum
+                + ", dir=" + dir
+                + ", frameNum=" + frameNum
                 + '}';
     }
 
@@ -49,14 +47,14 @@ public class DmiSprite {
             return false;
         }
         DmiSprite sprite1 = (DmiSprite) o;
-        return spriteFrameNum == sprite1.spriteFrameNum
-                && spriteDir == sprite1.spriteDir
+        return frameNum == sprite1.frameNum
+                && dir == sprite1.dir
                 && isEqualSprite(sprite1.sprite);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sprite, spriteDir, spriteFrameNum);
+        return Objects.hash(sprite, dir, frameNum);
     }
 
     private boolean isEqualSprite(final BufferedImage spriteToCompare) {

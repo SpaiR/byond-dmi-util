@@ -18,14 +18,17 @@ import java.util.regex.Pattern;
 
 final class MetaExtractor {
 
+    MetaExtractor() {
+    }
+
     private static final String PNG_MIME = "image/png";
 
     private static final String META_ELEMENT_TAG = "TextEntry";
     private static final String META_ATTRIBUTE = "value";
 
-    private static final Pattern W_H_PATTERN = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
-    private static final Pattern STATE_PATTERN = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
-    private static final Pattern PARAM_PATTERN = Pattern.compile("(\\w+)\\s=\\s(.+)");
+    private final Pattern widthHeightPattern = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
+    private final Pattern statePattern = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
+    private final Pattern paramPattern = Pattern.compile("(\\w+)\\s=\\s(.+)");
 
     private static final String STATE = "state";
     private static final String DIRS = "dirs";
@@ -38,7 +41,7 @@ final class MetaExtractor {
 
     private static final String MOVEMENT_SUFFIX = " (M)";
 
-    static DmiMeta extractMetadata(final InputStream input) {
+    DmiMeta extractMetadata(final InputStream input) {
         IIOMetadata metadata = readMetadata(input);
 
         String metadataFormatName = IIOMetadataFormatImpl.standardMetadataFormatName;
@@ -50,7 +53,7 @@ final class MetaExtractor {
         return parseMetadataText(metadataText);
     }
 
-    private static IIOMetadata readMetadata(final InputStream input) {
+    private IIOMetadata readMetadata(final InputStream input) {
         try (ImageInputStream imageInputStream = ImageIO.createImageInputStream(input)) {
             ImageReader reader = ImageIO.getImageReadersByMIMEType(PNG_MIME).next();
 
@@ -59,30 +62,30 @@ final class MetaExtractor {
 
             return image.getMetadata();
         } catch (IOException e) {
-            throw new IllegalArgumentException("DMI metadata can't be read", e);
+            throw new IllegalArgumentException("DMI meta can't be read", e);
         }
     }
 
-    private static DmiMeta parseMetadataText(final String metadataText) {
+    private DmiMeta parseMetadataText(final String metadataText) {
         DmiMeta metadata = new DmiMeta();
-        Matcher widthHeight = W_H_PATTERN.matcher(metadataText);
+        Matcher widthHeight = widthHeightPattern.matcher(metadataText);
 
         if (widthHeight.find() && Objects.nonNull(widthHeight.group(1)) && Objects.nonNull(widthHeight.group(2))) {
             metadata.setSpritesWidth(Integer.parseInt(widthHeight.group(1)));
             metadata.setSpritesHeight(Integer.parseInt(widthHeight.group(2)));
         } else {
-            throw new IllegalArgumentException("DMI metadata does't contain width and height properties");
+            throw new IllegalArgumentException("DMI meta does't contain width and height properties");
         }
 
-        Matcher state = STATE_PATTERN.matcher(metadataText);
+        Matcher state = statePattern.matcher(metadataText);
 
         if (state.find()) {
             state.reset();
 
-            List<DmiMeta.DmiMetaEntry> entries = new ArrayList<>();
+            List<Meta> entries = new ArrayList<>();
 
             while (state.find()) {
-                DmiMeta.DmiMetaEntry entry = parseState(state.group());
+                Meta entry = parseState(state.group());
 
                 if (entry.isMovement()) {
                     entry.setName(entry.getName().concat(MOVEMENT_SUFFIX));
@@ -91,17 +94,17 @@ final class MetaExtractor {
                 entries.add(entry);
             }
 
-            metadata.setEntries(entries);
+            metadata.setMetas(entries);
         } else {
-            throw new IllegalArgumentException("DMI metadata does't contain any state property value");
+            throw new IllegalArgumentException("DMI meta does't contain any state property value");
         }
 
         return metadata;
     }
 
-    private static DmiMeta.DmiMetaEntry parseState(final String stateText) {
-        DmiMeta.DmiMetaEntry metaEntry = new DmiMeta.DmiMetaEntry();
-        Matcher stateParam = PARAM_PATTERN.matcher(stateText);
+    private Meta parseState(final String stateText) {
+        Meta metaEntry = new Meta();
+        Matcher stateParam = paramPattern.matcher(stateText);
 
         while (stateParam.find()) {
             final String paramName = stateParam.group(1);
@@ -134,21 +137,18 @@ final class MetaExtractor {
                     metaEntry.setHotspot(doubleArrayFromString(paramValue));
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid metadata format detected and can't be read");
+                    throw new IllegalArgumentException("Invalid meta format detected and can't be read");
             }
         }
 
         return metaEntry;
     }
 
-    private static boolean isValueTrue(final String value) {
+    private boolean isValueTrue(final String value) {
         return "1".equals(value);
     }
 
-    private static double[] doubleArrayFromString(final String str) {
+    private double[] doubleArrayFromString(final String str) {
         return Arrays.stream(str.split(",")).mapToDouble(Double::parseDouble).toArray();
-    }
-
-    private MetaExtractor() {
     }
 }
