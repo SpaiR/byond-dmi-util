@@ -25,13 +25,10 @@ public class DmiTest {
         dmiState3.setDuplicate(false);
         dmiState3.setMeta(new Meta("3", 0, 0, null, false, false, false, null));
 
-        Map<String, DmiState> states = new HashMap<>();
-        states.put("1", dmiState1);
-        states.put("2", dmiState2);
-        states.put("3", dmiState3);
-
         Dmi dmi = new Dmi();
-        dmi.setStates(states);
+        dmi.addState(dmiState1);
+        dmi.addState(dmiState2);
+        dmi.addState(dmiState3);
 
         assertTrue(dmi.isHasDuplicates());
         assertEquals(new HashSet<>(Arrays.asList("1", "2")), dmi.getDuplicateStatesNames());

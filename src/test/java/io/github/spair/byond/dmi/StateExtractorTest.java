@@ -32,9 +32,9 @@ public class StateExtractorTest {
         assertEquals(1, states.get("down").getSprites().size());
         assertEquals(1, states.get("down (M)").getSprites().size());
 
-        assertEquals(SpriteDir.SOUTH, states.get("down").getSprites().get(SpriteDir.SOUTH).get(0).getDir());
-        assertEquals(SpriteDir.SOUTH, states.get("down (M)").getSprites().get(SpriteDir.SOUTH).get(0).getDir());
+        assertEquals(SpriteDir.SOUTH, states.get("down").getSprite(SpriteDir.SOUTH).getDir());
+        assertEquals(SpriteDir.SOUTH, states.get("down (M)").getSprite(SpriteDir.SOUTH).getDir());
 
-        assertEquals(states.get("down").getSprites().get(SpriteDir.SOUTH).get(0), states.get("down (M)").getSprites().get(SpriteDir.SOUTH).get(0));
+        assertEquals(states.get("down").getSprite(SpriteDir.SOUTH), states.get("down (M)").getSprite(SpriteDir.SOUTH));
     }
 }

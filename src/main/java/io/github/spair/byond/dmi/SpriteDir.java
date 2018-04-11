@@ -12,6 +12,16 @@ public enum SpriteDir {
     NORTHEAST(5, "NE", 7),
     NORTHWEST(9, "NW", 8);
 
+    private static final int NORTH_DIR = 1;
+    private static final int SOUTH_DIR = 2;
+    private static final int EAST_DIR = 4;
+    private static final int WEST_DIR = 8;
+
+    private static final int SOUTHEAST_DIR = 6;
+    private static final int SOUTHWEST_DIR = 10;
+    private static final int NORTHEAST_DIR = 5;
+    private static final int NORTHWEST_DIR = 9;
+
     /**
      * <p>BYOND representation of dir as int value.
      * <ul>
@@ -28,7 +38,7 @@ public enum SpriteDir {
     public final int dirValue;
 
     /**
-     * <p>Just a shorted string representation of constant values.
+     * <p>Shorted string representation of constant values.
      * <ul>
      *     <li>SOUTH - S</li>
      *     <li>NORTH - N</li>
@@ -49,6 +59,56 @@ public enum SpriteDir {
         this.dirValue = dirValue;
         this.shortName = shortName;
         this.compareWeight = compareWeight;
+    }
+
+    /**
+     * Returns {@link SpriteDir} equivalent to BYOND dir value. If method got value different from the list below,
+     * {@link IllegalArgumentException} will be thrown.
+     * <ul>
+     *     <li>1 - NORTH</li>
+     *     <li>2 - SOUTH</li>
+     *     <li>4 - EAST</li>
+     *     <li>8 - WEST</li>
+     *     <li>5 - NORTHEAST</li>
+     *     <li>6 - SOUTHEAST</li>
+     *     <li>9 - NORTHWEST</li>
+     *     <li>10 - SOUTHWEST</li>
+     * </ul>
+     *
+     * @param dirValue BYOND representation of dir
+     * @return {@link SpriteDir} equivalent of BYOND dir value
+     */
+    public static SpriteDir valueOfByondDir(final int dirValue) {
+        switch (dirValue) {
+            case NORTH_DIR:
+                return NORTH;
+            case SOUTH_DIR:
+                return SOUTH;
+            case EAST_DIR:
+                return EAST;
+            case WEST_DIR:
+                return WEST;
+            case NORTHEAST_DIR:
+                return NORTHEAST;
+            case SOUTHEAST_DIR:
+                return SOUTHEAST;
+            case NORTHWEST_DIR:
+                return NORTHWEST;
+            case SOUTHWEST_DIR:
+                return SOUTHWEST;
+            default:
+                throw new IllegalArgumentException("Illegal value of BYOND dir. Dir value: " + dirValue);
+        }
+    }
+
+    /**
+     * Same as {@link #valueOfByondDir(int)}, but accept value as string instead of int.
+     *
+     * @param dirValue BYOND representation of dir
+     * @return {@link SpriteDir} equivalent of BYOND dir value
+     */
+    public static SpriteDir valueOfByondDir(final String dirValue) {
+        return valueOfByondDir(Integer.parseInt(dirValue));
     }
 
     // During DMI slurping all dirs are passed in `for(i = 0; i <= n; i++)` cycle.
