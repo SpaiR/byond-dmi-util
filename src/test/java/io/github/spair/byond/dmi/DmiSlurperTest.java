@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
 
 public class DmiSlurperTest {
 
-    private final DmiSlurper dmiSlurper = DmiSlurper.getInstance();
+    private final DmiSlurper dmiSlurper = new DmiSlurper();
 
     @Test
     public void testSlurpUpFromFile() {

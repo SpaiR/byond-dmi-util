@@ -12,8 +12,8 @@ import static org.junit.Assert.*;
 
 public class DmiComparatorTest {
 
-    private final DmiSlurper dmiSlurper = DmiSlurper.getInstance();
-    private final DmiComparator dmiComparator = DmiComparator.getInstance();
+    private final DmiSlurper dmiSlurper = new DmiSlurper();
+    private final DmiComparator dmiComparator = new DmiComparator();
 
     private static final String ROLLERBED_ORIGINAL_PATH = "src/test/resources/rollerbed_original.dmi";
     private static final String ROLLERBED_DIFF_PATH = "src/test/resources/rollerbed_original_diff.dmi";

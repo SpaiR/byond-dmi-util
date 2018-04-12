@@ -23,7 +23,8 @@ public class DmiState {
     }
 
     /**
-     * Returns first available sprite. That means, that sprite will be the first frame and {@link SpriteDir#SOUTH} dir.
+     * Returns the first available sprite.
+     * That means, that sprite will be the first frame and {@link SpriteDir#SOUTH} dir.
      * If sprite wasn't found result will be null.
      *
      * @return first available sprite
@@ -33,7 +34,7 @@ public class DmiState {
     }
 
     /**
-     * Returns first available sprite of specified dir.
+     * Returns the first available sprite of specified dir.
      * That means, that sprite will be the first frame of provided dir. If sprite wasn't found result will be null.
      *
      * @param dir dir to search sprite
@@ -46,16 +47,6 @@ public class DmiState {
         } else {
             return null;
         }
-    }
-
-    /**
-     * Returns the list of sprites for specified dir.
-     *
-     * @param dir dir to search sprite
-     * @return list of sprites for specified dir
-     */
-    public List<DmiSprite> getSpriteList(final SpriteDir dir) {
-        return sprites.get(dir);
     }
 
     /**
@@ -72,10 +63,20 @@ public class DmiState {
         }
 
         List<DmiSprite> spriteList = sprites.get(dir);
-        if (Objects.nonNull(spriteList) && !spriteList.isEmpty()) {
+        if (Objects.nonNull(spriteList) && !spriteList.isEmpty() && spriteList.size() >= frame - 1) {
             return spriteList.get(frame - 1);
         } else {
             return null;
         }
+    }
+
+    /**
+     * Returns the list of sprites for specified dir.
+     *
+     * @param dir dir to search sprite
+     * @return list of sprites for specified dir
+     */
+    public List<DmiSprite> getSpriteList(final SpriteDir dir) {
+        return sprites.get(dir);
     }
 }

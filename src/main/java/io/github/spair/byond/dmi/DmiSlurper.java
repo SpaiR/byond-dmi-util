@@ -14,7 +14,7 @@ import java.util.Base64;
 import java.util.Map;
 
 /**
- * Singleton class to extract {@link io.github.spair.byond.dmi.Dmi} object from file/base64 string/raw input stream.
+ * Class to extract {@link io.github.spair.byond.dmi.Dmi} object from file/base64 string/raw input stream.
  */
 public final class DmiSlurper {
 
@@ -70,20 +70,5 @@ public final class DmiSlurper {
         } catch (IOException e) {
             throw new IllegalArgumentException("Provided DMI can't be read");
         }
-    }
-
-    private DmiSlurper() {
-    }
-
-    /**
-     * Method to get singleton instance of DmiSlurper object.
-     * @return DmiSlurper object instance
-     */
-    public static DmiSlurper getInstance() {
-        return SingletonHolder.HOLDER_INSTANCE;
-    }
-
-    private static class SingletonHolder {
-        private static final DmiSlurper HOLDER_INSTANCE = new DmiSlurper();
     }
 }

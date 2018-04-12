@@ -67,7 +67,7 @@ public class Dmi {
     }
 
     /**
-     * Returns first sprite of state with provided name or null if wasn't found.
+     * Returns the first sprite of state with provided name or null if wasn't found.
      *
      * @param stateName state name to search
      * @return {@link DmiSprite} instance or null if wasn't found
@@ -77,7 +77,7 @@ public class Dmi {
     }
 
     /**
-     * Returns first sprite of state with provided name and dir or null if wasn't found.
+     * Returns the first sprite of state with provided name and dir or null if wasn't found.
      *
      * @param stateName state name to search
      * @return {@link DmiSprite} instance or null if wasn't found

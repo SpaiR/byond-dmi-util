@@ -12,7 +12,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Singleton class to compare two {@link io.github.spair.byond.dmi.Dmi} objects and get result of comparison
+ * Class to compare two {@link io.github.spair.byond.dmi.Dmi} objects and get result of comparison
  * as {@link io.github.spair.byond.dmi.DmiDiff}.
  */
 public final class DmiComparator {
@@ -135,20 +135,5 @@ public final class DmiComparator {
         } else {
             return null;
         }
-    }
-
-    private DmiComparator() {
-    }
-
-    /**
-     * Method to get singleton instance of DmiComparator object.
-     * @return DmiComparator object instance
-     */
-    public static DmiComparator getInstance() {
-        return SingletonHolder.HOLDER_INSTANCE;
-    }
-
-    private static class SingletonHolder {
-        private static final DmiComparator HOLDER_INSTANCE = new DmiComparator();
     }
 }
