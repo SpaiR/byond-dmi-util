@@ -6,7 +6,7 @@
 
 ## About 
 
-Small set of util classes to work with BYOND dmi files.
+Set of util classes to work with BYOND dmi files.
 
 ## Installation
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.spair/byond-dmi-util.svg?style=flat)](https://maven-badges.herokuapp.com/maven-central/io.github.spair/byond-dmi-util)
