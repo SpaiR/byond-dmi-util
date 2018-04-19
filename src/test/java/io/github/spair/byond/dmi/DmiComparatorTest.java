@@ -19,6 +19,17 @@ public class DmiComparatorTest {
     private static final String ROLLERBED_DIFF_PATH = "src/test/resources/rollerbed_original_diff.dmi";
 
     @Test
+    public void testStaticCompare() {
+        Dmi original = dmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
+        Dmi modified = dmiSlurper.slurpUp(new File(ROLLERBED_DIFF_PATH));
+
+        DmiDiff diffSimple = dmiComparator.compare(original, modified);
+        DmiDiff diffStatic = DmiComparator.compareDmi(original, modified);
+
+        assertEquals(diffSimple, diffStatic);
+    }
+
+    @Test
     public void testCompareWhenNotSame() {
         Dmi original = dmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
         Dmi modified = dmiSlurper.slurpUp(new File(ROLLERBED_DIFF_PATH));

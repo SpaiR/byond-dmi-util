@@ -14,12 +14,50 @@ import java.util.Base64;
 import java.util.Map;
 
 /**
- * Class to extract {@link io.github.spair.byond.dmi.Dmi} object from file/base64 string/raw input stream.
+ * Class to extract {@link io.github.spair.byond.dmi.Dmi} object from file, base64 string or raw input stream.
  */
 public final class DmiSlurper {
 
     private final MetaExtractor metaExtractor = new MetaExtractor();
     private final StateExtractor stateExtractor = new StateExtractor();
+
+    /**
+     * Static method to process file. Same as {@link #slurpUp(File)},
+     * with {@link DmiSlurper} instantiation under the hood.
+     *
+     * @param dmiFile file to deserialize
+     * @return {@link io.github.spair.byond.dmi.Dmi} object
+     */
+    @Nonnull
+    public static Dmi slurpUpFile(final File dmiFile) {
+        return new DmiSlurper().slurpUp(dmiFile);
+    }
+
+    /**
+     * Static method to process file. Same as {@link #slurpUp(String, String)},
+     * with {@link DmiSlurper} instantiation under the hood.
+     *
+     * @param dmiName the name of resulted {@link io.github.spair.byond.dmi.Dmi} object
+     * @param base64content base64 string to deserialize
+     * @return {@link io.github.spair.byond.dmi.Dmi} object
+     */
+    @Nonnull
+    public static Dmi slurpUpBase64(final String dmiName, final String base64content) {
+        return new DmiSlurper().slurpUp(dmiName, base64content);
+    }
+
+    /**
+     * Static method to process file. Same as {@link #slurpUp(String, InputStream)},
+     * with {@link DmiSlurper} instantiation under the hood.
+     *
+     * @param dmiName the name of resulted {@link io.github.spair.byond.dmi.Dmi} object
+     * @param input raw input stream to deserialize
+     * @return {@link io.github.spair.byond.dmi.Dmi} object
+     */
+    @Nonnull
+    public static Dmi slurpUpStream(final String dmiName, final InputStream input) {
+        return new DmiSlurper().slurpUp(dmiName, input);
+    }
 
     /**
      * @param dmiFile file to deserialize

@@ -18,6 +18,19 @@ import java.util.stream.Collectors;
 public final class DmiComparator {
 
     /**
+     * Static method to compare two dmi's. Same as {@link #compare(Dmi, Dmi)},
+     * with {@link DmiComparator} instantiation under the hood.
+     *
+     * @param oldDmi old {@link io.github.spair.byond.dmi.Dmi} object or null
+     * @param newDmi new {@link io.github.spair.byond.dmi.Dmi} object or null
+     * @return {@link io.github.spair.byond.dmi.DmiDiff} object
+     */
+    @Nonnull
+    public static DmiDiff compareDmi(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
+        return new DmiComparator().compare(oldDmi, newDmi);
+    }
+
+    /**
      * Compares two {@link io.github.spair.byond.dmi.Dmi} objects. One of argument may be null,
      * which will be interpreted as if another Dmi created if null is the first parameter or deleted if vice versa.
      *

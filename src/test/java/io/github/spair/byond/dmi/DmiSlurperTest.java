@@ -17,6 +17,27 @@ public class DmiSlurperTest {
     private final DmiSlurper dmiSlurper = new DmiSlurper();
 
     @Test
+    public void testStaticSlurpUpFromFile() {
+        File dmiFile = new File("src/test/resources/rollerbed_original.dmi");
+        Dmi dmi = DmiSlurper.slurpUpFile(dmiFile);
+        commonDmiAssertion(dmi);
+    }
+
+    @Test
+    public void testStaticSlurpUpFromBase64Content() throws Exception {
+        String filePath = "src/test/resources/rollerbed_original_base64.txt";
+        Dmi dmi = DmiSlurper.slurpUpBase64("rollerbed_original.dmi", new String(Files.readAllBytes(Paths.get(filePath))));
+        commonDmiAssertion(dmi);
+    }
+
+    @Test
+    public void testStaticSlurpUpFromInputStream() throws Exception {
+        File dmiFile = new File("src/test/resources/rollerbed_original.dmi");
+        Dmi dmi = DmiSlurper.slurpUpStream("rollerbed_original.dmi", new FileInputStream(dmiFile));
+        commonDmiAssertion(dmi);
+    }
+
+    @Test
     public void testSlurpUpFromFile() {
         File dmiFile = new File("src/test/resources/rollerbed_original.dmi");
         Dmi dmi = dmiSlurper.slurpUp(dmiFile);

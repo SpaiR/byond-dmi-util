@@ -18,9 +18,6 @@ import java.util.regex.Pattern;
 
 final class MetaExtractor {
 
-    MetaExtractor() {
-    }
-
     private static final String PNG_MIME = "image/png";
 
     private static final String META_ELEMENT_TAG = "TextEntry";

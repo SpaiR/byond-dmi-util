@@ -11,9 +11,6 @@ import java.util.Comparator;
 
 final class StateExtractor {
 
-    StateExtractor() {
-    }
-
     Map<String, DmiState> extractStates(final BufferedImage dmiImage, final DmiMeta dmiMeta) {
         final int dmiWidth = dmiImage.getWidth();
         final int spriteWidth = dmiMeta.getSpritesWidth();
