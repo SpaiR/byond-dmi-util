@@ -23,9 +23,9 @@ final class MetaExtractor {
     private static final String META_ELEMENT_TAG = "TextEntry";
     private static final String META_ATTRIBUTE = "value";
 
-    private final Pattern widthHeightPattern = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
-    private final Pattern statePattern = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
-    private final Pattern paramPattern = Pattern.compile("(\\w+)\\s=\\s(.+)");
+    private static final Pattern WIDTH_HEIGHT = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
+    private static final Pattern STATE_PATTERN = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
+    private static final Pattern PARAM_PATTERN = Pattern.compile("(\\w+)\\s=\\s(.+)");
 
     private static final String STATE = "state";
     private static final String DIRS = "dirs";
@@ -65,7 +65,7 @@ final class MetaExtractor {
 
     private DmiMeta parseMetadataText(final String metadataText) {
         DmiMeta metadata = new DmiMeta();
-        Matcher widthHeight = widthHeightPattern.matcher(metadataText);
+        Matcher widthHeight = WIDTH_HEIGHT.matcher(metadataText);
 
         if (widthHeight.find() && Objects.nonNull(widthHeight.group(1)) && Objects.nonNull(widthHeight.group(2))) {
             metadata.setSpritesWidth(Integer.parseInt(widthHeight.group(1)));
@@ -74,7 +74,7 @@ final class MetaExtractor {
             throw new IllegalArgumentException("DMI meta does't contain width and height properties");
         }
 
-        Matcher state = statePattern.matcher(metadataText);
+        Matcher state = STATE_PATTERN.matcher(metadataText);
 
         if (state.find()) {
             state.reset();
@@ -101,7 +101,7 @@ final class MetaExtractor {
 
     private Meta parseState(final String stateText) {
         Meta metaEntry = new Meta();
-        Matcher stateParam = paramPattern.matcher(stateText);
+        Matcher stateParam = PARAM_PATTERN.matcher(stateText);
 
         while (stateParam.find()) {
             final String paramName = stateParam.group(1);
