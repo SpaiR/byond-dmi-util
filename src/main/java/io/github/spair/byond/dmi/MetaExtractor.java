@@ -134,7 +134,8 @@ final class MetaExtractor {
                     metaEntry.setHotspot(doubleArrayFromString(paramValue));
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid meta format detected and can't be read");
+                    throw new IllegalArgumentException(
+                            "Invalid meta format detected and can't be read. Param name: " + paramName);
             }
         }
 

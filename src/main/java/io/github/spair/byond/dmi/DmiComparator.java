@@ -8,13 +8,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Collections;
 import java.util.Objects;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
  * Class to compare two {@link io.github.spair.byond.dmi.Dmi} objects and get result of comparison
  * as {@link io.github.spair.byond.dmi.DmiDiff}.
  */
+@SuppressWarnings("WeakerAccess")
 public final class DmiComparator {
 
     /**
@@ -42,8 +42,8 @@ public final class DmiComparator {
     public DmiDiff compare(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
         DmiDiff dmiDiff = new DmiDiff(getDiffList(oldDmi, newDmi));
 
-        dmiDiff.setOldMeta(extractOrNull(oldDmi, Dmi::getMetadata));
-        dmiDiff.setNewMeta(extractOrNull(newDmi, Dmi::getMetadata));
+        dmiDiff.setOldMeta(CheckSupplierUtil.returnIfNonNull(oldDmi, Dmi::getMetadata));
+        dmiDiff.setNewMeta(CheckSupplierUtil.returnIfNonNull(newDmi, Dmi::getMetadata));
 
         return dmiDiff;
     }
@@ -51,10 +51,8 @@ public final class DmiComparator {
     private List<Diff> getDiffList(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
         List<Diff> diffEntries = new ArrayList<>();
 
-        final Map<String, DmiState> oldStates = Optional
-                .ofNullable(extractOrNull(oldDmi, Dmi::getStates)).orElse(Collections.emptyMap());
-        final Map<String, DmiState> newStates = Optional
-                .ofNullable(extractOrNull(newDmi, Dmi::getStates)).orElse(Collections.emptyMap());
+        final Map<String, DmiState> oldStates = extractStates(oldDmi);
+        final Map<String, DmiState> newStates = extractStates(newDmi);
 
         oldStates.forEach((stateName, oldState) -> {
             final DmiState newState = newStates.get(stateName);
@@ -142,11 +140,10 @@ public final class DmiComparator {
         return diffs;
     }
 
-    private <V> V extractOrNull(final Dmi dmi, final Function<Dmi, V> function) {
-        if (Objects.nonNull(dmi)) {
-            return function.apply(dmi);
-        } else {
-            return null;
-        }
+    private Map<String, DmiState> extractStates(final Dmi dmi) {
+        return Optional
+                .ofNullable(
+                        CheckSupplierUtil.returnIfNonNull(dmi, Dmi::getStates)
+                ).orElse(Collections.emptyMap());
     }
 }

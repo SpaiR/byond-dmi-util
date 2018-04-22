@@ -2,12 +2,14 @@ package io.github.spair.byond.dmi;
 
 import org.junit.Test;
 
+import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class DmiTest {
 
@@ -57,5 +59,60 @@ public class DmiTest {
         dmi.setStates(states);
 
         assertTrue(dmi.isStateOverflow());
+    }
+
+    @Test
+    public void testGetStateSprite() {
+        Dmi dmi = new Dmi();
+
+        DmiState dmiState = new DmiState();
+        dmiState.setMeta(new Meta("state", 0, 0, null, false, false, false, null));
+        dmiState.addSprite(new DmiSprite(mock(BufferedImage.class), SpriteDir.SOUTH, 0));
+
+        dmi.addState(dmiState);
+
+        assertNotNull(dmi.getStateSprite("state"));
+        assertNull(dmi.getStateSprite("1234567890"));
+    }
+
+    @Test
+    public void testGetStateSpriteWithDir() {
+        Dmi dmi = new Dmi();
+
+        DmiState dmiState = new DmiState();
+        dmiState.setMeta(new Meta("state", 0, 0, null, false, false, false, null));
+        dmiState.addSprite(new DmiSprite(mock(BufferedImage.class), SpriteDir.NORTH, 0));
+
+        dmi.addState(dmiState);
+
+        assertNotNull(dmi.getStateSprite("state", SpriteDir.NORTH));
+        assertNull(dmi.getStateSprite("state", SpriteDir.SOUTH));
+    }
+
+    @Test
+    public void testGetStateSpriteWithDirAndFrame() {
+        Dmi dmi = new Dmi();
+
+        DmiState dmiState = new DmiState();
+        dmiState.setMeta(new Meta("state", 0, 0, null, false, false, false, null));
+        dmiState.addSprite(new DmiSprite(mock(BufferedImage.class), SpriteDir.SOUTHEAST, 0));
+
+        dmi.addState(dmiState);
+
+        assertNotNull(dmi.getStateSprite("state", SpriteDir.SOUTHEAST, 1));
+        assertNull(dmi.getStateSprite("state", SpriteDir.SOUTHEAST, 15));
+    }
+
+    @Test
+    public void testHasState() {
+        Dmi dmi = new Dmi();
+
+        DmiState dmiState = new DmiState();
+        dmiState.setMeta(new Meta("state", 0, 0, null, false, false, false, null));
+
+        dmi.addState(dmiState);
+
+        assertTrue(dmi.hasState("state"));
+        assertFalse(dmi.hasState("1234567890"));
     }
 }

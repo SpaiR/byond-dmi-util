@@ -16,6 +16,7 @@ import java.util.Map;
 /**
  * Class to extract {@link io.github.spair.byond.dmi.Dmi} object from file, base64 string or raw input stream.
  */
+@SuppressWarnings("WeakerAccess")
 public final class DmiSlurper {
 
     private final MetaExtractor metaExtractor = new MetaExtractor();
@@ -68,9 +69,9 @@ public final class DmiSlurper {
         try (InputStream input = new FileInputStream(dmiFile)) {
             return slurpUp(dmiFile.getName(), input);
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Provided DMI file doesn't exist");
+            throw new IllegalArgumentException("Received DMI file doesn't exist");
         } catch (IOException e) {
-            throw new IllegalArgumentException("Provided DMI can't be read");
+            throw new IllegalArgumentException("Received DMI can't be read");
         }
     }
 
@@ -84,7 +85,7 @@ public final class DmiSlurper {
         try (InputStream input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
             return slurpUp(dmiName, input);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Provided base64 content can't be read");
+            throw new IllegalArgumentException("Received base64 content can't be read");
         }
     }
 
@@ -106,7 +107,7 @@ public final class DmiSlurper {
 
             return new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Provided DMI can't be read");
+            throw new IllegalArgumentException("Received DMI can't be read");
         }
     }
 }

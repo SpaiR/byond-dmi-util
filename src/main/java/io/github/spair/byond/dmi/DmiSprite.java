@@ -14,6 +14,7 @@ import java.util.Objects;
 
 @Data
 @AllArgsConstructor
+@SuppressWarnings("WeakerAccess")
 public class DmiSprite {
 
     @Nonnull private BufferedImage sprite;

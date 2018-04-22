@@ -5,8 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
-import java.util.Objects;
+import java.util.HashMap;
 
 @Data
 @NoArgsConstructor
@@ -15,11 +16,17 @@ import java.util.Objects;
 public class DmiState {
 
     private Meta meta;
-    private Map<SpriteDir, List<DmiSprite>> sprites;
+    private Map<SpriteDir, List<DmiSprite>> sprites = new HashMap<>();
     private boolean isDuplicate;
 
     public String getStateName() {
         return meta.getName();
+    }
+
+    public void addSprite(final DmiSprite sprite) {
+        List<DmiSprite> spriteList = sprites.getOrDefault(sprite.getDir(), new ArrayList<>());
+        spriteList.add(sprite);
+        sprites.putIfAbsent(sprite.getDir(), spriteList);
     }
 
     /**
@@ -41,12 +48,8 @@ public class DmiState {
      * @return sprite instance or null if not found
      */
     public DmiSprite getSprite(final SpriteDir dir) {
-        List<DmiSprite> spriteList = sprites.get(dir);
-        if (Objects.nonNull(spriteList) && !spriteList.isEmpty()) {
-            return spriteList.get(0);
-        } else {
-            return null;
-        }
+        final List<DmiSprite> spriteList = sprites.get(dir);
+        return CheckSupplierUtil.returnIfNonNullAndTrue(spriteList, () -> !spriteList.isEmpty(), s -> s.get(0));
     }
 
     /**
@@ -62,12 +65,10 @@ public class DmiState {
             throw new IllegalArgumentException("Frame count goes from 1 digit. Method received " + frame + " digit");
         }
 
-        List<DmiSprite> spriteList = sprites.get(dir);
-        if (Objects.nonNull(spriteList) && !spriteList.isEmpty() && spriteList.size() >= frame - 1) {
-            return spriteList.get(frame - 1);
-        } else {
-            return null;
-        }
+        final List<DmiSprite> spriteList = sprites.get(dir);
+        return CheckSupplierUtil.returnIfNonNullAndTrue(
+                spriteList, () -> (!spriteList.isEmpty() && spriteList.size() >= frame - 1), s -> s.get(frame - 1)
+        );
     }
 
     /**

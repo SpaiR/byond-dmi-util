@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Data
+@SuppressWarnings("WeakerAccess")
 public class DmiDiff {
 
     @Nullable private DmiMeta oldMeta;

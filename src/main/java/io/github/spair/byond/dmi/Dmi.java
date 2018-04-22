@@ -10,17 +10,14 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.function.Function;
 
 @Data
 @NoArgsConstructor
-@SuppressWarnings("unused")
+@SuppressWarnings("WeakerAccess")
 public class Dmi {
 
     /**
-     * <p>The number of states one Dmi file can store. More states than that value won't work properly.
-     * <p><b>Default:</b> 512
+     * The number of states one Dmi file can store. More states than that value won't work properly.
      */
     public static final int MAX_STATES = 512;
 
@@ -73,7 +70,7 @@ public class Dmi {
      * @return {@link DmiSprite} instance or null if wasn't found
      */
     public DmiSprite getStateSprite(final String stateName) {
-        return getSpriteIfStateNonNull(getState(stateName), DmiState::getSprite);
+        return CheckSupplierUtil.returnIfNonNull(getState(stateName), DmiState::getSprite);
     }
 
     /**
@@ -83,7 +80,7 @@ public class Dmi {
      * @return {@link DmiSprite} instance or null if wasn't found
      */
     public DmiSprite getStateSprite(final String stateName, final SpriteDir dir) {
-        return getSpriteIfStateNonNull(getState(stateName), s -> s.getSprite(dir));
+        return CheckSupplierUtil.returnIfNonNull(getState(stateName), s -> s.getSprite(dir));
     }
 
     /**
@@ -93,7 +90,7 @@ public class Dmi {
      * @return {@link DmiSprite} instance or null if wasn't found
      */
     public DmiSprite getStateSprite(final String stateName, final SpriteDir dir, final int frame) {
-        return getSpriteIfStateNonNull(getState(stateName), s -> s.getSprite(dir, frame));
+        return CheckSupplierUtil.returnIfNonNull(getState(stateName), s -> s.getSprite(dir, frame));
     }
 
     public boolean hasState(final String stateName) {
@@ -125,13 +122,5 @@ public class Dmi {
                 duplicateStatesNames.add(stateName);
             }
         });
-    }
-
-    private DmiSprite getSpriteIfStateNonNull(final DmiState state, final Function<DmiState, DmiSprite> function) {
-        if (Objects.nonNull(state)) {
-            return function.apply(state);
-        } else {
-            return null;
-        }
     }
 }
