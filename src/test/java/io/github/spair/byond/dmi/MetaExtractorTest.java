@@ -23,7 +23,7 @@ public class MetaExtractorTest {
                 )
         );
 
-        DmiMeta metaToCompare = new MetaExtractor().extractMetadata(new FileInputStream(new File("src/test/resources/rollerbed_with_move.dmi")));
+        DmiMeta metaToCompare = MetaExtractor.extractMetadata(new FileInputStream(new File("src/test/resources/rollerbed_with_move.dmi")));
 
         assertEquals(expectedMeta, metaToCompare);
     }

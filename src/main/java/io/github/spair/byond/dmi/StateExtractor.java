@@ -11,7 +11,7 @@ import java.util.Comparator;
 
 final class StateExtractor {
 
-    Map<String, DmiState> extractStates(final BufferedImage dmiImage, final DmiMeta dmiMeta) {
+    static Map<String, DmiState> extractStates(final BufferedImage dmiImage, final DmiMeta dmiMeta) {
         final int dmiWidth = dmiImage.getWidth();
         final int spriteWidth = dmiMeta.getSpritesWidth();
         final int spriteHeight = dmiMeta.getSpritesHeight();
@@ -56,7 +56,7 @@ final class StateExtractor {
         return dmiStates;
     }
 
-    private BufferedImage cropSpriteImage(
+    private static BufferedImage cropSpriteImage(
             final BufferedImage dmiImage, final int width, final int height, final int xPos, final int yPos) {
         BufferedImage dst = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
@@ -67,7 +67,7 @@ final class StateExtractor {
         return dst;
     }
 
-    private Map<SpriteDir, List<DmiSprite>> distributeAllSpritesInMap(final List<DmiSprite> allSprites) {
+    private static Map<SpriteDir, List<DmiSprite>> distributeAllSpritesInMap(final List<DmiSprite> allSprites) {
         Map<SpriteDir, List<DmiSprite>> spriteMap = new TreeMap<>(Comparator.comparingInt(dir -> dir.compareWeight));
 
         for (DmiSprite sprite : allSprites) {
@@ -77,5 +77,8 @@ final class StateExtractor {
         }
 
         return spriteMap;
+    }
+
+    private StateExtractor() {
     }
 }

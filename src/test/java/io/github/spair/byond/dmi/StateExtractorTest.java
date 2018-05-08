@@ -24,7 +24,7 @@ public class StateExtractorTest {
                 )
         );
 
-        Map<String, DmiState> states = new StateExtractor().extractStates(ImageIO.read(new File("src/test/resources/rollerbed_with_move.dmi")), meta);
+        Map<String, DmiState> states = StateExtractor.extractStates(ImageIO.read(new File("src/test/resources/rollerbed_with_move.dmi")), meta);
 
         assertEquals(meta.getMetas().get(0), states.get("down").getMeta());
         assertEquals(meta.getMetas().get(1), states.get("down (M)").getMeta());

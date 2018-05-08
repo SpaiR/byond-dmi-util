@@ -38,7 +38,7 @@ final class MetaExtractor {
 
     private static final String MOVEMENT_SUFFIX = " (M)";
 
-    DmiMeta extractMetadata(final InputStream input) {
+    static DmiMeta extractMetadata(final InputStream input) {
         IIOMetadata metadata = readMetadata(input);
 
         String metadataFormatName = IIOMetadataFormatImpl.standardMetadataFormatName;
@@ -50,7 +50,7 @@ final class MetaExtractor {
         return parseMetadataText(metadataText);
     }
 
-    private IIOMetadata readMetadata(final InputStream input) {
+    private static IIOMetadata readMetadata(final InputStream input) {
         try (ImageInputStream imageInputStream = ImageIO.createImageInputStream(input)) {
             ImageReader reader = ImageIO.getImageReadersByMIMEType(PNG_MIME).next();
 
@@ -63,7 +63,7 @@ final class MetaExtractor {
         }
     }
 
-    private DmiMeta parseMetadataText(final String metadataText) {
+    private static DmiMeta parseMetadataText(final String metadataText) {
         DmiMeta metadata = new DmiMeta();
         Matcher widthHeight = WIDTH_HEIGHT.matcher(metadataText);
 
@@ -99,7 +99,7 @@ final class MetaExtractor {
         return metadata;
     }
 
-    private Meta parseState(final String stateText) {
+    private static Meta parseState(final String stateText) {
         Meta metaEntry = new Meta();
         Matcher stateParam = PARAM_PATTERN.matcher(stateText);
 
@@ -142,11 +142,14 @@ final class MetaExtractor {
         return metaEntry;
     }
 
-    private boolean isValueTrue(final String value) {
+    private static boolean isValueTrue(final String value) {
         return "1".equals(value);
     }
 
-    private double[] doubleArrayFromString(final String str) {
+    private static double[] doubleArrayFromString(final String str) {
         return Arrays.stream(str.split(",")).mapToDouble(Double::parseDouble).toArray();
+    }
+
+    private MetaExtractor() {
     }
 }

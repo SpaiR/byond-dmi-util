@@ -19,9 +19,6 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public final class DmiSlurper {
 
-    private final MetaExtractor metaExtractor = new MetaExtractor();
-    private final StateExtractor stateExtractor = new StateExtractor();
-
     /**
      * Static method to process file. Same as {@link #slurpUp(File)},
      * with {@link DmiSlurper} instantiation under the hood.
@@ -102,8 +99,8 @@ public final class DmiSlurper {
             BufferedImage dmiImage = ImageIO.read(bufferedInput);
             bufferedInput.reset();
 
-            DmiMeta dmiMeta = metaExtractor.extractMetadata(bufferedInput);
-            Map<String, DmiState> dmiStates = stateExtractor.extractStates(dmiImage, dmiMeta);
+            DmiMeta dmiMeta = MetaExtractor.extractMetadata(bufferedInput);
+            Map<String, DmiState> dmiStates = StateExtractor.extractStates(dmiImage, dmiMeta);
 
             return new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
         } catch (IOException e) {
