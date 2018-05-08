@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 
 @Data
+@Setter(AccessLevel.PACKAGE)
 @SuppressWarnings("WeakerAccess")
 public class Diff {
 
@@ -19,9 +20,7 @@ public class Diff {
     @Setter(AccessLevel.NONE)
     @Nonnull private DiffStatus status;
 
-    public Diff(@Nonnull final String stateName,
-                @Nullable final DmiSprite oldSprite,
-                @Nullable final DmiSprite newSprite) {
+    Diff(@Nonnull final String stateName, @Nullable final DmiSprite oldSprite, @Nullable final DmiSprite newSprite) {
         this.stateName = stateName;
         this.oldSprite = oldSprite;
         this.newSprite = newSprite;

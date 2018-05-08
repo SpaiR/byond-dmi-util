@@ -12,16 +12,6 @@ public enum SpriteDir {
     NORTHEAST(5, "NE", 7),
     NORTHWEST(9, "NW", 8);
 
-    private static final int NORTH_DIR = 1;
-    private static final int SOUTH_DIR = 2;
-    private static final int EAST_DIR = 4;
-    private static final int WEST_DIR = 8;
-
-    private static final int SOUTHEAST_DIR = 6;
-    private static final int SOUTHWEST_DIR = 10;
-    private static final int NORTHEAST_DIR = 5;
-    private static final int NORTHWEST_DIR = 9;
-
     /**
      * <p>BYOND representation of dir as int value.
      * <ul>
@@ -65,7 +55,7 @@ public enum SpriteDir {
      * Returns {@link SpriteDir} equivalent to BYOND dir value. If method got value different from the list below,
      * {@link IllegalArgumentException} will be thrown.
      * <ul>
-     *     <li>1 - NORTH</li>
+     *     <li>0,1,3,7 - NORTH</li>
      *     <li>2 - SOUTH</li>
      *     <li>4 - EAST</li>
      *     <li>8 - WEST</li>
@@ -78,23 +68,24 @@ public enum SpriteDir {
      * @param dirValue BYOND representation of dir
      * @return {@link SpriteDir} equivalent of BYOND dir value
      */
+    @SuppressWarnings("checkstyle:MagicNumber")
     public static SpriteDir valueOfByondDir(final int dirValue) {
         switch (dirValue) {
-            case NORTH_DIR:
+            case 0: case 1: case 3: case 7:
                 return NORTH;
-            case SOUTH_DIR:
+            case 2:
                 return SOUTH;
-            case EAST_DIR:
+            case 4:
                 return EAST;
-            case WEST_DIR:
+            case 8:
                 return WEST;
-            case NORTHEAST_DIR:
+            case 5:
                 return NORTHEAST;
-            case SOUTHEAST_DIR:
+            case 6:
                 return SOUTHEAST;
-            case NORTHWEST_DIR:
+            case 9:
                 return NORTHWEST;
-            case SOUTHWEST_DIR:
+            case 10:
                 return SOUTHWEST;
             default:
                 throw new IllegalArgumentException("Illegal value of BYOND dir. Dir value: " + dirValue);

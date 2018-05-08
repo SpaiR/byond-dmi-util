@@ -8,7 +8,10 @@ public class SpriteDirTest {
 
     @Test
     public void testValueOfByondDir() {
+        assertEquals(SpriteDir.NORTH, SpriteDir.valueOfByondDir(0));
         assertEquals(SpriteDir.NORTH, SpriteDir.valueOfByondDir(1));
+        assertEquals(SpriteDir.NORTH, SpriteDir.valueOfByondDir(3));
+        assertEquals(SpriteDir.NORTH, SpriteDir.valueOfByondDir(7));
         assertEquals(SpriteDir.SOUTH, SpriteDir.valueOfByondDir(2));
         assertEquals(SpriteDir.EAST, SpriteDir.valueOfByondDir(4));
         assertEquals(SpriteDir.WEST, SpriteDir.valueOfByondDir(8));
@@ -22,7 +25,7 @@ public class SpriteDirTest {
     @Test(expected = IllegalArgumentException.class)
     public void testValueOfByondDirWithIllegalValue() {
         //noinspection ResultOfMethodCallIgnored
-        SpriteDir.valueOfByondDir(0);
+        SpriteDir.valueOfByondDir(-1);
     }
 
     @Test
