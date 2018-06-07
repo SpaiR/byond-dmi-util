@@ -14,58 +14,35 @@ import static org.junit.Assert.*;
 
 public class DmiSlurperTest {
 
-    private final DmiSlurper dmiSlurper = new DmiSlurper();
-
-    @Test
-    public void testStaticSlurpUpFromFile() {
-        File dmiFile = new File("src/test/resources/rollerbed_original.dmi");
-        Dmi dmi = DmiSlurper.slurpUpFile(dmiFile);
-        commonDmiAssertion(dmi);
-    }
-
-    @Test
-    public void testStaticSlurpUpFromBase64Content() throws Exception {
-        String filePath = "src/test/resources/rollerbed_original_base64.txt";
-        Dmi dmi = DmiSlurper.slurpUpBase64("rollerbed_original.dmi", new String(Files.readAllBytes(Paths.get(filePath))));
-        commonDmiAssertion(dmi);
-    }
-
-    @Test
-    public void testStaticSlurpUpFromInputStream() throws Exception {
-        File dmiFile = new File("src/test/resources/rollerbed_original.dmi");
-        Dmi dmi = DmiSlurper.slurpUpStream("rollerbed_original.dmi", new FileInputStream(dmiFile));
-        commonDmiAssertion(dmi);
-    }
-
     @Test
     public void testSlurpUpFromFile() {
         File dmiFile = new File("src/test/resources/rollerbed_original.dmi");
-        Dmi dmi = dmiSlurper.slurpUp(dmiFile);
+        Dmi dmi = DmiSlurper.slurpUp(dmiFile);
         commonDmiAssertion(dmi);
     }
 
     @Test
     public void testSlurpUpFromBase64Content() throws Exception {
         String filePath = "src/test/resources/rollerbed_original_base64.txt";
-        Dmi dmi = dmiSlurper.slurpUp("rollerbed_original.dmi", new String(Files.readAllBytes(Paths.get(filePath))));
+        Dmi dmi = DmiSlurper.slurpUp("rollerbed_original.dmi", new String(Files.readAllBytes(Paths.get(filePath))));
         commonDmiAssertion(dmi);
     }
 
     @Test
     public void testSlurpUpFromInputStream() throws Exception {
         File dmiFile = new File("src/test/resources/rollerbed_original.dmi");
-        Dmi dmi = dmiSlurper.slurpUp("rollerbed_original.dmi", new FileInputStream(dmiFile));
+        Dmi dmi = DmiSlurper.slurpUp("rollerbed_original.dmi", new FileInputStream(dmiFile));
         commonDmiAssertion(dmi);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSlurpUpWithNiFileException() {
-        dmiSlurper.slurpUp(new File("non existent path"));
+        DmiSlurper.slurpUp(new File("non existent path"));
     }
 
     @Test
     public void testSlurpUpWithDuplicateStates() {
-        Dmi dmi = dmiSlurper.slurpUp(new File("src/test/resources/rollerbed_duplicate_states.dmi"));
+        Dmi dmi = DmiSlurper.slurpUp(new File("src/test/resources/rollerbed_duplicate_states.dmi"));
         assertEquals(1, dmi.getDuplicateStatesNames().size());
         assertTrue(dmi.isHasDuplicates());
     }

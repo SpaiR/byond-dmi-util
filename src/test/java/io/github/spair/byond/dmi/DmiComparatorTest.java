@@ -12,29 +12,15 @@ import static org.junit.Assert.*;
 
 public class DmiComparatorTest {
 
-    private final DmiSlurper dmiSlurper = new DmiSlurper();
-    private final DmiComparator dmiComparator = new DmiComparator();
-
     private static final String ROLLERBED_ORIGINAL_PATH = "src/test/resources/rollerbed_original.dmi";
     private static final String ROLLERBED_DIFF_PATH = "src/test/resources/rollerbed_original_diff.dmi";
 
     @Test
-    public void testStaticCompare() {
-        Dmi original = dmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
-        Dmi modified = dmiSlurper.slurpUp(new File(ROLLERBED_DIFF_PATH));
-
-        DmiDiff diffSimple = dmiComparator.compare(original, modified);
-        DmiDiff diffStatic = DmiComparator.compareDmi(original, modified);
-
-        assertEquals(diffSimple, diffStatic);
-    }
-
-    @Test
     public void testCompareWhenNotSame() {
-        Dmi original = dmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
-        Dmi modified = dmiSlurper.slurpUp(new File(ROLLERBED_DIFF_PATH));
+        Dmi original = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
+        Dmi modified = DmiSlurper.slurpUp(new File(ROLLERBED_DIFF_PATH));
 
-        DmiDiff diff = dmiComparator.compare(original, modified);
+        DmiDiff diff = DmiComparator.compare(original, modified);
 
         assertFalse(diff.isSame());
         assertNotEquals(diff.getOldMeta(), diff.getNewMeta());
@@ -83,8 +69,8 @@ public class DmiComparatorTest {
 
     @Test
     public void testCompareWhenSame() {
-        Dmi dmi = dmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
-        DmiDiff diff = dmiComparator.compare(dmi, dmi);
+        Dmi dmi = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
+        DmiDiff diff = DmiComparator.compare(dmi, dmi);
 
         assertTrue(diff.isSame());
         assertEquals(diff.getOldMeta(), diff.getNewMeta());
@@ -93,8 +79,8 @@ public class DmiComparatorTest {
 
     @Test
     public void testCompareWhenModifiedNull() {
-        Dmi dmi = dmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
-        DmiDiff diff = dmiComparator.compare(dmi, null);
+        Dmi dmi = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
+        DmiDiff diff = DmiComparator.compare(dmi, null);
 
         assertEquals(17, diff.getDiffs().size());
         assertNotNull(diff.getOldMeta());
@@ -105,8 +91,8 @@ public class DmiComparatorTest {
 
     @Test
     public void testCompareWhenOriginalNull() {
-        Dmi dmi = dmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
-        DmiDiff diff = dmiComparator.compare(null, dmi);
+        Dmi dmi = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
+        DmiDiff diff = DmiComparator.compare(null, dmi);
 
         assertEquals(17, diff.getDiffs().size());
         assertNotNull(diff.getNewMeta());

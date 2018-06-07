@@ -18,19 +18,6 @@ import java.util.stream.Collectors;
 public final class DmiComparator {
 
     /**
-     * Static method to compare two dmi's. Same as {@link #compare(Dmi, Dmi)},
-     * with {@link DmiComparator} instantiation under the hood.
-     *
-     * @param oldDmi old {@link io.github.spair.byond.dmi.Dmi} object or null
-     * @param newDmi new {@link io.github.spair.byond.dmi.Dmi} object or null
-     * @return {@link io.github.spair.byond.dmi.DmiDiff} object
-     */
-    @Nonnull
-    public static DmiDiff compareDmi(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
-        return new DmiComparator().compare(oldDmi, newDmi);
-    }
-
-    /**
      * Compares two {@link io.github.spair.byond.dmi.Dmi} objects. One of argument may be null,
      * which will be interpreted as if another Dmi created if null is the first parameter or deleted if vice versa.
      *
@@ -39,7 +26,7 @@ public final class DmiComparator {
      * @return {@link io.github.spair.byond.dmi.DmiDiff} object
      */
     @Nonnull
-    public DmiDiff compare(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
+    public static DmiDiff compare(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
         DmiDiff dmiDiff = new DmiDiff(getDiffList(oldDmi, newDmi));
 
         dmiDiff.setOldMeta(CheckSupplierUtil.returnIfNonNull(oldDmi, Dmi::getMetadata));
@@ -48,7 +35,7 @@ public final class DmiComparator {
         return dmiDiff;
     }
 
-    private List<Diff> getDiffList(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
+    private static List<Diff> getDiffList(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
         List<Diff> diffEntries = new ArrayList<>();
 
         final Map<String, DmiState> oldStates = extractStates(oldDmi);
@@ -73,7 +60,7 @@ public final class DmiComparator {
         return diffEntries;
     }
 
-    private List<Diff> listOnlyOneStateSprites(final DmiState state, final boolean isOldState) {
+    private static List<Diff> listOnlyOneStateSprites(final DmiState state, final boolean isOldState) {
         List<Diff> diffs = new ArrayList<>();
         final String stateName = state.getMeta().getName();
 
@@ -90,7 +77,7 @@ public final class DmiComparator {
         return diffs;
     }
 
-    private List<Diff> findOldAndNewStateDiff(final DmiState oldState, final DmiState newState) {
+    private static List<Diff> findOldAndNewStateDiff(final DmiState oldState, final DmiState newState) {
         List<Diff> diffs = new ArrayList<>();
 
         final String stateName = oldState.getMeta().getName();
@@ -140,10 +127,13 @@ public final class DmiComparator {
         return diffs;
     }
 
-    private Map<String, DmiState> extractStates(final Dmi dmi) {
+    private static Map<String, DmiState> extractStates(final Dmi dmi) {
         return Optional
                 .ofNullable(
                         CheckSupplierUtil.returnIfNonNull(dmi, Dmi::getStates)
                 ).orElse(Collections.emptyMap());
+    }
+
+    private DmiComparator() {
     }
 }

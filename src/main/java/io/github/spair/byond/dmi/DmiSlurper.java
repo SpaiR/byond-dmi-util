@@ -20,49 +20,11 @@ import java.util.Map;
 public final class DmiSlurper {
 
     /**
-     * Static method to process file. Same as {@link #slurpUp(File)},
-     * with {@link DmiSlurper} instantiation under the hood.
-     *
      * @param dmiFile file to deserialize
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
     @Nonnull
-    public static Dmi slurpUpFile(final File dmiFile) {
-        return new DmiSlurper().slurpUp(dmiFile);
-    }
-
-    /**
-     * Static method to process file. Same as {@link #slurpUp(String, String)},
-     * with {@link DmiSlurper} instantiation under the hood.
-     *
-     * @param dmiName the name of resulted {@link io.github.spair.byond.dmi.Dmi} object
-     * @param base64content base64 string to deserialize
-     * @return {@link io.github.spair.byond.dmi.Dmi} object
-     */
-    @Nonnull
-    public static Dmi slurpUpBase64(final String dmiName, final String base64content) {
-        return new DmiSlurper().slurpUp(dmiName, base64content);
-    }
-
-    /**
-     * Static method to process file. Same as {@link #slurpUp(String, InputStream)},
-     * with {@link DmiSlurper} instantiation under the hood.
-     *
-     * @param dmiName the name of resulted {@link io.github.spair.byond.dmi.Dmi} object
-     * @param input raw input stream to deserialize
-     * @return {@link io.github.spair.byond.dmi.Dmi} object
-     */
-    @Nonnull
-    public static Dmi slurpUpStream(final String dmiName, final InputStream input) {
-        return new DmiSlurper().slurpUp(dmiName, input);
-    }
-
-    /**
-     * @param dmiFile file to deserialize
-     * @return {@link io.github.spair.byond.dmi.Dmi} object
-     */
-    @Nonnull
-    public Dmi slurpUp(final File dmiFile) {
+    public static Dmi slurpUp(final File dmiFile) {
         try (InputStream input = new FileInputStream(dmiFile)) {
             return slurpUp(dmiFile.getName(), input);
         } catch (FileNotFoundException e) {
@@ -78,7 +40,7 @@ public final class DmiSlurper {
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
     @Nonnull
-    public Dmi slurpUp(final String dmiName, final String base64content) {
+    public static Dmi slurpUp(final String dmiName, final String base64content) {
         try (InputStream input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
             return slurpUp(dmiName, input);
         } catch (IOException e) {
@@ -92,7 +54,7 @@ public final class DmiSlurper {
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
     @Nonnull
-    public Dmi slurpUp(final String dmiName, final InputStream input) {
+    public static Dmi slurpUp(final String dmiName, final InputStream input) {
         try (BufferedInputStream bufferedInput = new BufferedInputStream(input)) {
             bufferedInput.mark(input.available());
 
@@ -106,5 +68,8 @@ public final class DmiSlurper {
         } catch (IOException e) {
             throw new IllegalArgumentException("Received DMI can't be read");
         }
+    }
+
+    private DmiSlurper() {
     }
 }
