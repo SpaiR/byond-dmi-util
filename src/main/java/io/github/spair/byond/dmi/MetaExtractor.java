@@ -9,7 +9,6 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +66,7 @@ final class MetaExtractor {
         DmiMeta metadata = new DmiMeta();
         Matcher widthHeight = WIDTH_HEIGHT.matcher(metadataText);
 
-        if (widthHeight.find() && Objects.nonNull(widthHeight.group(1)) && Objects.nonNull(widthHeight.group(2))) {
+        if (widthHeight.find() && widthHeight.group(1) != null && widthHeight.group(2) != null) {
             metadata.setSpritesWidth(Integer.parseInt(widthHeight.group(1)));
             metadata.setSpritesHeight(Integer.parseInt(widthHeight.group(2)));
         } else {

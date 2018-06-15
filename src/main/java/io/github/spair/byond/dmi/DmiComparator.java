@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Collections;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -44,7 +43,7 @@ public final class DmiComparator {
         oldStates.forEach((stateName, oldState) -> {
             final DmiState newState = newStates.get(stateName);
 
-            if (Objects.nonNull(newState)) {
+            if (newState != null) {
                 diffEntries.addAll(findOldAndNewStateDiff(oldState, newState));
             } else {
                 diffEntries.addAll(listOnlyOneStateSprites(oldState, true));

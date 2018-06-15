@@ -6,7 +6,6 @@ import lombok.Setter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 
 @Data
 @Setter(AccessLevel.PACKAGE)
@@ -25,11 +24,11 @@ public class Diff {
         this.oldSprite = oldSprite;
         this.newSprite = newSprite;
 
-        if (Objects.nonNull(oldSprite) && Objects.nonNull(newSprite)) {
+        if (oldSprite != null && newSprite != null) {
             status = DiffStatus.MODIFIED;
-        } else if (Objects.isNull(oldSprite) && Objects.nonNull(newSprite)) {
+        } else if (oldSprite == null && newSprite != null) {
             status = DiffStatus.CREATED;
-        } else if (Objects.nonNull(oldSprite)) {
+        } else if (oldSprite != null) {
             status = DiffStatus.DELETED;
         } else {
             throw new IllegalArgumentException("Original and Modified sprites are null. State name: " + stateName);
