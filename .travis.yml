@@ -7,7 +7,7 @@ env:
   - MAVEN_VERSION=3.3.9
 
 script:
-  - mvn --show-version --errors --batch-mode clean verify
+  - mvn --show-version --errors --batch-mode clean verify -PattachAll
 
 cache:
     directories:

@@ -4,12 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.annotation.Nonnull;
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.util.Base64;
 import java.util.Objects;
 
 @Data
@@ -20,15 +15,6 @@ public class DmiSprite {
     @Nonnull private BufferedImage sprite;
     @Nonnull private SpriteDir dir;
     private int frameNum;
-
-    public String getSpriteAsBase64() {
-        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-            ImageIO.write(sprite, "PNG", os);
-            return Base64.getEncoder().encodeToString(os.toByteArray());
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
 
     @Override
     public String toString() {

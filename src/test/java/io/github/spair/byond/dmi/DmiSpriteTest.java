@@ -4,15 +4,12 @@ import org.junit.Test;
 
 import javax.imageio.ImageIO;
 import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 public class DmiSpriteTest {
 
-    private static final String BASE_64_CAT_PATH = "src/test/resources/base64cat.txt";
     private static final String ORIGINAL_CAT_IMAGE_PATH = "src/test/resources/cat_original.png";
     private static final String DIFF_CAT_IMAGE_PATH = "src/test/resources/cat_original_diff.png";
 
@@ -42,15 +39,5 @@ public class DmiSpriteTest {
 
         dmiSprite2.setFrameNum(2);
         assertNotEquals(dmiSprite1, dmiSprite2);
-    }
-
-    @Test
-    public void testGetSpriteAsBase64() throws Exception {
-        DmiSprite sprite = new DmiSprite(ImageIO.read(new File(ORIGINAL_CAT_IMAGE_PATH)), SpriteDir.SOUTH, 0);
-
-        String expectedBase64 = new String (Files.readAllBytes(new File(BASE_64_CAT_PATH).toPath()), StandardCharsets.ISO_8859_1.name());
-        String compareToBase64 = sprite.getSpriteAsBase64();
-
-        assertEquals(expectedBase64, compareToBase64);
     }
 }
