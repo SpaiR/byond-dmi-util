@@ -28,9 +28,11 @@ public final class DmiSlurper {
         try (InputStream input = new FileInputStream(dmiFile)) {
             return slurpUp(dmiFile.getName(), input);
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Received DMI file doesn't exist");
+            throw new IllegalArgumentException("Received DMI file doesn't exist. File path: " + dmiFile.getPath());
         } catch (IOException e) {
-            throw new IllegalArgumentException("Received DMI can't be read");
+            throw new IllegalArgumentException("Received DMI can't be read. File path: " + dmiFile.getPath());
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to slur up dmi file. File path: " + dmiFile.getPath());
         }
     }
 
@@ -44,7 +46,7 @@ public final class DmiSlurper {
         try (InputStream input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
             return slurpUp(dmiName, input);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Received base64 content can't be read");
+            throw new IllegalArgumentException("Received base64 content can't be read. Dmi name: " + dmiName);
         }
     }
 
@@ -66,7 +68,9 @@ public final class DmiSlurper {
 
             return new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Received DMI can't be read");
+            throw new IllegalArgumentException("Received DMI can't be read. Dmi name: " + dmiName);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to slurp up dmi input. Dmi name: " + dmiName);
         }
     }
 

@@ -58,7 +58,7 @@ final class MetaExtractor {
 
             return image.getMetadata();
         } catch (IOException e) {
-            throw new IllegalArgumentException("DMI meta can't be read", e);
+            throw new IllegalArgumentException("DMI meta can't be read");
         }
     }
 
