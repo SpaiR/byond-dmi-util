@@ -1,6 +1,9 @@
-package io.github.spair.byond.dmi;
+package io.github.spair.byond.dmi.slurper;
 
-import javax.annotation.Nonnull;
+import io.github.spair.byond.dmi.Dmi;
+import io.github.spair.byond.dmi.DmiMeta;
+import io.github.spair.byond.dmi.DmiState;
+
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -23,16 +26,15 @@ public final class DmiSlurper {
      * @param dmiFile file to deserialize
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
-    @Nonnull
     public static Dmi slurpUp(final File dmiFile) {
         try (InputStream input = new FileInputStream(dmiFile)) {
             return slurpUp(dmiFile.getName(), input);
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException("Received DMI file doesn't exist. File path: " + dmiFile.getPath());
+            throw new IllegalArgumentException("Received DMI file doesn't exist. File path: " + dmiFile.getPath(), e);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Received DMI can't be read. File path: " + dmiFile.getPath());
+            throw new IllegalArgumentException("Received DMI can't be read. File path: " + dmiFile.getPath(), e);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to slur up dmi file. File path: " + dmiFile.getPath());
+            throw new RuntimeException("Unable to slur up dmi file. File path: " + dmiFile.getPath(), e);
         }
     }
 
@@ -41,12 +43,11 @@ public final class DmiSlurper {
      * @param base64content base64 string to deserialize
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
-    @Nonnull
     public static Dmi slurpUp(final String dmiName, final String base64content) {
         try (InputStream input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
             return slurpUp(dmiName, input);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Received base64 content can't be read. Dmi name: " + dmiName);
+            throw new IllegalArgumentException("Received base64 content can't be read. Dmi name: " + dmiName, e);
         }
     }
 
@@ -55,7 +56,6 @@ public final class DmiSlurper {
      * @param input raw input stream to deserialize
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
-    @Nonnull
     public static Dmi slurpUp(final String dmiName, final InputStream input) {
         try (BufferedInputStream bufferedInput = new BufferedInputStream(input)) {
             bufferedInput.mark(input.available());
@@ -68,9 +68,9 @@ public final class DmiSlurper {
 
             return new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
         } catch (IOException e) {
-            throw new IllegalArgumentException("Received DMI can't be read. Dmi name: " + dmiName);
+            throw new IllegalArgumentException("Received DMI can't be read. Dmi name: " + dmiName, e);
         } catch (Exception e) {
-            throw new RuntimeException("Unable to slurp up dmi input. Dmi name: " + dmiName);
+            throw new RuntimeException("Unable to slurp up dmi input. Dmi name: " + dmiName, e);
         }
     }
 

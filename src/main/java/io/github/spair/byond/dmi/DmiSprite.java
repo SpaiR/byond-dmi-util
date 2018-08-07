@@ -3,8 +3,11 @@ package io.github.spair.byond.dmi;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import javax.annotation.Nonnull;
 import java.awt.image.BufferedImage;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Data
@@ -12,14 +15,26 @@ import java.util.Objects;
 @SuppressWarnings("WeakerAccess")
 public class DmiSprite {
 
-    @Nonnull private BufferedImage sprite;
-    @Nonnull private SpriteDir dir;
+    private BufferedImage sprite;
+    private int width;
+    private int height;
+    private SpriteDir dir;
     private int frameNum;
+
+    public DmiSprite(final BufferedImage sprite, final SpriteDir dir, final int frameNum) {
+        this.sprite = sprite;
+        this.width = sprite.getWidth();
+        this.height = sprite.getHeight();
+        this.dir = dir;
+        this.frameNum = frameNum;
+    }
 
     @Override
     public String toString() {
         return "DmiSprite{"
                 + "sprite=binary-image"
+                + ", width=" + width
+                + ", height=" + height
                 + ", dir=" + dir
                 + ", frameNum=" + frameNum
                 + '}';
@@ -44,23 +59,28 @@ public class DmiSprite {
         return Objects.hash(sprite, dir, frameNum);
     }
 
-    private boolean isEqualSprite(final BufferedImage spriteToCompare) {
-        if (sprite == spriteToCompare) {
+    private boolean isEqualSprite(final BufferedImage spriteToCheck) {
+        if (sprite == spriteToCheck) {
             return true;
         }
-
-        if (sprite.getHeight() != spriteToCompare.getHeight() || sprite.getWidth() != spriteToCompare.getWidth()) {
+        if (sprite.getWidth() != spriteToCheck.getWidth() || sprite.getHeight() != spriteToCheck.getHeight()) {
             return false;
         }
 
-        for (int x = 0; x < sprite.getWidth(); x++) {
-            for (int y = 0; y < sprite.getHeight(); y++) {
-                if (sprite.getRGB(x, y) != spriteToCompare.getRGB(x, y)) {
-                    return false;
-                }
-            }
+        DataBuffer actual = sprite.getData().getDataBuffer();
+        DataBuffer toCheck = spriteToCheck.getData().getDataBuffer();
+
+        if (actual.getClass() != toCheck.getClass()) {
+            return false;
         }
 
-        return true;
+        // DataBufferByte - for RGB images, DataBufferInt - for ARGB
+        if (actual instanceof DataBufferByte) {
+            return Arrays.equals(((DataBufferByte) actual).getData(), ((DataBufferByte) toCheck).getData());
+        } else if (actual instanceof DataBufferInt) {
+            return Arrays.equals(((DataBufferInt) actual).getData(), ((DataBufferInt) toCheck).getData());
+        } else {
+            throw new IllegalStateException();
+        }
     }
 }

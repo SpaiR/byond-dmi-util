@@ -1,7 +1,10 @@
-package io.github.spair.byond.dmi;
+package io.github.spair.byond.dmi.comparator;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import io.github.spair.byond.dmi.Dmi;
+import io.github.spair.byond.dmi.DmiState;
+import io.github.spair.byond.dmi.DmiSprite;
+import io.github.spair.byond.dmi.SpriteDir;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +14,7 @@ import java.util.stream.Collectors;
 
 /**
  * Class to compare two {@link io.github.spair.byond.dmi.Dmi} objects and get result of comparison
- * as {@link io.github.spair.byond.dmi.DmiDiff}.
+ * as {@link DmiDiff}.
  */
 @SuppressWarnings("WeakerAccess")
 public final class DmiComparator {
@@ -22,20 +25,19 @@ public final class DmiComparator {
      *
      * @param oldDmi old {@link io.github.spair.byond.dmi.Dmi} object or null
      * @param newDmi new {@link io.github.spair.byond.dmi.Dmi} object or null
-     * @return {@link io.github.spair.byond.dmi.DmiDiff} object
+     * @return {@link DmiDiff} object
      */
-    @Nonnull
-    public static DmiDiff compare(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
+    public static DmiDiff compare(final Dmi oldDmi, final Dmi newDmi) {
         DmiDiff dmiDiff = new DmiDiff(getDiffList(oldDmi, newDmi));
 
-        dmiDiff.setOldMeta(CheckSupplierUtil.returnIfNonNull(oldDmi, Dmi::getMetadata));
-        dmiDiff.setNewMeta(CheckSupplierUtil.returnIfNonNull(newDmi, Dmi::getMetadata));
+        dmiDiff.setOldMeta(Optional.ofNullable(oldDmi).map(Dmi::getMetadata).orElse(null));
+        dmiDiff.setNewMeta(Optional.ofNullable(newDmi).map(Dmi::getMetadata).orElse(null));
 
         return dmiDiff;
     }
 
-    private static List<Diff> getDiffList(@Nullable final Dmi oldDmi, @Nullable final Dmi newDmi) {
-        List<Diff> diffEntries = new ArrayList<>();
+    private static List<DmiDiffEntry> getDiffList(final Dmi oldDmi, final Dmi newDmi) {
+        List<DmiDiffEntry> dmiDiffEntryEntries = new ArrayList<>();
 
         final Map<String, DmiState> oldStates = extractStates(oldDmi);
         final Map<String, DmiState> newStates = extractStates(newDmi);
@@ -44,42 +46,42 @@ public final class DmiComparator {
             final DmiState newState = newStates.get(stateName);
 
             if (newState != null) {
-                diffEntries.addAll(findOldAndNewStateDiff(oldState, newState));
+                dmiDiffEntryEntries.addAll(findOldAndNewStateDiff(oldState, newState));
             } else {
-                diffEntries.addAll(listOnlyOneStateSprites(oldState, true));
+                dmiDiffEntryEntries.addAll(listOnlyOneStateSprites(oldState, true));
             }
         });
 
         newStates.forEach((stateName, newState) -> {
             if (!oldStates.containsKey(stateName)) {
-                diffEntries.addAll(listOnlyOneStateSprites(newState, false));
+                dmiDiffEntryEntries.addAll(listOnlyOneStateSprites(newState, false));
             }
         });
 
-        return diffEntries;
+        return dmiDiffEntryEntries;
     }
 
-    private static List<Diff> listOnlyOneStateSprites(final DmiState state, final boolean isOldState) {
-        List<Diff> diffs = new ArrayList<>();
-        final String stateName = state.getMeta().getName();
+    private static List<DmiDiffEntry> listOnlyOneStateSprites(final DmiState state, final boolean isOldState) {
+        List<DmiDiffEntry> dmiDiffEntries = new ArrayList<>();
+        final String stateName = state.getName();
 
         state.getSprites().forEach((spriteDir, stateSprite) ->
                 stateSprite.forEach(sprite -> {
                     if (isOldState) {
-                        diffs.add(new Diff(stateName, sprite, null));
+                        dmiDiffEntries.add(new DmiDiffEntry(stateName, sprite, null));
                     } else {
-                        diffs.add(new Diff(stateName, null, sprite));
+                        dmiDiffEntries.add(new DmiDiffEntry(stateName, null, sprite));
                     }
                 })
         );
 
-        return diffs;
+        return dmiDiffEntries;
     }
 
-    private static List<Diff> findOldAndNewStateDiff(final DmiState oldState, final DmiState newState) {
-        List<Diff> diffs = new ArrayList<>();
+    private static List<DmiDiffEntry> findOldAndNewStateDiff(final DmiState oldState, final DmiState newState) {
+        List<DmiDiffEntry> dmiDiffEntries = new ArrayList<>();
 
-        final String stateName = oldState.getMeta().getName();
+        final String stateName = oldState.getName();
 
         final Map<SpriteDir, List<DmiSprite>> oldStateSprites = oldState.getSprites();
         final Map<SpriteDir, List<DmiSprite>> newStateSprites = newState.getSprites();
@@ -99,13 +101,13 @@ public final class DmiComparator {
                 }
 
                 if (!oldSprite.equals(newSprite)) {
-                    diffs.add(new Diff(stateName, oldSprite, newSprite));
+                    dmiDiffEntries.add(new DmiDiffEntry(stateName, oldSprite, newSprite));
                 }
             }
 
             if (oldSpritesCount < newSpritesCount) {
                 for (int frameNumber = oldSpritesCount; frameNumber < newSpritesCount; frameNumber++) {
-                    diffs.add(new Diff(stateName, null, newSprites.get(frameNumber)));
+                    dmiDiffEntries.add(new DmiDiffEntry(stateName, null, newSprites.get(frameNumber)));
                 }
             }
         });
@@ -118,19 +120,16 @@ public final class DmiComparator {
                     .stream().filter(d -> !oldStateSprites.keySet().contains(d)).collect(Collectors.toSet())
                     .forEach(spriteDir ->
                             newStateSprites.get(spriteDir).forEach(newSprite ->
-                                    diffs.add(new Diff(stateName, null, newSprite))
+                                    dmiDiffEntries.add(new DmiDiffEntry(stateName, null, newSprite))
                             )
                     );
         }
 
-        return diffs;
+        return dmiDiffEntries;
     }
 
     private static Map<String, DmiState> extractStates(final Dmi dmi) {
-        return Optional
-                .ofNullable(
-                        CheckSupplierUtil.returnIfNonNull(dmi, Dmi::getStates)
-                ).orElse(Collections.emptyMap());
+        return Optional.ofNullable(dmi).map(Dmi::getStates).orElse(Collections.emptyMap());
     }
 
     private DmiComparator() {

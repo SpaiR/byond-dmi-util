@@ -1,29 +1,33 @@
 package io.github.spair.byond.dmi;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 public class DmiStateTest {
+
+    private BufferedImage mockedImage;
+
+    @Before
+    public void setUp() {
+        mockedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+    }
 
     @Test
     public void testGetSprite() {
         DmiState dmiState = new DmiState();
         dmiState.setSprites(new HashMap<SpriteDir, List<DmiSprite>>() {
             {
-                put(SpriteDir.SOUTH, Collections.singletonList(new DmiSprite(mock(BufferedImage.class), SpriteDir.SOUTH, 1)));
+                put(SpriteDir.SOUTH, Collections.singletonList(new DmiSprite(mockedImage, SpriteDir.SOUTH, 1)));
             }
         });
 
-        assertNotNull(dmiState.getSprite(SpriteDir.SOUTH));
-        assertNull(dmiState.getSprite(SpriteDir.NORTH));
+        assertNotEquals(Optional.empty(), dmiState.getSprite(SpriteDir.SOUTH));
+        assertEquals(Optional.empty(), dmiState.getSprite(SpriteDir.NORTH));
     }
 
     @Test
@@ -31,19 +35,20 @@ public class DmiStateTest {
         DmiState dmiState = new DmiState();
         dmiState.setSprites(new HashMap<SpriteDir, List<DmiSprite>>() {
             {
-                put(SpriteDir.SOUTH, Collections.singletonList(new DmiSprite(mock(BufferedImage.class), SpriteDir.SOUTH, 1)));
+                put(SpriteDir.SOUTH, Collections.singletonList(new DmiSprite(mockedImage, SpriteDir.SOUTH, 1)));
                 put(SpriteDir.EAST, Arrays.asList(
-                        new DmiSprite(mock(BufferedImage.class), SpriteDir.EAST, 1),
-                        new DmiSprite(mock(BufferedImage.class), SpriteDir.EAST, 2))
+                        new DmiSprite(mockedImage, SpriteDir.EAST, 1),
+                        new DmiSprite(mockedImage, SpriteDir.EAST, 2))
                 );
             }
         });
 
-        assertNotNull(dmiState.getSprite(SpriteDir.SOUTH, 1));
+        assertNotEquals(Optional.empty(), dmiState.getSprite(SpriteDir.SOUTH, 1));
 
-        DmiSprite sprite = dmiState.getSprite(SpriteDir.EAST, 2);
-        assertNotNull(sprite);
-        assertEquals(2, sprite.getFrameNum());
+        Optional<DmiSprite> sprite = dmiState.getSprite(SpriteDir.EAST, 2);
+
+        assertTrue(sprite.isPresent());
+        assertEquals(2, sprite.get().getFrameNum());
     }
 
     @Test(expected = IllegalArgumentException.class)

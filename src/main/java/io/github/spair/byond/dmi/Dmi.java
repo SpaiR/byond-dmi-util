@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.annotation.Nonnull;
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.Optional;
 
 @Data
+@Setter(AccessLevel.PACKAGE)
 @NoArgsConstructor
 @SuppressWarnings("WeakerAccess")
 public class Dmi {
@@ -21,35 +22,32 @@ public class Dmi {
      */
     public static final int MAX_STATES = 512;
 
-    @Nonnull private String name = "";
+    private String name = "";
     private int width;
     private int height;
-    @Nonnull private DmiMeta metadata = new DmiMeta();
-    @Nonnull private Map<String, DmiState> states = new HashMap<>();
+    private DmiMeta metadata = new DmiMeta();
+    private Map<String, DmiState> states = new HashMap<>();
+    private Set<String> duplicateStatesNames = new HashSet<>();
 
-    @Setter(AccessLevel.NONE)
-    @Nonnull private Set<String> duplicateStatesNames = new HashSet<>();
-
-    public Dmi(@Nonnull final String name, final int width, final int height,
-               @Nonnull final DmiMeta metadata, @Nonnull final Map<String, DmiState> states) {
+    public Dmi(final String name, final int width, final int height,
+               final DmiMeta metadata, final Map<String, DmiState> states) {
         this.name = name;
         this.width = width;
         this.height = height;
         this.metadata = metadata;
         this.states = states;
-        checkDuplicates();
-    }
 
-    public void setStates(@Nonnull final Map<String, DmiState> states) {
-        this.states = states;
-        checkDuplicates();
+        states.forEach((stateName, dmiState) -> {
+            if (dmiState.isDuplicate()) {
+                duplicateStatesNames.add(stateName);
+            }
+        });
     }
 
     public void addState(final DmiState dmiState) {
-        final String stateName = dmiState.getStateName();
-        states.put(stateName, dmiState);
+        states.put(dmiState.getName(), dmiState);
         if (dmiState.isDuplicate()) {
-            duplicateStatesNames.add(stateName);
+            duplicateStatesNames.add(dmiState.getName());
         }
     }
 
@@ -59,8 +57,8 @@ public class Dmi {
      * @param stateName state name to search
      * @return {@link DmiState} instance or null if wasn't found
      */
-    public DmiState getState(final String stateName) {
-        return states.get(stateName);
+    public Optional<DmiState> getState(final String stateName) {
+        return Optional.ofNullable(states.get(stateName));
     }
 
     /**
@@ -69,8 +67,8 @@ public class Dmi {
      * @param stateName state name to search
      * @return {@link DmiSprite} instance or null if wasn't found
      */
-    public DmiSprite getStateSprite(final String stateName) {
-        return CheckSupplierUtil.returnIfNonNull(getState(stateName), DmiState::getSprite);
+    public Optional<DmiSprite> getStateSprite(final String stateName) {
+        return getState(stateName).flatMap(DmiState::getSprite);
     }
 
     /**
@@ -79,8 +77,8 @@ public class Dmi {
      * @param stateName state name to search
      * @return {@link DmiSprite} instance or null if wasn't found
      */
-    public DmiSprite getStateSprite(final String stateName, final SpriteDir dir) {
-        return CheckSupplierUtil.returnIfNonNull(getState(stateName), s -> s.getSprite(dir));
+    public Optional<DmiSprite> getStateSprite(final String stateName, final SpriteDir dir) {
+        return getState(stateName).flatMap(s -> s.getSprite(dir));
     }
 
     /**
@@ -89,8 +87,8 @@ public class Dmi {
      * @param stateName state name to search
      * @return {@link DmiSprite} instance or null if wasn't found
      */
-    public DmiSprite getStateSprite(final String stateName, final SpriteDir dir, final int frame) {
-        return CheckSupplierUtil.returnIfNonNull(getState(stateName), s -> s.getSprite(dir, frame));
+    public Optional<DmiSprite> getStateSprite(final String stateName, final SpriteDir dir, final int frame) {
+        return getState(stateName).flatMap(s -> s.getSprite(dir, frame));
     }
 
     public boolean hasState(final String stateName) {
@@ -113,14 +111,5 @@ public class Dmi {
      */
     public boolean isStateOverflow() {
         return states.size() > MAX_STATES;
-    }
-
-    private void checkDuplicates() {
-        duplicateStatesNames.clear();
-        states.forEach((stateName, dmiState) -> {
-            if (dmiState.isDuplicate()) {
-                duplicateStatesNames.add(stateName);
-            }
-        });
     }
 }

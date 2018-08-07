@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Optional;
 
 @Data
 @NoArgsConstructor
@@ -15,11 +16,11 @@ import java.util.HashMap;
 @SuppressWarnings("WeakerAccess")
 public class DmiState {
 
-    private Meta meta;
+    private DmiMetaEntry meta;
     private Map<SpriteDir, List<DmiSprite>> sprites = new HashMap<>();
     private boolean isDuplicate;
 
-    public String getStateName() {
+    public String getName() {
         return meta.getName();
     }
 
@@ -32,11 +33,10 @@ public class DmiState {
     /**
      * Returns the first available sprite.
      * That means, that sprite will be the first frame and {@link SpriteDir#SOUTH} dir.
-     * If sprite wasn't found result will be null.
      *
      * @return first available sprite
      */
-    public DmiSprite getSprite() {
+    public Optional<DmiSprite> getSprite() {
         return getSprite(SpriteDir.SOUTH);
     }
 
@@ -45,11 +45,11 @@ public class DmiState {
      * That means, that sprite will be the first frame of provided dir. If sprite wasn't found result will be null.
      *
      * @param dir dir to search sprite
-     * @return sprite instance or null if not found
+     * @return optional sprite instance
      */
-    public DmiSprite getSprite(final SpriteDir dir) {
+    public Optional<DmiSprite> getSprite(final SpriteDir dir) {
         final List<DmiSprite> spriteList = sprites.get(dir);
-        return CheckSupplierUtil.returnIfNonNullAndTrue(spriteList, () -> !spriteList.isEmpty(), s -> s.get(0));
+        return Optional.ofNullable(spriteList).map(dmiSprites -> dmiSprites.get(0));
     }
 
     /**
@@ -58,16 +58,16 @@ public class DmiState {
      *
      * @param dir   dir to search sprite
      * @param frame frame to search sprite
-     * @return sprite instance or null if not found
+     * @return optional sprite instance
      */
-    public DmiSprite getSprite(final SpriteDir dir, final int frame) {
+    public Optional<DmiSprite> getSprite(final SpriteDir dir, final int frame) {
         if (frame <= 0) {
             throw new IllegalArgumentException("Frame count goes from 1 digit. Method received " + frame + " digit");
         }
 
         final List<DmiSprite> spriteList = sprites.get(dir);
-        return CheckSupplierUtil.returnIfNonNullAndTrue(
-                spriteList, () -> (!spriteList.isEmpty() && spriteList.size() >= frame - 1), s -> s.get(frame - 1)
+        return Optional.ofNullable(spriteList).map(
+                dmiSprites -> dmiSprites.size() >= frame - 1 ? dmiSprites.get(frame - 1) : null
         );
     }
 
@@ -75,9 +75,9 @@ public class DmiState {
      * Returns the list of sprites for specified dir.
      *
      * @param dir dir to search sprite
-     * @return list of sprites for specified dir
+     * @return optional list of sprites for specified dir
      */
-    public List<DmiSprite> getSpriteList(final SpriteDir dir) {
-        return sprites.get(dir);
+    public Optional<List<DmiSprite>> getSpriteList(final SpriteDir dir) {
+        return Optional.ofNullable(sprites.get(dir));
     }
 }

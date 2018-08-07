@@ -1,4 +1,7 @@
-package io.github.spair.byond.dmi;
+package io.github.spair.byond.dmi.slurper;
+
+import io.github.spair.byond.dmi.DmiMeta;
+import io.github.spair.byond.dmi.DmiMetaEntry;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -44,9 +47,7 @@ final class MetaExtractor {
         IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(metadataFormatName);
         IIOMetadataNode text = (IIOMetadataNode) root.getElementsByTagName(META_ELEMENT_TAG).item(0);
 
-        String metadataText = text.getAttribute(META_ATTRIBUTE);
-
-        return parseMetadataText(metadataText);
+        return parseMetadataText(text.getAttribute(META_ATTRIBUTE));
     }
 
     private static IIOMetadata readMetadata(final InputStream input) {
@@ -66,40 +67,37 @@ final class MetaExtractor {
         DmiMeta metadata = new DmiMeta();
         Matcher widthHeight = WIDTH_HEIGHT.matcher(metadataText);
 
-        if (widthHeight.find() && widthHeight.group(1) != null && widthHeight.group(2) != null) {
-            metadata.setSpritesWidth(Integer.parseInt(widthHeight.group(1)));
-            metadata.setSpritesHeight(Integer.parseInt(widthHeight.group(2)));
-        } else {
+        if (!widthHeight.find() || widthHeight.group(1) == null || widthHeight.group(2) == null) {
             throw new IllegalArgumentException("DMI meta does't contain width and height properties");
         }
 
+        metadata.setSpritesWidth(Integer.parseInt(widthHeight.group(1)));
+        metadata.setSpritesHeight(Integer.parseInt(widthHeight.group(2)));
+
         Matcher state = STATE_PATTERN.matcher(metadataText);
 
-        if (state.find()) {
-            state.reset();
-
-            List<Meta> entries = new ArrayList<>();
-
-            while (state.find()) {
-                Meta entry = parseState(state.group());
-
-                if (entry.isMovement()) {
-                    entry.setName(entry.getName().concat(MOVEMENT_SUFFIX));
-                }
-
-                entries.add(entry);
-            }
-
-            metadata.setMetas(entries);
-        } else {
+        if (!state.find()) {
             throw new IllegalArgumentException("DMI meta does't contain any state property value");
         }
+        state.reset();
+
+        List<DmiMetaEntry> entries = new ArrayList<>();
+
+        while (state.find()) {
+            DmiMetaEntry entry = parseState(state.group());
+            if (entry.isMovement()) {
+                entry.setName(entry.getName().concat(MOVEMENT_SUFFIX));
+            }
+            entries.add(entry);
+        }
+
+        metadata.setMetas(entries);
 
         return metadata;
     }
 
-    private static Meta parseState(final String stateText) {
-        Meta metaEntry = new Meta();
+    private static DmiMetaEntry parseState(final String stateText) {
+        DmiMetaEntry metaEntry = new DmiMetaEntry();
         Matcher stateParam = PARAM_PATTERN.matcher(stateText);
 
         while (stateParam.find()) {

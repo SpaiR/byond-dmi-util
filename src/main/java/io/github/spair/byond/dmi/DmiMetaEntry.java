@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @SuppressWarnings("WeakerAccess")
-public class Meta {
-
+public class DmiMetaEntry {
     private String name;
     private int dirs;
     private int frames;

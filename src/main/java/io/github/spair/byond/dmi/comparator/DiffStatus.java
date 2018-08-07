@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmi;
+package io.github.spair.byond.dmi.comparator;
 
 public enum DiffStatus {
 

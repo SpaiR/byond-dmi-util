@@ -1,25 +1,21 @@
-package io.github.spair.byond.dmi;
+package io.github.spair.byond.dmi.comparator;
 
+import io.github.spair.byond.dmi.DmiSprite;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 @Data
 @Setter(AccessLevel.PACKAGE)
 @SuppressWarnings("WeakerAccess")
-public class Diff {
+public class DmiDiffEntry {
 
-    @Nonnull private String stateName;
-    @Nullable private DmiSprite oldSprite;
-    @Nullable private DmiSprite newSprite;
+    private String stateName;
+    private DmiSprite oldSprite;
+    private DmiSprite newSprite;
+    private DiffStatus status;
 
-    @Setter(AccessLevel.NONE)
-    @Nonnull private DiffStatus status;
-
-    Diff(@Nonnull final String stateName, @Nullable final DmiSprite oldSprite, @Nullable final DmiSprite newSprite) {
+    DmiDiffEntry(final String stateName, final DmiSprite oldSprite, final DmiSprite newSprite) {
         this.stateName = stateName;
         this.oldSprite = oldSprite;
         this.newSprite = newSprite;

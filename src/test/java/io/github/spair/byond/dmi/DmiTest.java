@@ -1,31 +1,35 @@
 package io.github.spair.byond.dmi;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.image.BufferedImage;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
 
 public class DmiTest {
+
+    private BufferedImage mockedImage;
+
+    @Before
+    public void setUp() {
+        mockedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+    }
 
     @Test
     public void testCheckForDuplicatesWhenExists() {
         DmiState dmiState1 = new DmiState();
         dmiState1.setDuplicate(true);
-        dmiState1.setMeta(new Meta("1", 0, 0, null, false, false, false, null));
+        dmiState1.setMeta(new DmiMetaEntry("1", 0, 0, null, false, false, false, null));
 
         DmiState dmiState2 = new DmiState();
         dmiState2.setDuplicate(true);
-        dmiState2.setMeta(new Meta("2", 0, 0, null, false, false, false, null));
+        dmiState2.setMeta(new DmiMetaEntry("2", 0, 0, null, false, false, false, null));
 
         DmiState dmiState3 = new DmiState();
         dmiState3.setDuplicate(false);
-        dmiState3.setMeta(new Meta("3", 0, 0, null, false, false, false, null));
+        dmiState3.setMeta(new DmiMetaEntry("3", 0, 0, null, false, false, false, null));
 
         Dmi dmi = new Dmi();
         dmi.addState(dmiState1);
@@ -66,13 +70,13 @@ public class DmiTest {
         Dmi dmi = new Dmi();
 
         DmiState dmiState = new DmiState();
-        dmiState.setMeta(new Meta("state", 0, 0, null, false, false, false, null));
-        dmiState.addSprite(new DmiSprite(mock(BufferedImage.class), SpriteDir.SOUTH, 0));
+        dmiState.setMeta(new DmiMetaEntry("state", 0, 0, null, false, false, false, null));
+        dmiState.addSprite(new DmiSprite(mockedImage, SpriteDir.SOUTH, 0));
 
         dmi.addState(dmiState);
 
-        assertNotNull(dmi.getStateSprite("state"));
-        assertNull(dmi.getStateSprite("1234567890"));
+        assertNotEquals(Optional.empty(), dmi.getStateSprite("state"));
+        assertEquals(Optional.empty(), dmi.getStateSprite("1234567890"));
     }
 
     @Test
@@ -80,13 +84,13 @@ public class DmiTest {
         Dmi dmi = new Dmi();
 
         DmiState dmiState = new DmiState();
-        dmiState.setMeta(new Meta("state", 0, 0, null, false, false, false, null));
-        dmiState.addSprite(new DmiSprite(mock(BufferedImage.class), SpriteDir.NORTH, 0));
+        dmiState.setMeta(new DmiMetaEntry("state", 0, 0, null, false, false, false, null));
+        dmiState.addSprite(new DmiSprite(mockedImage, SpriteDir.NORTH, 0));
 
         dmi.addState(dmiState);
 
-        assertNotNull(dmi.getStateSprite("state", SpriteDir.NORTH));
-        assertNull(dmi.getStateSprite("state", SpriteDir.SOUTH));
+        assertNotEquals(Optional.empty(), dmi.getStateSprite("state", SpriteDir.NORTH));
+        assertEquals(Optional.empty(), dmi.getStateSprite("state", SpriteDir.SOUTH));
     }
 
     @Test
@@ -94,13 +98,13 @@ public class DmiTest {
         Dmi dmi = new Dmi();
 
         DmiState dmiState = new DmiState();
-        dmiState.setMeta(new Meta("state", 0, 0, null, false, false, false, null));
-        dmiState.addSprite(new DmiSprite(mock(BufferedImage.class), SpriteDir.SOUTHEAST, 0));
+        dmiState.setMeta(new DmiMetaEntry("state", 0, 0, null, false, false, false, null));
+        dmiState.addSprite(new DmiSprite(mockedImage, SpriteDir.SOUTHEAST, 0));
 
         dmi.addState(dmiState);
 
-        assertNotNull(dmi.getStateSprite("state", SpriteDir.SOUTHEAST, 1));
-        assertNull(dmi.getStateSprite("state", SpriteDir.SOUTHEAST, 15));
+        assertNotEquals(Optional.empty(), dmi.getStateSprite("state", SpriteDir.SOUTHEAST, 1));
+        assertEquals(Optional.empty(), dmi.getStateSprite("state", SpriteDir.SOUTHEAST, 15));
     }
 
     @Test
@@ -108,7 +112,7 @@ public class DmiTest {
         Dmi dmi = new Dmi();
 
         DmiState dmiState = new DmiState();
-        dmiState.setMeta(new Meta("state", 0, 0, null, false, false, false, null));
+        dmiState.setMeta(new DmiMetaEntry("state", 0, 0, null, false, false, false, null));
 
         dmi.addState(dmiState);
 

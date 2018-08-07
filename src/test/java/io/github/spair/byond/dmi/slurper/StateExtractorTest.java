@@ -1,5 +1,9 @@
-package io.github.spair.byond.dmi;
+package io.github.spair.byond.dmi.slurper;
 
+import io.github.spair.byond.dmi.DmiMeta;
+import io.github.spair.byond.dmi.DmiMetaEntry;
+import io.github.spair.byond.dmi.DmiState;
+import io.github.spair.byond.dmi.SpriteDir;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
@@ -19,8 +23,8 @@ public class StateExtractorTest {
         meta.setSpritesHeight(32);
         meta.setMetas(
                 Arrays.asList(
-                        new Meta("down", 1, 1, null, false, false, false, null),
-                        new Meta("down (M)", 1, 1, null, false, true, false, null)
+                        new DmiMetaEntry("down", 1, 1, null, false, false, false, null),
+                        new DmiMetaEntry("down (M)", 1, 1, null, false, true, false, null)
                 )
         );
 
@@ -32,8 +36,8 @@ public class StateExtractorTest {
         assertEquals(1, states.get("down").getSprites().size());
         assertEquals(1, states.get("down (M)").getSprites().size());
 
-        assertEquals(SpriteDir.SOUTH, states.get("down").getSprite(SpriteDir.SOUTH).getDir());
-        assertEquals(SpriteDir.SOUTH, states.get("down (M)").getSprite(SpriteDir.SOUTH).getDir());
+        assertEquals(SpriteDir.SOUTH, states.get("down").getSprite(SpriteDir.SOUTH).get().getDir());
+        assertEquals(SpriteDir.SOUTH, states.get("down (M)").getSprite(SpriteDir.SOUTH).get().getDir());
 
         assertEquals(states.get("down").getSprite(SpriteDir.SOUTH), states.get("down (M)").getSprite(SpriteDir.SOUTH));
     }

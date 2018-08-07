@@ -1,5 +1,7 @@
-package io.github.spair.byond.dmi;
+package io.github.spair.byond.dmi.slurper;
 
+import io.github.spair.byond.dmi.DmiMeta;
+import io.github.spair.byond.dmi.DmiMetaEntry;
 import org.junit.Test;
 
 import java.io.File;
@@ -18,8 +20,8 @@ public class MetaExtractorTest {
         expectedMeta.setSpritesHeight(32);
         expectedMeta.setMetas(
                 Arrays.asList(
-                        new Meta("down", 1, 1, null, false, false, false, null),
-                        new Meta("down (M)", 1, 1, null, false, true, false, null)
+                        new DmiMetaEntry("down", 1, 1, null, false, false, false, null),
+                        new DmiMetaEntry("down (M)", 1, 1, null, false, true, false, null)
                 )
         );
 

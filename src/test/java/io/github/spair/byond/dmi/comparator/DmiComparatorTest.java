@@ -1,5 +1,9 @@
-package io.github.spair.byond.dmi;
+package io.github.spair.byond.dmi.comparator;
 
+import io.github.spair.byond.dmi.Dmi;
+import io.github.spair.byond.dmi.DmiSprite;
+import io.github.spair.byond.dmi.SpriteDir;
+import io.github.spair.byond.dmi.slurper.DmiSlurper;
 import org.junit.Test;
 
 import java.awt.*;
@@ -24,13 +28,13 @@ public class DmiComparatorTest {
 
         assertFalse(diff.isSame());
         assertNotEquals(diff.getOldMeta(), diff.getNewMeta());
-        assertEquals(21, diff.getDiffs().size());
+        assertEquals(21, diff.getDmiDiffEntries().size());
 
-        List<Diff> expectedEntries = getExpectedEntries();
+        List<DmiDiffEntry> expectedEntries = getExpectedEntries();
 
         for (int i = 0; i < 21; i++) {
-            Diff expectedEntry = expectedEntries.get(i);
-            Diff compareToEntry = diff.getDiffs().get(i);
+            DmiDiffEntry expectedEntry = expectedEntries.get(i);
+            DmiDiffEntry compareToEntry = diff.getDmiDiffEntries().get(i);
 
             assertEquals(expectedEntry.getStateName(), compareToEntry.getStateName());
             assertEquals(expectedEntry.getStatus(), compareToEntry.getStatus());
@@ -74,7 +78,7 @@ public class DmiComparatorTest {
 
         assertTrue(diff.isSame());
         assertEquals(diff.getOldMeta(), diff.getNewMeta());
-        assertTrue(diff.getDiffs().isEmpty());
+        assertTrue(diff.getDmiDiffEntries().isEmpty());
     }
 
     @Test
@@ -82,11 +86,11 @@ public class DmiComparatorTest {
         Dmi dmi = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
         DmiDiff diff = DmiComparator.compare(dmi, null);
 
-        assertEquals(17, diff.getDiffs().size());
+        assertEquals(17, diff.getDmiDiffEntries().size());
         assertNotNull(diff.getOldMeta());
         assertNull(diff.getNewMeta());
 
-        diff.getDiffs().forEach(diffEntry -> assertEquals(DiffStatus.DELETED, diffEntry.getStatus()));
+        diff.forEach(dmiDiffEntryEntry -> assertEquals(DiffStatus.DELETED, dmiDiffEntryEntry.getStatus()));
     }
 
     @Test
@@ -94,39 +98,39 @@ public class DmiComparatorTest {
         Dmi dmi = DmiSlurper.slurpUp(new File(ROLLERBED_ORIGINAL_PATH));
         DmiDiff diff = DmiComparator.compare(null, dmi);
 
-        assertEquals(17, diff.getDiffs().size());
+        assertEquals(17, diff.getDmiDiffEntries().size());
         assertNotNull(diff.getNewMeta());
         assertNull(diff.getOldMeta());
 
-        diff.getDiffs().forEach(diffEntry -> assertEquals(DiffStatus.CREATED, diffEntry.getStatus()));
+        diff.forEach(dmiDiffEntryEntry -> assertEquals(DiffStatus.CREATED, dmiDiffEntryEntry.getStatus()));
     }
 
-    private List<Diff> getExpectedEntries() {
+    private List<DmiDiffEntry> getExpectedEntries() {
         return Arrays.asList(
-                new Diff("up", new DmiSprite(imgPH(), SpriteDir.SOUTH, 1), null),
-                new Diff("up", new DmiSprite(imgPH(), SpriteDir.NORTH, 1), null),
-                new Diff("up", new DmiSprite(imgPH(), SpriteDir.EAST, 1), null),
-                new Diff("up", new DmiSprite(imgPH(), SpriteDir.WEST, 1), null),
+                new DmiDiffEntry("up", new DmiSprite(imgPH(), SpriteDir.SOUTH, 1), null),
+                new DmiDiffEntry("up", new DmiSprite(imgPH(), SpriteDir.NORTH, 1), null),
+                new DmiDiffEntry("up", new DmiSprite(imgPH(), SpriteDir.EAST, 1), null),
+                new DmiDiffEntry("up", new DmiSprite(imgPH(), SpriteDir.WEST, 1), null),
 
-                new Diff("down", new DmiSprite(imgPH(), SpriteDir.SOUTH, 1), new DmiSprite(imgPH(), SpriteDir.SOUTH, 1)),
+                new DmiDiffEntry("down", new DmiSprite(imgPH(), SpriteDir.SOUTH, 1), new DmiSprite(imgPH(), SpriteDir.SOUTH, 1)),
 
-                new Diff("folded", new DmiSprite(imgPH(), SpriteDir.SOUTH, 3), null),
-                new Diff("folded", new DmiSprite(imgPH(), SpriteDir.NORTH, 3), null),
-                new Diff("folded", new DmiSprite(imgPH(), SpriteDir.EAST, 3), null),
-                new Diff("folded", new DmiSprite(imgPH(), SpriteDir.WEST, 3), null),
+                new DmiDiffEntry("folded", new DmiSprite(imgPH(), SpriteDir.SOUTH, 3), null),
+                new DmiDiffEntry("folded", new DmiSprite(imgPH(), SpriteDir.NORTH, 3), null),
+                new DmiDiffEntry("folded", new DmiSprite(imgPH(), SpriteDir.EAST, 3), null),
+                new DmiDiffEntry("folded", new DmiSprite(imgPH(), SpriteDir.WEST, 3), null),
 
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.SOUTH, 1)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.SOUTH, 2)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.SOUTH, 3)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.NORTH, 1)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.NORTH, 2)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.NORTH, 3)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.EAST, 1)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.EAST, 2)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.EAST, 3)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.WEST, 1)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.WEST, 2)),
-                new Diff("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.WEST, 3))
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.SOUTH, 1)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.SOUTH, 2)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.SOUTH, 3)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.NORTH, 1)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.NORTH, 2)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.NORTH, 3)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.EAST, 1)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.EAST, 2)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.EAST, 3)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.WEST, 1)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.WEST, 2)),
+                new DmiDiffEntry("folded_new_state", null, new DmiSprite(imgPH(), SpriteDir.WEST, 3))
         );
     }
 

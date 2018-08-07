@@ -1,5 +1,6 @@
-package io.github.spair.byond.dmi;
+package io.github.spair.byond.dmi.slurper;
 
+import io.github.spair.byond.dmi.*;
 import org.junit.Test;
 
 import java.io.File;
@@ -47,6 +48,7 @@ public class DmiSlurperTest {
         assertTrue(dmi.isHasDuplicates());
     }
 
+    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void commonDmiAssertion(Dmi dmi) {
         assertEquals("rollerbed_original.dmi", dmi.getName());
         assertEquals(160, dmi.getWidth());
@@ -57,7 +59,7 @@ public class DmiSlurperTest {
         assertEquals(32, dmiMeta.getSpritesWidth());
         assertEquals(32, dmiMeta.getSpritesHeight());
 
-        Meta downStateMeta = dmiMeta.getMetas().get(0);
+        DmiMetaEntry downStateMeta = dmiMeta.getMetas().get(0);
 
         assertEquals("down", downStateMeta.getName());
         assertEquals(1, downStateMeta.getDirs());
@@ -67,7 +69,7 @@ public class DmiSlurperTest {
         assertFalse(downStateMeta.isMovement());
         assertFalse(downStateMeta.isRewind());
 
-        Meta upStateMeta = dmiMeta.getMetas().get(1);
+        DmiMetaEntry upStateMeta = dmiMeta.getMetas().get(1);
 
         assertEquals("up", upStateMeta.getName());
         assertEquals(4, upStateMeta.getDirs());
@@ -77,7 +79,7 @@ public class DmiSlurperTest {
         assertFalse(upStateMeta.isMovement());
         assertTrue(upStateMeta.isRewind());
 
-        Meta foldedStateMeta = dmiMeta.getMetas().get(2);
+        DmiMetaEntry foldedStateMeta = dmiMeta.getMetas().get(2);
 
         assertEquals("folded", foldedStateMeta.getName());
         assertEquals(4, foldedStateMeta.getDirs());
@@ -87,28 +89,28 @@ public class DmiSlurperTest {
         assertFalse(foldedStateMeta.isMovement());
         assertFalse(foldedStateMeta.isRewind());
 
-        DmiState downState = dmi.getState("down");
+        DmiState downState = dmi.getState("down").get();
 
         assertEquals(downStateMeta, downState.getMeta());
         assertEquals(new HashSet<>(Collections.singletonList(SpriteDir.SOUTH)), downState.getSprites().keySet());
-        assertEquals(1, downState.getSpriteList(SpriteDir.SOUTH).size());
-        assertEquals(SpriteDir.SOUTH, downState.getSprite(SpriteDir.SOUTH).getDir());
-        assertEquals(1, downState.getSprite(SpriteDir.SOUTH).getFrameNum());
+        assertEquals(1, downState.getSpriteList(SpriteDir.SOUTH).get().size());
+        assertEquals(SpriteDir.SOUTH, downState.getSprite(SpriteDir.SOUTH).get().getDir());
+        assertEquals(1, downState.getSprite(SpriteDir.SOUTH).get().getFrameNum());
 
-        DmiState upState = dmi.getState("up");
+        DmiState upState = dmi.getState("up").get();
 
         assertEquals(upStateMeta, upState.getMeta());
         assertEquals(new HashSet<>(Arrays.asList(SpriteDir.SOUTH, SpriteDir.NORTH, SpriteDir.EAST, SpriteDir.WEST)), upState.getSprites().keySet());
-        assertEquals(1, upState.getSpriteList(SpriteDir.SOUTH).size());
-        assertEquals(SpriteDir.NORTH, upState.getSprite(SpriteDir.NORTH).getDir());
-        assertEquals(1, upState.getSprite(SpriteDir.EAST).getFrameNum());
+        assertEquals(1, upState.getSpriteList(SpriteDir.SOUTH).get().size());
+        assertEquals(SpriteDir.NORTH, upState.getSprite(SpriteDir.NORTH).get().getDir());
+        assertEquals(1, upState.getSprite(SpriteDir.EAST).get().getFrameNum());
 
-        DmiState foldedState = dmi.getState("folded");
+        DmiState foldedState = dmi.getState("folded").get();
 
         assertEquals(foldedStateMeta, foldedState.getMeta());
         assertEquals(new HashSet<>(Arrays.asList(SpriteDir.SOUTH, SpriteDir.NORTH, SpriteDir.EAST, SpriteDir.WEST)), foldedState.getSprites().keySet());
-        assertEquals(3, foldedState.getSpriteList(SpriteDir.SOUTH).size());
-        assertEquals(SpriteDir.NORTH, foldedState.getSprite(SpriteDir.NORTH, 2).getDir());
-        assertEquals(3, foldedState.getSprite(SpriteDir.EAST, 3).getFrameNum());
+        assertEquals(3, foldedState.getSpriteList(SpriteDir.SOUTH).get().size());
+        assertEquals(SpriteDir.NORTH, foldedState.getSprite(SpriteDir.NORTH, 2).get().getDir());
+        assertEquals(3, foldedState.getSprite(SpriteDir.EAST, 3).get().getFrameNum());
     }
 }
