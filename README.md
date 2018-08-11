@@ -9,7 +9,7 @@
 Set of util classes to work with BYOND dmi files.
 
 ## Installation
-[![Maven Central](https://img.shields.io/maven-central/v/io.github.spair/byond-dmi-util.svg?style=flat)](http://search.maven.org/#search|ga|1|g:"io.github.spair"a:"byond-dmi-util")
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.spair/byond-dmi-util.svg?style=flat)](https://search.maven.org/search?q=a:byond-dmi-util)
 [![JCenter](https://img.shields.io/bintray/v/spair/io.github.spair/byond-dmi-util.svg?label=jcenter)](https://bintray.com/spair/io.github.spair/byond-dmi-util/_latestVersion)
 
 Library deployed to Maven Central and JCenter repositories.
