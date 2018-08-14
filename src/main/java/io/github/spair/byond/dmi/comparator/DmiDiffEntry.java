@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 
+import java.util.Optional;
+
 @Data
 @Setter(AccessLevel.PACKAGE)
 @SuppressWarnings("WeakerAccess")
@@ -29,5 +31,13 @@ public class DmiDiffEntry {
         } else {
             throw new IllegalArgumentException("Original and Modified sprites are null. State name: " + stateName);
         }
+    }
+
+    public Optional<DmiSprite> getOldSprite() {
+        return Optional.ofNullable(oldSprite);
+    }
+
+    public Optional<DmiSprite> getNewSprite() {
+        return Optional.ofNullable(newSprite);
     }
 }

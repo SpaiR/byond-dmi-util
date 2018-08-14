@@ -14,6 +14,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
+@SuppressWarnings("OptionalGetWithoutIsPresent")
 public class DmiComparatorTest {
 
     private static final String ROLLERBED_ORIGINAL_PATH = "src/test/resources/rollerbed_original.dmi";
@@ -41,31 +42,31 @@ public class DmiComparatorTest {
 
             switch (expectedEntry.getStatus()) {
                 case CREATED:
-                    assertNull(compareToEntry.getOldSprite());
-                    assertNotNull(expectedEntry.getNewSprite());
-                    assertNotNull(compareToEntry.getNewSprite());
+                    assertFalse(compareToEntry.getOldSprite().isPresent());
+                    assertTrue(expectedEntry.getNewSprite().isPresent());
+                    assertTrue(compareToEntry.getNewSprite().isPresent());
 
-                    assertEquals(expectedEntry.getNewSprite().getDir(), compareToEntry.getNewSprite().getDir());
-                    assertEquals(expectedEntry.getNewSprite().getFrameNum(), compareToEntry.getNewSprite().getFrameNum());
+                    assertEquals(expectedEntry.getNewSprite().get().getDir(), compareToEntry.getNewSprite().get().getDir());
+                    assertEquals(expectedEntry.getNewSprite().get().getFrameNum(), compareToEntry.getNewSprite().get().getFrameNum());
                     break;
                 case MODIFIED:
-                    assertNotNull(expectedEntry.getOldSprite());
-                    assertNotNull(compareToEntry.getOldSprite());
-                    assertNotNull(expectedEntry.getNewSprite());
-                    assertNotNull(compareToEntry.getNewSprite());
+                    assertTrue(expectedEntry.getOldSprite().isPresent());
+                    assertTrue(compareToEntry.getOldSprite().isPresent());
+                    assertTrue(expectedEntry.getNewSprite().isPresent());
+                    assertTrue(compareToEntry.getNewSprite().isPresent());
 
-                    assertEquals(expectedEntry.getOldSprite().getDir(), compareToEntry.getOldSprite().getDir());
-                    assertEquals(expectedEntry.getOldSprite().getFrameNum(), compareToEntry.getOldSprite().getFrameNum());
-                    assertEquals(expectedEntry.getNewSprite().getDir(), compareToEntry.getNewSprite().getDir());
-                    assertEquals(expectedEntry.getNewSprite().getFrameNum(), compareToEntry.getNewSprite().getFrameNum());
+                    assertEquals(expectedEntry.getOldSprite().get().getDir(), compareToEntry.getOldSprite().get().getDir());
+                    assertEquals(expectedEntry.getOldSprite().get().getFrameNum(), compareToEntry.getOldSprite().get().getFrameNum());
+                    assertEquals(expectedEntry.getNewSprite().get().getDir(), compareToEntry.getNewSprite().get().getDir());
+                    assertEquals(expectedEntry.getNewSprite().get().getFrameNum(), compareToEntry.getNewSprite().get().getFrameNum());
                     break;
                 case DELETED:
-                    assertNull(compareToEntry.getNewSprite());
-                    assertNotNull(expectedEntry.getOldSprite());
-                    assertNotNull(compareToEntry.getOldSprite());
+                    assertFalse(compareToEntry.getNewSprite().isPresent());
+                    assertTrue(expectedEntry.getOldSprite().isPresent());
+                    assertTrue(compareToEntry.getOldSprite().isPresent());
 
-                    assertEquals(expectedEntry.getOldSprite().getDir(), compareToEntry.getOldSprite().getDir());
-                    assertEquals(expectedEntry.getOldSprite().getFrameNum(), compareToEntry.getOldSprite().getFrameNum());
+                    assertEquals(expectedEntry.getOldSprite().get().getDir(), compareToEntry.getOldSprite().get().getDir());
+                    assertEquals(expectedEntry.getOldSprite().get().getFrameNum(), compareToEntry.getOldSprite().get().getFrameNum());
                     break;
             }
         }
