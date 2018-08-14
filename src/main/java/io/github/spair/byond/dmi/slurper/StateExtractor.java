@@ -78,7 +78,10 @@ final class StateExtractor {
         Map<SpriteDir, List<DmiSprite>> spriteMap = new TreeMap<>(dirComparator);
 
         for (DmiSprite sprite : allSprites) {
-            List<DmiSprite> spritesInDir = spriteMap.getOrDefault(sprite.getDir(), new ArrayList<>());
+            List<DmiSprite> spritesInDir = spriteMap.get(sprite.getDir());
+            if (spritesInDir == null) {
+                spritesInDir = new ArrayList<>();
+            }
             spritesInDir.add(sprite);
             spriteMap.putIfAbsent(sprite.getDir(), spritesInDir);
         }

@@ -25,7 +25,10 @@ public class DmiState {
     }
 
     public void addSprite(final DmiSprite sprite) {
-        List<DmiSprite> spriteList = sprites.getOrDefault(sprite.getDir(), new ArrayList<>());
+        List<DmiSprite> spriteList = sprites.get(sprite.getDir());
+        if (spriteList == null) {
+            spriteList = new ArrayList<>();
+        }
         spriteList.add(sprite);
         sprites.putIfAbsent(sprite.getDir(), spriteList);
     }
