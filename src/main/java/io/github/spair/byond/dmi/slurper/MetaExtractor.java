@@ -75,12 +75,6 @@ final class MetaExtractor {
         metadata.setSpritesHeight(Integer.parseInt(widthHeight.group(2)));
 
         Matcher state = STATE_PATTERN.matcher(metadataText);
-
-        if (!state.find()) {
-            throw new IllegalArgumentException("DMI meta does't contain any state property value");
-        }
-        state.reset();
-
         List<DmiMetaEntry> entries = new ArrayList<>();
 
         while (state.find()) {
@@ -89,6 +83,10 @@ final class MetaExtractor {
                 entry.setName(entry.getName().concat(MOVEMENT_SUFFIX));
             }
             entries.add(entry);
+        }
+
+        if (entries.isEmpty()) {
+            throw new IllegalArgumentException("DMI meta does't contain any state property value");
         }
 
         metadata.setMetas(entries);
