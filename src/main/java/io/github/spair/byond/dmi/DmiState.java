@@ -25,12 +25,8 @@ public class DmiState {
     }
 
     public void addSprite(final DmiSprite sprite) {
-        List<DmiSprite> spriteList = sprites.get(sprite.getDir());
-        if (spriteList == null) {
-            spriteList = new ArrayList<>();
-        }
+        List<DmiSprite> spriteList = sprites.computeIfAbsent(sprite.getDir(), k -> new ArrayList<>());
         spriteList.add(sprite);
-        sprites.putIfAbsent(sprite.getDir(), spriteList);
     }
 
     /**
@@ -51,8 +47,7 @@ public class DmiState {
      * @return optional sprite instance
      */
     public Optional<DmiSprite> getSprite(final SpriteDir dir) {
-        final List<DmiSprite> spriteList = sprites.get(dir);
-        return Optional.ofNullable(spriteList).map(dmiSprites -> dmiSprites.get(0));
+        return Optional.ofNullable(sprites.get(dir)).map(dmiSprites -> dmiSprites.get(0));
     }
 
     /**
@@ -67,9 +62,7 @@ public class DmiState {
         if (frame <= 0) {
             throw new IllegalArgumentException("Frame count goes from 1 digit. Method received " + frame + " digit");
         }
-
-        final List<DmiSprite> spriteList = sprites.get(dir);
-        return Optional.ofNullable(spriteList).map(
+        return Optional.ofNullable(sprites.get(dir)).map(
                 dmiSprites -> dmiSprites.size() >= frame - 1 ? dmiSprites.get(frame - 1) : null
         );
     }
