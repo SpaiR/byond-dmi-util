@@ -17,9 +17,7 @@ import java.util.Optional;
 @SuppressWarnings("WeakerAccess")
 public class Dmi {
 
-    /**
-     * The number of states one Dmi file can store. More states than that value won't work properly.
-     */
+    /** The number of states one Dmi file can store. More states than that value won't work properly. */
     public static final int MAX_STATES = 512;
 
     private String name = "";
@@ -52,40 +50,43 @@ public class Dmi {
     }
 
     /**
-     * Returns state with provided name or null if wasn't found.
+     * Returns state with provided name or empty optional if not found.
      *
      * @param stateName state name to search
-     * @return {@link DmiState} instance or null if wasn't found
+     * @return {@link DmiState} instance or empty optional if not found
      */
     public Optional<DmiState> getState(final String stateName) {
         return Optional.ofNullable(states.get(stateName));
     }
 
     /**
-     * Returns the first sprite of state with provided name or null if wasn't found.
+     * Returns the first sprite of state with provided name or empty optional if not found.
      *
      * @param stateName state name to search
-     * @return {@link DmiSprite} instance or null if wasn't found
+     * @return {@link DmiSprite} instance or empty optional if not found
      */
     public Optional<DmiSprite> getStateSprite(final String stateName) {
         return getState(stateName).flatMap(DmiState::getSprite);
     }
 
     /**
-     * Returns the first sprite of state with provided name and dir or null if wasn't found.
+     * Returns sprite of state with provided name and dir or empty optional if not found.
      *
      * @param stateName state name to search
-     * @return {@link DmiSprite} instance or null if wasn't found
+     * @param dir dir value to search
+     * @return {@link DmiSprite} instance or empty optional if not found
      */
     public Optional<DmiSprite> getStateSprite(final String stateName, final SpriteDir dir) {
         return getState(stateName).flatMap(s -> s.getSprite(dir));
     }
 
     /**
-     * Returns sprite of state with provided name, dir and frame or null if wasn't found.
+     * Returns sprite of state with provided name, dir and frame or empty optional if not found.
      *
      * @param stateName state name to search
-     * @return {@link DmiSprite} instance or null if wasn't found
+     * @param dir dir value to search
+     * @param frame dir number to search
+     * @return {@link DmiSprite} instance or empty optional if not found
      */
     public Optional<DmiSprite> getStateSprite(final String stateName, final SpriteDir dir, final int frame) {
         return getState(stateName).flatMap(s -> s.getSprite(dir, frame));
