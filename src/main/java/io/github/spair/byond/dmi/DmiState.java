@@ -60,7 +60,7 @@ public class DmiState {
      */
     public Optional<DmiSprite> getSprite(final SpriteDir dir, final int frame) {
         if (frame <= 0) {
-            throw new IllegalArgumentException("Frame count goes from 1 digit. Method received " + frame + " digit");
+            throw new IllegalArgumentException("Frame count goes from 1 digit. Received: " + frame);
         }
         return Optional.ofNullable(sprites.get(dir)).map(
                 dmiSprites -> dmiSprites.size() >= frame - 1 ? dmiSprites.get(frame - 1) : null
