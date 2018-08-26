@@ -5,6 +5,7 @@ import io.github.spair.byond.dmi.DmiMeta;
 import io.github.spair.byond.dmi.DmiMetaEntry;
 import io.github.spair.byond.dmi.DmiSprite;
 import io.github.spair.byond.dmi.SpriteDir;
+import lombok.val;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -31,6 +32,13 @@ final class StateExtractor {
         Map<String, DmiState> dmiStates = new HashMap<>();
 
         for (DmiMetaEntry metaEntry : dmiMeta.getMetas()) {
+            val stateName = metaEntry.getName();
+
+            if (dmiStates.containsKey(stateName)) {
+                dmiStates.get(stateName).setDuplicate(true);
+                continue;
+            }
+
             List<DmiSprite> allSprites = new ArrayList<>();
 
             for (int frameNumber = 1; frameNumber <= metaEntry.getFrames(); frameNumber++) {
@@ -50,13 +58,12 @@ final class StateExtractor {
                 }
             }
 
-            DmiState dmiState = new DmiState();
+            val dmiState = new DmiState();
 
             dmiState.setMeta(metaEntry);
             dmiState.setSprites(distributeAllSpritesInMap(allSprites));
-            dmiState.setDuplicate(dmiStates.containsKey(metaEntry.getName()));
 
-            dmiStates.put(metaEntry.getName(), dmiState);
+            dmiStates.put(stateName, dmiState);
         }
 
         return dmiStates;
