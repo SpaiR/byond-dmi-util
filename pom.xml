@@ -4,7 +4,7 @@
 
     <groupId>io.github.spair</groupId>
     <artifactId>byond-dmi-util</artifactId>
-    <version>1.0.6.1-SNAPSHOT</version>
+    <version>1.0.7</version>
     <packaging>jar</packaging>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -30,7 +30,7 @@
         <connection>scm:git:https://github.com/SpaiR/byond-dmi-util.git</connection>
         <developerConnection>scm:git:https://github.com/SpaiR/byond-dmi-util.git</developerConnection>
         <url>https://github.com/SpaiR/byond-dmi-util/tree/master</url>
-        <tag>HEAD</tag>
+        <tag>v1.0.7</tag>
     </scm>
 
     <distributionManagement>
