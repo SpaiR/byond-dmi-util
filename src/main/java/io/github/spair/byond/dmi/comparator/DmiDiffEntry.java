@@ -1,21 +1,18 @@
 package io.github.spair.byond.dmi.comparator;
 
 import io.github.spair.byond.dmi.DmiSprite;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
 
 import java.util.Optional;
 
 @Data
-@Setter(AccessLevel.PACKAGE)
 @SuppressWarnings("WeakerAccess")
 public class DmiDiffEntry {
 
     private String stateName;
     private DmiSprite oldSprite;
     private DmiSprite newSprite;
-    private DiffStatus status;
+    private DmiDiffStatus status;
 
     DmiDiffEntry(final String stateName, final DmiSprite oldSprite, final DmiSprite newSprite) {
         this.stateName = stateName;
@@ -23,11 +20,11 @@ public class DmiDiffEntry {
         this.newSprite = newSprite;
 
         if (oldSprite != null && newSprite != null) {
-            status = DiffStatus.MODIFIED;
+            status = DmiDiffStatus.MODIFIED;
         } else if (oldSprite == null && newSprite != null) {
-            status = DiffStatus.CREATED;
+            status = DmiDiffStatus.CREATED;
         } else if (oldSprite != null) {
-            status = DiffStatus.DELETED;
+            status = DmiDiffStatus.DELETED;
         } else {
             throw new IllegalArgumentException("Original and Modified sprites are null. State name: " + stateName);
         }

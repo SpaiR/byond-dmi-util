@@ -1,6 +1,6 @@
 package io.github.spair.byond.dmi.comparator;
 
-public enum DiffStatus {
+public enum DmiDiffStatus {
 
     /** Shows that sprite was created. */
     CREATED,

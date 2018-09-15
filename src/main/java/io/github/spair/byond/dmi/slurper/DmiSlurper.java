@@ -3,9 +3,9 @@ package io.github.spair.byond.dmi.slurper;
 import io.github.spair.byond.dmi.Dmi;
 import io.github.spair.byond.dmi.DmiMeta;
 import io.github.spair.byond.dmi.DmiState;
+import lombok.val;
 
 import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,12 +22,15 @@ import java.util.Map;
 @SuppressWarnings("WeakerAccess")
 public final class DmiSlurper {
 
+    private final MetaExtractor metaExtractor = new MetaExtractor();
+    private final StateExtractor stateExtractor = new StateExtractor();
+
     /**
      * @param dmiFile file to deserialize
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
-    public static Dmi slurpUp(final File dmiFile) {
-        try (InputStream input = new FileInputStream(dmiFile)) {
+    public Dmi slurpUp(final File dmiFile) {
+        try (val input = new FileInputStream(dmiFile)) {
             return slurpUp(dmiFile.getName(), input);
         } catch (FileNotFoundException e) {
             throw new IllegalArgumentException("Received DMI file doesn't exist. File path: " + dmiFile.getPath(), e);
@@ -43,8 +46,8 @@ public final class DmiSlurper {
      * @param base64content base64 string to deserialize
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
-    public static Dmi slurpUp(final String dmiName, final String base64content) {
-        try (InputStream input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
+    public Dmi slurpUp(final String dmiName, final String base64content) {
+        try (val input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
             return slurpUp(dmiName, input);
         } catch (IOException e) {
             throw new IllegalArgumentException("Received base64 content can't be read. Dmi name: " + dmiName, e);
@@ -56,15 +59,15 @@ public final class DmiSlurper {
      * @param input raw input stream to deserialize
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
-    public static Dmi slurpUp(final String dmiName, final InputStream input) {
-        try (BufferedInputStream bufferedInput = new BufferedInputStream(input)) {
+    public Dmi slurpUp(final String dmiName, final InputStream input) {
+        try (val bufferedInput = new BufferedInputStream(input)) {
             bufferedInput.mark(input.available());
 
-            BufferedImage dmiImage = ImageIO.read(bufferedInput);
+            val dmiImage = ImageIO.read(bufferedInput);
             bufferedInput.reset();
 
-            DmiMeta dmiMeta = MetaExtractor.extractMetadata(bufferedInput);
-            Map<String, DmiState> dmiStates = StateExtractor.extractStates(dmiImage, dmiMeta);
+            DmiMeta dmiMeta = metaExtractor.extractMetadata(bufferedInput);
+            Map<String, DmiState> dmiStates = stateExtractor.extractStates(dmiImage, dmiMeta);
 
             return new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
         } catch (IOException e) {
@@ -72,8 +75,5 @@ public final class DmiSlurper {
         } catch (Exception e) {
             throw new RuntimeException("Unable to slurp up dmi input. Dmi name: " + dmiName, e);
         }
-    }
-
-    private DmiSlurper() {
     }
 }

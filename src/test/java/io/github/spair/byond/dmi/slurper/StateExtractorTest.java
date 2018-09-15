@@ -18,6 +18,8 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("OptionalGetWithoutIsPresent")
 public class StateExtractorTest {
 
+    private final StateExtractor stateExtractor = new StateExtractor();
+
     @Test
     public void testExtractStates() throws Exception {
         DmiMeta meta = new DmiMeta();
@@ -32,7 +34,7 @@ public class StateExtractorTest {
         );
 
         BufferedImage img = ImageIO.read(new File("src/test/resources/rollerbed_with_move.dmi"));
-        Map<String, DmiState> states = StateExtractor.extractStates(img, meta);
+        Map<String, DmiState> states = stateExtractor.extractStates(img, meta);
 
         assertEquals(meta.getMetas().get(0), states.get("down").getMeta());
         assertEquals(meta.getMetas().get(1), states.get("down (M)").getMeta());
@@ -60,7 +62,7 @@ public class StateExtractorTest {
         );
 
         BufferedImage img = ImageIO.read(new File("src/test/resources/rollerbed_duplicate_states.dmi"));
-        Map<String, DmiState> states = StateExtractor.extractStates(img, meta);
+        Map<String, DmiState> states = stateExtractor.extractStates(img, meta);
 
         assertEquals(1, states.size());
         assertEquals("state extractor should consider first met state as main", 1, states.get("down").getMeta().getDirs());

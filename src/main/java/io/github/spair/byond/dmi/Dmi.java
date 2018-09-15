@@ -1,9 +1,7 @@
 package io.github.spair.byond.dmi;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -12,7 +10,6 @@ import java.util.HashSet;
 import java.util.Optional;
 
 @Data
-@Setter(AccessLevel.PACKAGE)
 @NoArgsConstructor
 @SuppressWarnings("WeakerAccess")
 public class Dmi {

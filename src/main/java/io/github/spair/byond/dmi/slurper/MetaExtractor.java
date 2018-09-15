@@ -25,9 +25,9 @@ final class MetaExtractor {
     private static final String META_ELEMENT_TAG = "TextEntry";
     private static final String META_ATTRIBUTE = "value";
 
-    private static final Pattern WIDTH_HEIGHT = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
-    private static final Pattern STATE_PATTERN = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
-    private static final Pattern PARAM_PATTERN = Pattern.compile("(\\w+)\\s=\\s(.+)");
+    private final Pattern widthHeightPattern = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
+    private final Pattern statePattern = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
+    private final Pattern paramPattern = Pattern.compile("(\\w+)\\s=\\s(.+)");
 
     private static final String STATE = "state";
     private static final String DIRS = "dirs";
@@ -40,7 +40,7 @@ final class MetaExtractor {
 
     private static final String MOVEMENT_SUFFIX = " (M)";
 
-    static DmiMeta extractMetadata(final InputStream input) {
+    DmiMeta extractMetadata(final InputStream input) {
         IIOMetadata metadata = readMetadata(input);
 
         String metadataFormatName = IIOMetadataFormatImpl.standardMetadataFormatName;
@@ -50,7 +50,7 @@ final class MetaExtractor {
         return parseMetadataText(text.getAttribute(META_ATTRIBUTE));
     }
 
-    private static IIOMetadata readMetadata(final InputStream input) {
+    private IIOMetadata readMetadata(final InputStream input) {
         try (ImageInputStream imageInputStream = ImageIO.createImageInputStream(input)) {
             ImageReader reader = ImageIO.getImageReadersByMIMEType(PNG_MIME).next();
 
@@ -63,18 +63,18 @@ final class MetaExtractor {
         }
     }
 
-    private static DmiMeta parseMetadataText(final String metadataText) {
-        DmiMeta metadata = new DmiMeta();
-        Matcher widthHeight = WIDTH_HEIGHT.matcher(metadataText);
+    private DmiMeta parseMetadataText(final String metadataText) {
+        Matcher widthHeight = widthHeightPattern.matcher(metadataText);
 
         if (!widthHeight.find() || widthHeight.group(1) == null || widthHeight.group(2) == null) {
             throw new IllegalArgumentException("DMI meta does't contain width and height properties");
         }
 
+        DmiMeta metadata = new DmiMeta();
         metadata.setSpritesWidth(Integer.parseInt(widthHeight.group(1)));
         metadata.setSpritesHeight(Integer.parseInt(widthHeight.group(2)));
 
-        Matcher state = STATE_PATTERN.matcher(metadataText);
+        Matcher state = statePattern.matcher(metadataText);
         List<DmiMetaEntry> entries = new ArrayList<>();
 
         while (state.find()) {
@@ -94,9 +94,9 @@ final class MetaExtractor {
         return metadata;
     }
 
-    private static DmiMetaEntry parseState(final String stateText) {
+    private DmiMetaEntry parseState(final String stateText) {
+        Matcher stateParam = paramPattern.matcher(stateText);
         DmiMetaEntry metaEntry = new DmiMetaEntry();
-        Matcher stateParam = PARAM_PATTERN.matcher(stateText);
 
         while (stateParam.find()) {
             final String paramName = stateParam.group(1);
@@ -137,14 +137,11 @@ final class MetaExtractor {
         return metaEntry;
     }
 
-    private static boolean isValueTrue(final String value) {
+    private boolean isValueTrue(final String value) {
         return "1".equals(value);
     }
 
-    private static double[] doubleArrayFromString(final String str) {
+    private double[] doubleArrayFromString(final String str) {
         return Arrays.stream(str.split(",")).mapToDouble(Double::parseDouble).toArray();
-    }
-
-    private MetaExtractor() {
     }
 }

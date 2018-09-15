@@ -1,16 +1,13 @@
 package io.github.spair.byond.dmi.comparator;
 
 import io.github.spair.byond.dmi.DmiMeta;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
 @Data
-@Setter(AccessLevel.PACKAGE)
 @SuppressWarnings("WeakerAccess")
 public class DmiDiff implements Iterable<DmiDiffEntry> {
 

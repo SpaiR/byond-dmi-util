@@ -4,6 +4,7 @@ import io.github.spair.byond.dmi.Dmi;
 import io.github.spair.byond.dmi.DmiState;
 import io.github.spair.byond.dmi.DmiSprite;
 import io.github.spair.byond.dmi.SpriteDir;
+import lombok.val;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +44,7 @@ public final class DmiComparator {
         final Map<String, DmiState> newStates = extractStates(newDmi);
 
         oldStates.forEach((stateName, oldState) -> {
-            final DmiState newState = newStates.get(stateName);
+            val newState = newStates.get(stateName);
 
             if (newState != null) {
                 dmiDiffEntryEntries.addAll(findOldAndNewStateDiff(oldState, newState));
@@ -63,7 +64,7 @@ public final class DmiComparator {
 
     private static List<DmiDiffEntry> listOnlyOneStateSprites(final DmiState state, final boolean isOldState) {
         List<DmiDiffEntry> dmiDiffEntries = new ArrayList<>();
-        final String stateName = state.getName();
+        val stateName = state.getName();
 
         state.getSprites().forEach((spriteDir, stateSprite) ->
                 stateSprite.forEach(sprite -> {
@@ -81,7 +82,7 @@ public final class DmiComparator {
     private static List<DmiDiffEntry> findOldAndNewStateDiff(final DmiState oldState, final DmiState newState) {
         List<DmiDiffEntry> dmiDiffEntries = new ArrayList<>();
 
-        final String stateName = oldState.getName();
+        val stateName = oldState.getName();
 
         final Map<SpriteDir, List<DmiSprite>> oldStateSprites = oldState.getSprites();
         final Map<SpriteDir, List<DmiSprite>> newStateSprites = newState.getSprites();
