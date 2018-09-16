@@ -110,4 +110,12 @@ public class Dmi {
     public boolean isStateOverflow() {
         return states.size() > MAX_STATES;
     }
+
+    public int getSpritesWidth() {
+        return metadata.getSpritesWidth();
+    }
+
+    public int getSpritesHeight() {
+        return metadata.getSpritesHeight();
+    }
 }

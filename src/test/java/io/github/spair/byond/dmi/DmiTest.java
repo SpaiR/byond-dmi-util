@@ -119,4 +119,13 @@ public class DmiTest {
         assertTrue(dmi.hasState("state"));
         assertFalse(dmi.hasState("1234567890"));
     }
+
+    @Test
+    public void testGetSpritesProperties() {
+        Dmi dmi = new Dmi();
+        dmi.setMetadata(new DmiMeta(32, 64, null));
+
+        assertEquals(32, dmi.getSpritesWidth());
+        assertEquals(64, dmi.getSpritesHeight());
+    }
 }

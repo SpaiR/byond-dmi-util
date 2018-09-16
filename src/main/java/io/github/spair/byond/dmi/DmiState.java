@@ -24,6 +24,34 @@ public class DmiState {
         return meta.getName();
     }
 
+    public int getDirs() {
+        return meta.getDirs();
+    }
+
+    public int getFrames() {
+        return meta.getFrames();
+    }
+
+    public double[] getDelay() {
+        return meta.getDelay();
+    }
+
+    public boolean hasLoop() {
+        return meta.isLoop();
+    }
+
+    public boolean isMovement() {
+        return meta.isMovement();
+    }
+
+    public boolean hasRewind() {
+        return meta.isRewind();
+    }
+
+    public double[] getHotspot() {
+        return meta.getHotspot();
+    }
+
     public void addSprite(final DmiSprite sprite) {
         List<DmiSprite> spriteList = sprites.computeIfAbsent(sprite.getDir(), k -> new ArrayList<>());
         spriteList.add(sprite);

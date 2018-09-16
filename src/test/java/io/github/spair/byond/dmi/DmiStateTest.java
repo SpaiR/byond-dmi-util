@@ -56,4 +56,19 @@ public class DmiStateTest {
         DmiState dmiState = new DmiState();
         dmiState.getSprite(SpriteDir.SOUTH, 0);
     }
+
+    @Test
+    public void testGetMetaProperties() {
+        DmiState dmiState = new DmiState();
+        dmiState.setMeta(new DmiMetaEntry("state", 4, 1, null, false, false, false, null));
+
+        assertEquals("state", dmiState.getName());
+        assertEquals(4, dmiState.getDirs());
+        assertEquals(1, dmiState.getFrames());
+        assertNull(dmiState.getDelay());
+        assertFalse(dmiState.hasLoop());
+        assertFalse(dmiState.isMovement());
+        assertFalse(dmiState.hasRewind());
+        assertNull(dmiState.getHotspot());
+    }
 }
