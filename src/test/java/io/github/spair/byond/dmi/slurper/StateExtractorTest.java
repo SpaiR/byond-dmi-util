@@ -66,6 +66,6 @@ public class StateExtractorTest {
 
         assertEquals(1, states.size());
         assertEquals("state extractor should consider first met state as main", 1, states.get("down").getMeta().getDirs());
-        assertTrue(states.get("down").isDuplicate());
+        assertTrue(states.get("down").hasDuplicates());
     }
 }

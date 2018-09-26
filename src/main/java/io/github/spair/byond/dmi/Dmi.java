@@ -33,7 +33,7 @@ public class Dmi {
         this.states = states;
 
         states.forEach((stateName, dmiState) -> {
-            if (dmiState.isDuplicate()) {
+            if (dmiState.hasDuplicates()) {
                 duplicateStatesNames.add(stateName);
             }
         });
@@ -41,7 +41,7 @@ public class Dmi {
 
     public void addState(final DmiState dmiState) {
         states.put(dmiState.getName(), dmiState);
-        if (dmiState.isDuplicate()) {
+        if (dmiState.hasDuplicates()) {
             duplicateStatesNames.add(dmiState.getName());
         }
     }

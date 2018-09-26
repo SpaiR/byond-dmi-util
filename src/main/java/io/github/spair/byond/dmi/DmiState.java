@@ -18,7 +18,7 @@ public class DmiState {
 
     private DmiMetaEntry meta;
     private Map<SpriteDir, List<DmiSprite>> sprites = new HashMap<>();
-    private boolean isDuplicate;
+    private List<DmiState> duplicates = new ArrayList<>();
 
     public String getName() {
         return meta.getName();
@@ -52,9 +52,17 @@ public class DmiState {
         return meta.getHotspot();
     }
 
+    public boolean hasDuplicates() {
+        return !duplicates.isEmpty();
+    }
+
     public void addSprite(final DmiSprite sprite) {
         List<DmiSprite> spriteList = sprites.computeIfAbsent(sprite.getDir(), k -> new ArrayList<>());
         spriteList.add(sprite);
+    }
+
+    public void addDuplicate(final DmiState dmiState) {
+        duplicates.add(dmiState);
     }
 
     /**

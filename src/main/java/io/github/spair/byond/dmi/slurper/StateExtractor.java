@@ -35,13 +35,7 @@ final class StateExtractor {
 
         for (DmiMetaEntry metaEntry : dmiMeta.getMetas()) {
             val stateName = metaEntry.getName();
-
-            if (dmiStates.containsKey(stateName)) {
-                dmiStates.get(stateName).setDuplicate(true);
-                continue;
-            }
-
-            List<DmiSprite> allSprites = new ArrayList<>();
+            val allSprites = new ArrayList<DmiSprite>();
 
             for (int frameNumber = 1; frameNumber <= metaEntry.getFrames(); frameNumber++) {
                 for (int dirCount = 1; dirCount <= metaEntry.getDirs(); dirCount++) {
@@ -65,7 +59,11 @@ final class StateExtractor {
             dmiState.setMeta(metaEntry);
             dmiState.setSprites(distributeAllSpritesInMap(allSprites));
 
-            dmiStates.put(stateName, dmiState);
+            if (dmiStates.containsKey(stateName)) {
+                dmiStates.get(stateName).addDuplicate(dmiState);
+            } else {
+                dmiStates.put(stateName, dmiState);
+            }
         }
 
         return dmiStates;

@@ -20,15 +20,14 @@ public class DmiTest {
     @Test
     public void testCheckForDuplicatesWhenExists() {
         DmiState dmiState1 = new DmiState();
-        dmiState1.setDuplicate(true);
+        dmiState1.addDuplicate(new DmiState());
         dmiState1.setMeta(new DmiMetaEntry("1", 0, 0, null, false, false, false, null));
 
         DmiState dmiState2 = new DmiState();
-        dmiState2.setDuplicate(true);
+        dmiState2.addDuplicate(new DmiState());
         dmiState2.setMeta(new DmiMetaEntry("2", 0, 0, null, false, false, false, null));
 
         DmiState dmiState3 = new DmiState();
-        dmiState3.setDuplicate(false);
         dmiState3.setMeta(new DmiMetaEntry("3", 0, 0, null, false, false, false, null));
 
         Dmi dmi = new Dmi();
