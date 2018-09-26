@@ -5,7 +5,7 @@ import io.github.spair.byond.dmi.SpriteDir;
 @SuppressWarnings("checkstyle:MagicNumber")
 final class SpriteDirHelper {
 
-    // During DMI slurping all dirs are passed in `for(i = 0; i <= n; i++)` cycle.
+    // During DMI slurping all dirs images parsed one by one.
     // This method determines the order in which dirs are placed in `.dmi` file.
     static SpriteDir dirByIndex(final int dirCount) {
         switch (dirCount) {
