@@ -2,41 +2,55 @@ package io.github.spair.byond.dmi;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.AccessLevel;
+import lombok.val;
 
 import java.util.Map;
 import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.Iterator;
 
 @Data
 @NoArgsConstructor
 @SuppressWarnings("WeakerAccess")
-public class Dmi {
+public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
 
-    /** The number of states one Dmi file can store. More states than that value won't work properly. */
+    /**
+     * The number of states one Dmi file can store. More states than that value won't work properly.
+     */
     public static final int MAX_STATES = 512;
+    public static final int DEFAULT_SPRITE_SIZE = 32;
 
     private String name = "";
-    private int width;
-    private int height;
-    private DmiMeta metadata = new DmiMeta();
+
+    private int totalWidth = DEFAULT_SPRITE_SIZE;
+    private int totalHeight = DEFAULT_SPRITE_SIZE;
+
+    private int spriteWidth = DEFAULT_SPRITE_SIZE;
+    private int spriteHeight = DEFAULT_SPRITE_SIZE;
+
+    @Setter(AccessLevel.NONE)
     private Map<String, DmiState> states = new HashMap<>();
+    @Setter(AccessLevel.NONE)
     private Set<String> duplicateStatesNames = new HashSet<>();
 
-    public Dmi(final String name, final int width, final int height,
-               final DmiMeta metadata, final Map<String, DmiState> states) {
+    public Dmi(final String name, final int totalWidth, final int totalHeight,
+               final int spriteWidth, final int spriteHeight, final Map<String, DmiState> states) {
         this.name = name;
-        this.width = width;
-        this.height = height;
-        this.metadata = metadata;
+        this.totalWidth = totalWidth;
+        this.totalHeight = totalHeight;
+        this.spriteWidth = spriteWidth;
+        this.spriteHeight = spriteHeight;
         this.states = states;
 
-        states.forEach((stateName, dmiState) -> {
-            if (dmiState.hasDuplicates()) {
-                duplicateStatesNames.add(stateName);
+        for (val state : states.entrySet()) {
+            if (state.getValue().hasDuplicates()) {
+                duplicateStatesNames.add(state.getKey());
             }
-        });
+        }
     }
 
     public void addState(final DmiState dmiState) {
@@ -44,6 +58,11 @@ public class Dmi {
         if (dmiState.hasDuplicates()) {
             duplicateStatesNames.add(dmiState.getName());
         }
+    }
+
+    public DmiState removeState(final String stateName) {
+        duplicateStatesNames.remove(stateName);
+        return states.remove(stateName);
     }
 
     /**
@@ -70,7 +89,7 @@ public class Dmi {
      * Returns sprite of state with provided name and dir or empty optional if not found.
      *
      * @param stateName state name to search
-     * @param dir dir value to search
+     * @param dir       dir value to search
      * @return {@link DmiSprite} instance or empty optional if not found
      */
     public Optional<DmiSprite> getStateSprite(final String stateName, final SpriteDir dir) {
@@ -81,8 +100,8 @@ public class Dmi {
      * Returns sprite of state with provided name, dir and frame or empty optional if not found.
      *
      * @param stateName state name to search
-     * @param dir dir value to search
-     * @param frame dir number to search
+     * @param dir       dir value to search
+     * @param frame     dir number to search
      * @return {@link DmiSprite} instance or empty optional if not found
      */
     public Optional<DmiSprite> getStateSprite(final String stateName, final SpriteDir dir, final int frame) {
@@ -94,7 +113,7 @@ public class Dmi {
     }
 
     /**
-     * Shows if there are states, which have duplicate names in current Dmi.
+     * Shows if there are metaStates, which have duplicate names in current Dmi.
      *
      * @return true if there are duplicates, otherwise false
      */
@@ -103,19 +122,16 @@ public class Dmi {
     }
 
     /**
-     * Shows if the number of states more than {@link #MAX_STATES}.
+     * Shows if the number of metaStates more than {@link #MAX_STATES}.
      *
-     * @return true if too many states, otherwise false
+     * @return true if too many metaStates, otherwise false
      */
     public boolean isStateOverflow() {
         return states.size() > MAX_STATES;
     }
 
-    public int getSpritesWidth() {
-        return metadata.getSpritesWidth();
-    }
-
-    public int getSpritesHeight() {
-        return metadata.getSpritesHeight();
+    @Override
+    public Iterator<Map.Entry<String, DmiState>> iterator() {
+        return states.entrySet().iterator();
     }
 }

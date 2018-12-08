@@ -1,7 +1,6 @@
 package io.github.spair.byond.dmi.slurper;
 
 import io.github.spair.byond.dmi.Dmi;
-import io.github.spair.byond.dmi.DmiMeta;
 import io.github.spair.byond.dmi.DmiState;
 import lombok.val;
 
@@ -11,13 +10,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.ByteArrayInputStream;
 import java.io.BufferedInputStream;
-import java.util.Base64;
 import java.util.Map;
 
 /**
- * Class to extract {@link io.github.spair.byond.dmi.Dmi} object from file, base64 string or raw input stream.
+ * Class to extract {@link io.github.spair.byond.dmi.Dmi} object from file or raw input stream.
  */
 @SuppressWarnings("WeakerAccess")
 public final class DmiSlurper {
@@ -43,20 +40,7 @@ public final class DmiSlurper {
 
     /**
      * @param dmiName the name of resulted {@link io.github.spair.byond.dmi.Dmi} object
-     * @param base64content base64 string to deserialize
-     * @return {@link io.github.spair.byond.dmi.Dmi} object
-     */
-    public Dmi slurpUp(final String dmiName, final String base64content) {
-        try (val input = new ByteArrayInputStream(Base64.getMimeDecoder().decode(base64content))) {
-            return slurpUp(dmiName, input);
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Received base64 content can't be read. Dmi name: " + dmiName, e);
-        }
-    }
-
-    /**
-     * @param dmiName the name of resulted {@link io.github.spair.byond.dmi.Dmi} object
-     * @param input raw input stream to deserialize
+     * @param input   raw input stream to deserialize
      * @return {@link io.github.spair.byond.dmi.Dmi} object
      */
     public Dmi slurpUp(final String dmiName, final InputStream input) {
@@ -66,10 +50,10 @@ public final class DmiSlurper {
             val dmiImage = ImageIO.read(bufferedInput);
             bufferedInput.reset();
 
-            DmiMeta dmiMeta = metaExtractor.extractMetadata(bufferedInput);
-            Map<String, DmiState> dmiStates = stateExtractor.extractStates(dmiImage, dmiMeta);
+            MetaExtractor.Meta meta = metaExtractor.extractMetadata(bufferedInput);
+            Map<String, DmiState> dmiStates = stateExtractor.extractStates(dmiImage, meta);
 
-            return new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), dmiMeta, dmiStates);
+            return new Dmi(dmiName, dmiImage.getWidth(), dmiImage.getHeight(), meta.getSpritesWidth(), meta.getSpritesHeight(), dmiStates);
         } catch (IOException e) {
             throw new IllegalArgumentException("Received DMI can't be read. Dmi name: " + dmiName, e);
         } catch (Exception e) {

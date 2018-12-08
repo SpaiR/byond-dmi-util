@@ -1,7 +1,5 @@
 package io.github.spair.byond.dmi.slurper;
 
-import io.github.spair.byond.dmi.DmiMeta;
-import io.github.spair.byond.dmi.DmiMetaEntry;
 import org.junit.Test;
 
 import java.io.File;
@@ -14,18 +12,18 @@ public class MetaExtractorTest {
 
     @Test
     public void testExtractMetadata() throws Exception {
-        DmiMeta expectedMeta = new DmiMeta();
+        MetaExtractor.Meta expectedMeta = new MetaExtractor.Meta();
 
         expectedMeta.setSpritesWidth(32);
         expectedMeta.setSpritesHeight(32);
-        expectedMeta.setMetas(
+        expectedMeta.setMetaStates(
                 Arrays.asList(
-                        new DmiMetaEntry("down", 1, 1, null, false, false, false, null),
-                        new DmiMetaEntry("down (M)", 1, 1, null, false, true, false, null)
+                        new MetaExtractor.MetaState("down", 1, 1, null, false, false, false, null),
+                        new MetaExtractor.MetaState("down (M)", 1, 1, null, false, true, false, null)
                 )
         );
 
-        DmiMeta metaToCompare = new MetaExtractor().extractMetadata(new FileInputStream(new File("src/test/resources/rollerbed_with_move.dmi")));
+        MetaExtractor.Meta metaToCompare = new MetaExtractor().extractMetadata(new FileInputStream(new File("src/test/resources/rollerbed_with_move.dmi")));
 
         assertEquals(expectedMeta, metaToCompare);
     }

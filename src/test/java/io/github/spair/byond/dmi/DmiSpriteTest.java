@@ -37,7 +37,7 @@ public class DmiSpriteTest {
         dmiSprite2.setDir(SpriteDir.SOUTH);
         assertEquals(dmiSprite1, dmiSprite2);
 
-        dmiSprite2.setFrameNum(2);
+        dmiSprite2.setFrameNumber(2);
         assertNotEquals(dmiSprite1, dmiSprite2);
     }
 }

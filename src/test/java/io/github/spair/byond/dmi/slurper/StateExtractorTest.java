@@ -1,7 +1,5 @@
 package io.github.spair.byond.dmi.slurper;
 
-import io.github.spair.byond.dmi.DmiMeta;
-import io.github.spair.byond.dmi.DmiMetaEntry;
 import io.github.spair.byond.dmi.DmiState;
 import io.github.spair.byond.dmi.SpriteDir;
 import org.junit.Test;
@@ -22,22 +20,19 @@ public class StateExtractorTest {
 
     @Test
     public void testExtractStates() throws Exception {
-        DmiMeta meta = new DmiMeta();
+        MetaExtractor.Meta meta = new MetaExtractor.Meta();
 
         meta.setSpritesWidth(32);
         meta.setSpritesHeight(32);
-        meta.setMetas(
+        meta.setMetaStates(
                 Arrays.asList(
-                        new DmiMetaEntry("down", 1, 1, null, false, false, false, null),
-                        new DmiMetaEntry("down (M)", 1, 1, null, false, true, false, null)
+                        new MetaExtractor.MetaState("down", 1, 1, null, false, false, false, null),
+                        new MetaExtractor.MetaState("down (M)", 1, 1, null, false, true, false, null)
                 )
         );
 
         BufferedImage img = ImageIO.read(new File("src/test/resources/rollerbed_with_move.dmi"));
         Map<String, DmiState> states = stateExtractor.extractStates(img, meta);
-
-        assertEquals(meta.getMetas().get(0), states.get("down").getMeta());
-        assertEquals(meta.getMetas().get(1), states.get("down (M)").getMeta());
 
         assertEquals(1, states.get("down").getSprites().size());
         assertEquals(1, states.get("down (M)").getSprites().size());
@@ -50,14 +45,14 @@ public class StateExtractorTest {
 
     @Test
     public void testExtractStatesWithDuplicates() throws Exception {
-        DmiMeta meta = new DmiMeta();
-        meta.setSpritesHeight(32);
-        meta.setSpritesWidth(32);
+        MetaExtractor.Meta meta = new MetaExtractor.Meta();
 
-        meta.setMetas(
+        meta.setSpritesWidth(32);
+        meta.setSpritesHeight(32);
+        meta.setMetaStates(
                 Arrays.asList(
-                        new DmiMetaEntry("down", 1, 1, null, false, false, false, null),
-                        new DmiMetaEntry("down", 4, 1, null, false, false, false, null)
+                        new MetaExtractor.MetaState("down", 1, 1, null, false, false, false, null),
+                        new MetaExtractor.MetaState("down", 4, 1, null, false, false, false, null)
                 )
         );
 
@@ -65,7 +60,7 @@ public class StateExtractorTest {
         Map<String, DmiState> states = stateExtractor.extractStates(img, meta);
 
         assertEquals(1, states.size());
-        assertEquals("state extractor should consider first met state as main", 1, states.get("down").getMeta().getDirs());
+        assertEquals("state extractor should consider first met state as main", 1, states.get("down").getDirs());
         assertTrue(states.get("down").hasDuplicates());
     }
 }

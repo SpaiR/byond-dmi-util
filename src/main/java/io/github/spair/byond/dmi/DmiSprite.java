@@ -12,31 +12,32 @@ import java.util.Objects;
 
 @Data
 @AllArgsConstructor
-@SuppressWarnings("WeakerAccess")
 public class DmiSprite {
 
     private BufferedImage sprite;
-    private int width;
-    private int height;
     private SpriteDir dir;
-    private int frameNum;
+
+    private int width = Dmi.DEFAULT_SPRITE_SIZE;
+    private int height = Dmi.DEFAULT_SPRITE_SIZE;
+
+    private int frameNumber = 1;
 
     public DmiSprite(final BufferedImage sprite, final SpriteDir dir, final int frameNum) {
         this.sprite = sprite;
         this.width = sprite.getWidth();
         this.height = sprite.getHeight();
         this.dir = dir;
-        this.frameNum = frameNum;
+        this.frameNumber = frameNum;
     }
 
     @Override
     public String toString() {
         return "DmiSprite{"
                 + "sprite=binary-image"
+                + ", dir=" + dir
                 + ", width=" + width
                 + ", height=" + height
-                + ", dir=" + dir
-                + ", frameNum=" + frameNum
+                + ", frameNumber=" + frameNumber
                 + '}';
     }
 
@@ -48,15 +49,15 @@ public class DmiSprite {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DmiSprite sprite1 = (DmiSprite) o;
-        return frameNum == sprite1.frameNum
-                && dir == sprite1.dir
-                && isEqualSprite(sprite1.sprite);
+        DmiSprite otherDmiSprite = (DmiSprite) o;
+        return frameNumber == otherDmiSprite.frameNumber
+                && dir == otherDmiSprite.dir
+                && isEqualSprite(otherDmiSprite.sprite);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sprite, dir, frameNum);
+        return Objects.hash(sprite, dir, frameNumber);
     }
 
     private boolean isEqualSprite(final BufferedImage spriteToCheck) {

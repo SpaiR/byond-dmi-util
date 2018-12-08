@@ -1,56 +1,37 @@
 package io.github.spair.byond.dmi;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.AccessLevel;
 
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.HashMap;
 import java.util.Optional;
+import java.util.Iterator;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @SuppressWarnings("WeakerAccess")
-public class DmiState {
+public class DmiState implements Iterable<Map.Entry<SpriteDir, List<DmiSprite>>> {
 
-    private DmiMetaEntry meta;
-    private Map<SpriteDir, List<DmiSprite>> sprites = new HashMap<>();
+    private String name = "";
+    private int dirs;
+    private int frames;
+    private double[] delay;
+    private boolean loop;
+    private boolean movement;
+    private boolean rewind;
+    private double[] hotspot;
+
+    @Setter(AccessLevel.NONE)
+    private Map<SpriteDir, List<DmiSprite>> sprites = new TreeMap<>(new SpriteDirComparator());
+    @Setter(AccessLevel.NONE)
     private List<DmiState> duplicates = new ArrayList<>();
-
-    public String getName() {
-        return meta.getName();
-    }
-
-    public int getDirs() {
-        return meta.getDirs();
-    }
-
-    public int getFrames() {
-        return meta.getFrames();
-    }
-
-    public double[] getDelay() {
-        return meta.getDelay();
-    }
-
-    public boolean hasLoop() {
-        return meta.isLoop();
-    }
-
-    public boolean isMovement() {
-        return meta.isMovement();
-    }
-
-    public boolean hasRewind() {
-        return meta.isRewind();
-    }
-
-    public double[] getHotspot() {
-        return meta.getHotspot();
-    }
 
     public boolean hasDuplicates() {
         return !duplicates.isEmpty();
@@ -111,5 +92,10 @@ public class DmiState {
      */
     public Optional<List<DmiSprite>> getSpriteList(final SpriteDir dir) {
         return Optional.ofNullable(sprites.get(dir));
+    }
+
+    @Override
+    public Iterator<Map.Entry<SpriteDir, List<DmiSprite>>> iterator() {
+        return sprites.entrySet().iterator();
     }
 }

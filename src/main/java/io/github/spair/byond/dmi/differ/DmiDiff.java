@@ -1,4 +1,4 @@
-package io.github.spair.byond.dmi.comparator;
+package io.github.spair.byond.dmi.differ;
 
 import io.github.spair.byond.dmi.DmiSprite;
 import lombok.Data;
@@ -7,14 +7,14 @@ import java.util.Optional;
 
 @Data
 @SuppressWarnings("WeakerAccess")
-public class DmiDiffEntry {
+public class DmiDiff {
 
     private String stateName;
     private DmiSprite oldSprite;
     private DmiSprite newSprite;
     private DmiDiffStatus status;
 
-    DmiDiffEntry(final String stateName, final DmiSprite oldSprite, final DmiSprite newSprite) {
+    DmiDiff(final String stateName, final DmiSprite oldSprite, final DmiSprite newSprite) {
         this.stateName = stateName;
         this.oldSprite = oldSprite;
         this.newSprite = newSprite;

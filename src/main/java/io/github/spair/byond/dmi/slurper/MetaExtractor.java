@@ -1,7 +1,8 @@
 package io.github.spair.byond.dmi.slurper;
 
-import io.github.spair.byond.dmi.DmiMeta;
-import io.github.spair.byond.dmi.DmiMetaEntry;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -12,9 +13,9 @@ import javax.imageio.metadata.IIOMetadataNode;
 import javax.imageio.stream.ImageInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,11 +25,6 @@ final class MetaExtractor {
 
     private static final String META_ELEMENT_TAG = "TextEntry";
     private static final String META_ATTRIBUTE = "value";
-
-    private final Pattern widthHeightPattern = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
-    private final Pattern statePattern = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
-    private final Pattern paramPattern = Pattern.compile("(\\w+)\\s=\\s(.+)");
-
     private static final String STATE = "state";
     private static final String DIRS = "dirs";
     private static final String FRAMES = "frames";
@@ -37,10 +33,12 @@ final class MetaExtractor {
     private static final String MOVEMENT = "movement";
     private static final String REWIND = "rewind";
     private static final String HOTSPOT = "hotspot";
-
     private static final String MOVEMENT_SUFFIX = " (M)";
+    private final Pattern widthHeightPattern = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
+    private final Pattern statePattern = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
+    private final Pattern paramPattern = Pattern.compile("(\\w+)\\s=\\s(.+)");
 
-    DmiMeta extractMetadata(final InputStream input) {
+    Meta extractMetadata(final InputStream input) {
         IIOMetadata metadata = readMetadata(input);
 
         String metadataFormatName = IIOMetadataFormatImpl.standardMetadataFormatName;
@@ -63,40 +61,33 @@ final class MetaExtractor {
         }
     }
 
-    private DmiMeta parseMetadataText(final String metadataText) {
+    private Meta parseMetadataText(final String metadataText) {
         Matcher widthHeight = widthHeightPattern.matcher(metadataText);
 
         if (!widthHeight.find() || widthHeight.group(1) == null || widthHeight.group(2) == null) {
-            throw new IllegalArgumentException("DMI meta does't contain width and height properties");
+            throw new IllegalArgumentException("DMI meta does't contain totalWidth and totalHeight properties");
         }
 
-        DmiMeta metadata = new DmiMeta();
-        metadata.setSpritesWidth(Integer.parseInt(widthHeight.group(1)));
-        metadata.setSpritesHeight(Integer.parseInt(widthHeight.group(2)));
+        Meta metadata = new Meta();
+        metadata.spritesWidth = Integer.parseInt(widthHeight.group(1));
+        metadata.spritesHeight = Integer.parseInt(widthHeight.group(2));
 
         Matcher state = statePattern.matcher(metadataText);
-        List<DmiMetaEntry> entries = new ArrayList<>();
 
         while (state.find()) {
-            DmiMetaEntry entry = parseState(state.group());
-            if (entry.isMovement()) {
-                entry.setName(entry.getName().concat(MOVEMENT_SUFFIX));
-            }
-            entries.add(entry);
+            metadata.metaStates.add(parseState(state.group()));
         }
 
-        if (entries.isEmpty()) {
+        if (metadata.metaStates.isEmpty()) {
             throw new IllegalArgumentException("DMI meta does't contain any state property value");
         }
-
-        metadata.setMetas(entries);
 
         return metadata;
     }
 
-    private DmiMetaEntry parseState(final String stateText) {
+    private MetaState parseState(final String stateText) {
         Matcher stateParam = paramPattern.matcher(stateText);
-        DmiMetaEntry metaEntry = new DmiMetaEntry();
+        MetaState metaState = new MetaState();
 
         while (stateParam.find()) {
             final String paramName = stateParam.group(1);
@@ -104,29 +95,28 @@ final class MetaExtractor {
 
             switch (paramName) {
                 case STATE:
-                    String stateNameWithoutQuotes = paramValue.substring(1, paramValue.length() - 1);
-                    metaEntry.setName(stateNameWithoutQuotes);
+                    metaState.name = paramValue.substring(1, paramValue.length() - 1);
                     break;
                 case DIRS:
-                    metaEntry.setDirs(Integer.parseInt(paramValue));
+                    metaState.dirs = Integer.parseInt(paramValue);
                     break;
                 case FRAMES:
-                    metaEntry.setFrames(Integer.parseInt(paramValue));
+                    metaState.frames = Integer.parseInt(paramValue);
                     break;
                 case DELAY:
-                    metaEntry.setDelay(doubleArrayFromString(paramValue));
+                    metaState.delay = doubleArrayFromString(paramValue);
                     break;
                 case LOOP:
-                    metaEntry.setLoop(isValueTrue(paramValue));
+                    metaState.loop = isValueTrue(paramValue);
                     break;
                 case MOVEMENT:
-                    metaEntry.setMovement(isValueTrue(paramValue));
+                    metaState.movement = isValueTrue(paramValue);
                     break;
                 case REWIND:
-                    metaEntry.setRewind(isValueTrue(paramValue));
+                    metaState.rewind = isValueTrue(paramValue);
                     break;
                 case HOTSPOT:
-                    metaEntry.setHotspot(doubleArrayFromString(paramValue));
+                    metaState.hotspot = doubleArrayFromString(paramValue);
                     break;
                 default:
                     throw new IllegalArgumentException(
@@ -134,7 +124,11 @@ final class MetaExtractor {
             }
         }
 
-        return metaEntry;
+        if (metaState.movement) {
+            metaState.name += MOVEMENT_SUFFIX;
+        }
+
+        return metaState;
     }
 
     private boolean isValueTrue(final String value) {
@@ -143,5 +137,26 @@ final class MetaExtractor {
 
     private double[] doubleArrayFromString(final String str) {
         return Arrays.stream(str.split(",")).mapToDouble(Double::parseDouble).toArray();
+    }
+
+    @Data
+    static final class Meta {
+        private int spritesWidth;
+        private int spritesHeight;
+        private List<MetaState> metaStates = new ArrayList<>();
+    }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    static final class MetaState {
+        private String name = "";
+        private int dirs;
+        private int frames;
+        private double[] delay;
+        private boolean loop;
+        private boolean movement;
+        private boolean rewind;
+        private double[] hotspot;
     }
 }

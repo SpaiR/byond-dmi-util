@@ -4,31 +4,36 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.image.BufferedImage;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
 
 import static org.junit.Assert.*;
 
 public class DmiTest {
 
     private BufferedImage mockedImage;
+    private DmiState dmiState;
 
     @Before
     public void setUp() {
         mockedImage = new BufferedImage(100, 100, BufferedImage.TYPE_INT_RGB);
+        dmiState = new DmiState();
+        dmiState.setName("state");
     }
 
     @Test
     public void testCheckForDuplicatesWhenExists() {
         DmiState dmiState1 = new DmiState();
         dmiState1.addDuplicate(new DmiState());
-        dmiState1.setMeta(new DmiMetaEntry("1", 0, 0, null, false, false, false, null));
+        dmiState1.setName("1");
 
         DmiState dmiState2 = new DmiState();
         dmiState2.addDuplicate(new DmiState());
-        dmiState2.setMeta(new DmiMetaEntry("2", 0, 0, null, false, false, false, null));
+        dmiState2.setName("2");
 
         DmiState dmiState3 = new DmiState();
-        dmiState3.setMeta(new DmiMetaEntry("3", 0, 0, null, false, false, false, null));
+        dmiState3.setName("3");
 
         Dmi dmi = new Dmi();
         dmi.addState(dmiState1);
@@ -42,8 +47,6 @@ public class DmiTest {
     @Test
     public void testCheckForDuplicatesWhenNotExists() {
         Dmi dmi = new Dmi();
-        dmi.setStates(new HashMap<>());
-
         assertFalse(dmi.isHasDuplicates());
         assertTrue(dmi.getDuplicateStatesNames().isEmpty());
     }
@@ -51,15 +54,14 @@ public class DmiTest {
     @Test
     public void testIsStateOverflow() {
         Dmi dmi = new Dmi();
-        dmi.setStates(new HashMap<>());
 
         assertFalse(dmi.isStateOverflow());
 
-        Map<String, DmiState> states = new HashMap<>();
         for (int i = 0; i < 513; i++) {
-            states.put(String.valueOf(i), new DmiState());
+            DmiState state = new DmiState();
+            state.setName(String.valueOf(i));
+            dmi.addState(state);
         }
-        dmi.setStates(states);
 
         assertTrue(dmi.isStateOverflow());
     }
@@ -67,9 +69,6 @@ public class DmiTest {
     @Test
     public void testGetStateSprite() {
         Dmi dmi = new Dmi();
-
-        DmiState dmiState = new DmiState();
-        dmiState.setMeta(new DmiMetaEntry("state", 0, 0, null, false, false, false, null));
         dmiState.addSprite(new DmiSprite(mockedImage, SpriteDir.SOUTH, 0));
 
         dmi.addState(dmiState);
@@ -81,9 +80,6 @@ public class DmiTest {
     @Test
     public void testGetStateSpriteWithDir() {
         Dmi dmi = new Dmi();
-
-        DmiState dmiState = new DmiState();
-        dmiState.setMeta(new DmiMetaEntry("state", 0, 0, null, false, false, false, null));
         dmiState.addSprite(new DmiSprite(mockedImage, SpriteDir.NORTH, 0));
 
         dmi.addState(dmiState);
@@ -95,9 +91,6 @@ public class DmiTest {
     @Test
     public void testGetStateSpriteWithDirAndFrame() {
         Dmi dmi = new Dmi();
-
-        DmiState dmiState = new DmiState();
-        dmiState.setMeta(new DmiMetaEntry("state", 0, 0, null, false, false, false, null));
         dmiState.addSprite(new DmiSprite(mockedImage, SpriteDir.SOUTHEAST, 0));
 
         dmi.addState(dmiState);
@@ -109,22 +102,9 @@ public class DmiTest {
     @Test
     public void testHasState() {
         Dmi dmi = new Dmi();
-
-        DmiState dmiState = new DmiState();
-        dmiState.setMeta(new DmiMetaEntry("state", 0, 0, null, false, false, false, null));
-
         dmi.addState(dmiState);
 
         assertTrue(dmi.hasState("state"));
         assertFalse(dmi.hasState("1234567890"));
-    }
-
-    @Test
-    public void testGetSpritesProperties() {
-        Dmi dmi = new Dmi();
-        dmi.setMetadata(new DmiMeta(32, 64, null));
-
-        assertEquals(32, dmi.getSpritesWidth());
-        assertEquals(64, dmi.getSpritesHeight());
     }
 }

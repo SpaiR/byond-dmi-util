@@ -1,29 +1,23 @@
 package io.github.spair.byond.dmi.slurper;
 
-import io.github.spair.byond.dmi.DmiState;
-import io.github.spair.byond.dmi.DmiMeta;
-import io.github.spair.byond.dmi.DmiMetaEntry;
 import io.github.spair.byond.dmi.DmiSprite;
+import io.github.spair.byond.dmi.DmiState;
 import io.github.spair.byond.dmi.SpriteDir;
 import lombok.val;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
+@SuppressWarnings("checkstyle:MagicNumber")
 final class StateExtractor {
 
-    private final Comparator<SpriteDir> dirComparator = Comparator.comparingInt(SpriteDirHelper::getCompareWeight);
-
-    Map<String, DmiState> extractStates(final BufferedImage dmiImage, final DmiMeta dmiMeta) {
+    Map<String, DmiState> extractStates(final BufferedImage dmiImage, final MetaExtractor.Meta meta) {
         final int dmiWidth = dmiImage.getWidth();
-        final int spriteWidth = dmiMeta.getSpritesWidth();
-        final int spriteHeight = dmiMeta.getSpritesHeight();
+        final int spriteWidth = meta.getSpritesWidth();
+        final int spriteHeight = meta.getSpritesHeight();
 
         final int spritesInARow = dmiWidth / spriteWidth;
 
@@ -33,15 +27,14 @@ final class StateExtractor {
 
         Map<String, DmiState> dmiStates = new HashMap<>();
 
-        for (DmiMetaEntry metaEntry : dmiMeta.getMetas()) {
-            val stateName = metaEntry.getName();
+        for (MetaExtractor.MetaState state : meta.getMetaStates()) {
             val allSprites = new ArrayList<DmiSprite>();
 
-            for (int frameNumber = 1; frameNumber <= metaEntry.getFrames(); frameNumber++) {
-                for (int dirCount = 1; dirCount <= metaEntry.getDirs(); dirCount++) {
+            for (int frameNumber = 1; frameNumber <= state.getFrames(); frameNumber++) {
+                for (int dirCount = 1; dirCount <= state.getDirs(); dirCount++) {
                     final BufferedImage spriteImage = cropSpriteImage(dmiImage, spriteWidth, spriteHeight, xPos, yPos);
 
-                    allSprites.add(new DmiSprite(spriteImage, SpriteDirHelper.dirByIndex(dirCount), frameNumber));
+                    allSprites.add(new DmiSprite(spriteImage, dirByIndex(dirCount), frameNumber));
 
                     if (spriteIndex < spritesInARow) {
                         spriteIndex++;
@@ -55,9 +48,20 @@ final class StateExtractor {
             }
 
             val dmiState = new DmiState();
+            val stateName = state.getName();
 
-            dmiState.setMeta(metaEntry);
-            dmiState.setSprites(distributeAllSpritesInMap(allSprites));
+            dmiState.setName(stateName);
+            dmiState.setDelay(state.getDelay());
+            dmiState.setDirs(state.getDirs());
+            dmiState.setFrames(state.getFrames());
+            dmiState.setHotspot(state.getHotspot());
+            dmiState.setLoop(state.isLoop());
+            dmiState.setMovement(state.isMovement());
+            dmiState.setRewind(state.isRewind());
+
+            for (DmiSprite sprite : allSprites) {
+                dmiState.addSprite(sprite);
+            }
 
             if (dmiStates.containsKey(stateName)) {
                 dmiStates.get(stateName).addDuplicate(dmiState);
@@ -80,14 +84,28 @@ final class StateExtractor {
         return dst;
     }
 
-    private Map<SpriteDir, List<DmiSprite>> distributeAllSpritesInMap(final List<DmiSprite> allSprites) {
-        Map<SpriteDir, List<DmiSprite>> spriteMap = new TreeMap<>(dirComparator);
-
-        for (DmiSprite sprite : allSprites) {
-            List<DmiSprite> spritesInDir = spriteMap.computeIfAbsent(sprite.getDir(), k -> new ArrayList<>());
-            spritesInDir.add(sprite);
+    // During DMI slurping all dirs images parsed one by one.
+    // This method determines the order in which dirs are placed in `.dmi` file.
+    private SpriteDir dirByIndex(final int dirCount) {
+        switch (dirCount) {
+            case 1:
+                return SpriteDir.SOUTH;
+            case 2:
+                return SpriteDir.NORTH;
+            case 3:
+                return SpriteDir.EAST;
+            case 4:
+                return SpriteDir.WEST;
+            case 5:
+                return SpriteDir.SOUTHEAST;
+            case 6:
+                return SpriteDir.SOUTHWEST;
+            case 7:
+                return SpriteDir.NORTHEAST;
+            case 8:
+                return SpriteDir.NORTHWEST;
+            default:
+                return SpriteDir.SOUTH;
         }
-
-        return spriteMap;
     }
 }
