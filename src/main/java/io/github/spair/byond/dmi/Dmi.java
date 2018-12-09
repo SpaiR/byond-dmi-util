@@ -54,6 +54,13 @@ public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
         }
     }
 
+    /**
+     * Method to serialize current object to file. File would have proper metadata,
+     * so it will become fully functional file of dmi format.
+     * The only difference from original dmi file could be that, during saving, state duplicates will be placed together.
+     *
+     * @param file fully functional dmi file with proper metadata
+     */
     public void save(final File file) {
         try {
             DmiWriter.writeToFile(file, this);
