@@ -58,7 +58,7 @@ public class DmiSlurperTest {
         assertEquals(1, downState.getDirs());
         assertEquals(1, downState.getFrames());
         assertNull(downState.getDelay());
-        assertFalse(downState.isLoop());
+        assertEquals(0, downState.getLoop());
         assertFalse(downState.isMovement());
         assertFalse(downState.isRewind());
 
@@ -68,7 +68,7 @@ public class DmiSlurperTest {
         assertEquals(4, upState.getDirs());
         assertEquals(1, upState.getFrames());
         assertNull(upState.getDelay());
-        assertTrue(upState.isLoop());
+        assertEquals(1, upState.getLoop());
         assertFalse(upState.isMovement());
         assertTrue(upState.isRewind());
 
@@ -78,7 +78,7 @@ public class DmiSlurperTest {
         assertEquals(4, foldedState.getDirs());
         assertEquals(3, foldedState.getFrames());
         assertArrayEquals(new double[]{1, 1, 1, 1, 1, 1}, foldedState.getDelay(), 0);
-        assertFalse(foldedState.isLoop());
+        assertEquals(0, downState.getLoop());
         assertFalse(foldedState.isMovement());
         assertFalse(foldedState.isRewind());
 

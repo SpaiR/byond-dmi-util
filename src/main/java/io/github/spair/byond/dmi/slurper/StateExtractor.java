@@ -8,7 +8,7 @@ import lombok.val;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @SuppressWarnings("checkstyle:MagicNumber")
@@ -25,13 +25,13 @@ final class StateExtractor {
         int yPos = 0;
         int spriteIndex = 1;
 
-        Map<String, DmiState> dmiStates = new HashMap<>();
+        Map<String, DmiState> dmiStates = new LinkedHashMap<>();
 
-        for (MetaExtractor.MetaState state : meta.getMetaStates()) {
+        for (MetaExtractor.MetaState metaState : meta.getMetaStates()) {
             val allSprites = new ArrayList<DmiSprite>();
 
-            for (int frameNumber = 1; frameNumber <= state.getFrames(); frameNumber++) {
-                for (int dirCount = 1; dirCount <= state.getDirs(); dirCount++) {
+            for (int frameNumber = 1; frameNumber <= metaState.getFrames(); frameNumber++) {
+                for (int dirCount = 1; dirCount <= metaState.getDirs(); dirCount++) {
                     final BufferedImage spriteImage = cropSpriteImage(dmiImage, spriteWidth, spriteHeight, xPos, yPos);
 
                     allSprites.add(new DmiSprite(spriteImage, dirByIndex(dirCount), frameNumber));
@@ -48,16 +48,16 @@ final class StateExtractor {
             }
 
             val dmiState = new DmiState();
-            val stateName = state.getName();
+            val stateName = metaState.getName();
 
             dmiState.setName(stateName);
-            dmiState.setDelay(state.getDelay());
-            dmiState.setDirs(state.getDirs());
-            dmiState.setFrames(state.getFrames());
-            dmiState.setHotspot(state.getHotspot());
-            dmiState.setLoop(state.isLoop());
-            dmiState.setMovement(state.isMovement());
-            dmiState.setRewind(state.isRewind());
+            dmiState.setDelay(metaState.getDelay());
+            dmiState.setDirs(metaState.getDirs());
+            dmiState.setFrames(metaState.getFrames());
+            dmiState.setHotspot(metaState.getHotspot());
+            dmiState.setLoop(metaState.getLoop());
+            dmiState.setMovement(metaState.isMovement());
+            dmiState.setRewind(metaState.isRewind());
 
             for (DmiSprite sprite : allSprites) {
                 dmiState.addSprite(sprite);

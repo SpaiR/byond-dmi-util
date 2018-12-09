@@ -18,8 +18,8 @@ public class MetaExtractorTest {
         expectedMeta.setSpritesHeight(32);
         expectedMeta.setMetaStates(
                 Arrays.asList(
-                        new MetaExtractor.MetaState("down", 1, 1, null, false, false, false, null),
-                        new MetaExtractor.MetaState("down (M)", 1, 1, null, false, true, false, null)
+                        new MetaExtractor.MetaState("down", 1, 1, null, 0, false, false, null),
+                        new MetaExtractor.MetaState("down (M)", 1, 1, null, 0, true, false, null)
                 )
         );
 

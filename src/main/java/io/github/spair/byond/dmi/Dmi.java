@@ -6,8 +6,11 @@ import lombok.Setter;
 import lombok.AccessLevel;
 import lombok.val;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Optional;
@@ -32,10 +35,8 @@ public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
     private int spriteWidth = DEFAULT_SPRITE_SIZE;
     private int spriteHeight = DEFAULT_SPRITE_SIZE;
 
-    @Setter(AccessLevel.NONE)
-    private Map<String, DmiState> states = new HashMap<>();
-    @Setter(AccessLevel.NONE)
-    private Set<String> duplicateStatesNames = new HashSet<>();
+    @Setter(AccessLevel.NONE) private Map<String, DmiState> states = new LinkedHashMap<>();
+    @Setter(AccessLevel.NONE) private Set<String> duplicateStatesNames = new HashSet<>();
 
     public Dmi(final String name, final int totalWidth, final int totalHeight,
                final int spriteWidth, final int spriteHeight, final Map<String, DmiState> states) {
@@ -50,6 +51,14 @@ public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
             if (state.getValue().hasDuplicates()) {
                 duplicateStatesNames.add(state.getKey());
             }
+        }
+    }
+
+    public void save(final File file) {
+        try {
+            DmiWriter.writeToFile(file, this);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Unable to save dmi in file", e);
         }
     }
 

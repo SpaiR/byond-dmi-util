@@ -26,8 +26,8 @@ public class StateExtractorTest {
         meta.setSpritesHeight(32);
         meta.setMetaStates(
                 Arrays.asList(
-                        new MetaExtractor.MetaState("down", 1, 1, null, false, false, false, null),
-                        new MetaExtractor.MetaState("down (M)", 1, 1, null, false, true, false, null)
+                        new MetaExtractor.MetaState("down", 1, 1, null, 0, false, false, null),
+                        new MetaExtractor.MetaState("down (M)", 1, 1, null, 0, true, false, null)
                 )
         );
 
@@ -51,8 +51,8 @@ public class StateExtractorTest {
         meta.setSpritesHeight(32);
         meta.setMetaStates(
                 Arrays.asList(
-                        new MetaExtractor.MetaState("down", 1, 1, null, false, false, false, null),
-                        new MetaExtractor.MetaState("down", 4, 1, null, false, false, false, null)
+                        new MetaExtractor.MetaState("down", 1, 1, null, 0, false, false, null),
+                        new MetaExtractor.MetaState("down", 4, 1, null, 0, false, false, null)
                 )
         );
 

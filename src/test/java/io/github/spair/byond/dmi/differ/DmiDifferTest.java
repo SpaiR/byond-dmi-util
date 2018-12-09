@@ -101,12 +101,12 @@ public class DmiDifferTest {
 
     private List<DmiDiff> getExpectedEntries() {
         return Arrays.asList(
+                new DmiDiff("down", new DmiSprite(imgPH(), SpriteDir.SOUTH, 1), new DmiSprite(imgPH(), SpriteDir.SOUTH, 1)),
+
                 new DmiDiff("up", new DmiSprite(imgPH(), SpriteDir.SOUTH, 1), null),
                 new DmiDiff("up", new DmiSprite(imgPH(), SpriteDir.NORTH, 1), null),
                 new DmiDiff("up", new DmiSprite(imgPH(), SpriteDir.EAST, 1), null),
                 new DmiDiff("up", new DmiSprite(imgPH(), SpriteDir.WEST, 1), null),
-
-                new DmiDiff("down", new DmiSprite(imgPH(), SpriteDir.SOUTH, 1), new DmiSprite(imgPH(), SpriteDir.SOUTH, 1)),
 
                 new DmiDiff("folded", new DmiSprite(imgPH(), SpriteDir.SOUTH, 3), null),
                 new DmiDiff("folded", new DmiSprite(imgPH(), SpriteDir.NORTH, 3), null),

@@ -19,11 +19,13 @@ import java.util.Iterator;
 @SuppressWarnings("WeakerAccess")
 public class DmiState implements Iterable<Map.Entry<SpriteDir, List<DmiSprite>>> {
 
+    public static final String MOVEMENT_SUFFIX = " (M)";
+
     private String name = "";
     private int dirs;
     private int frames;
     private double[] delay;
-    private boolean loop;
+    private int loop;
     private boolean movement;
     private boolean rewind;
     private double[] hotspot;
@@ -92,6 +94,17 @@ public class DmiState implements Iterable<Map.Entry<SpriteDir, List<DmiSprite>>>
      */
     public Optional<List<DmiSprite>> getSpriteList(final SpriteDir dir) {
         return Optional.ofNullable(sprites.get(dir));
+    }
+
+    /**
+     * Returns the name of the state without movement suffix.
+     * @return real name of the state
+     */
+    public String getRawName() {
+        if (movement) {
+            return name.substring(0, name.length() - MOVEMENT_SUFFIX.length());
+        }
+        return name;
     }
 
     @Override

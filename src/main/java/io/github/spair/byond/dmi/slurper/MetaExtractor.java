@@ -1,5 +1,6 @@
 package io.github.spair.byond.dmi.slurper;
 
+import io.github.spair.byond.dmi.DmiState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,21 +20,17 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static io.github.spair.byond.dmi.DmiProperties.STATE;
+import static io.github.spair.byond.dmi.DmiProperties.DIRS;
+import static io.github.spair.byond.dmi.DmiProperties.FRAMES;
+import static io.github.spair.byond.dmi.DmiProperties.DELAY;
+import static io.github.spair.byond.dmi.DmiProperties.LOOP;
+import static io.github.spair.byond.dmi.DmiProperties.MOVEMENT;
+import static io.github.spair.byond.dmi.DmiProperties.REWIND;
+import static io.github.spair.byond.dmi.DmiProperties.HOTSPOT;
+
 final class MetaExtractor {
 
-    private static final String PNG_MIME = "image/png";
-
-    private static final String META_ELEMENT_TAG = "TextEntry";
-    private static final String META_ATTRIBUTE = "value";
-    private static final String STATE = "state";
-    private static final String DIRS = "dirs";
-    private static final String FRAMES = "frames";
-    private static final String DELAY = "delay";
-    private static final String LOOP = "loop";
-    private static final String MOVEMENT = "movement";
-    private static final String REWIND = "rewind";
-    private static final String HOTSPOT = "hotspot";
-    private static final String MOVEMENT_SUFFIX = " (M)";
     private final Pattern widthHeightPattern = Pattern.compile("(?:width\\s=\\s(\\d+))\n\t(?:height\\s=\\s(\\d+))");
     private final Pattern statePattern = Pattern.compile("(?:state\\s=\\s\".*\"(?:\\n\\t.*)+)");
     private final Pattern paramPattern = Pattern.compile("(\\w+)\\s=\\s(.+)");
@@ -43,14 +40,14 @@ final class MetaExtractor {
 
         String metadataFormatName = IIOMetadataFormatImpl.standardMetadataFormatName;
         IIOMetadataNode root = (IIOMetadataNode) metadata.getAsTree(metadataFormatName);
-        IIOMetadataNode text = (IIOMetadataNode) root.getElementsByTagName(META_ELEMENT_TAG).item(0);
+        IIOMetadataNode text = (IIOMetadataNode) root.getElementsByTagName("TextEntry").item(0);
 
-        return parseMetadataText(text.getAttribute(META_ATTRIBUTE));
+        return parseMetadataText(text.getAttribute("value"));
     }
 
     private IIOMetadata readMetadata(final InputStream input) {
         try (ImageInputStream imageInputStream = ImageIO.createImageInputStream(input)) {
-            ImageReader reader = ImageIO.getImageReadersByMIMEType(PNG_MIME).next();
+            ImageReader reader = ImageIO.getImageReadersByMIMEType("image/png").next();
 
             reader.setInput(imageInputStream, true);
             IIOImage image = reader.readAll(0, null);
@@ -107,7 +104,7 @@ final class MetaExtractor {
                     metaState.delay = doubleArrayFromString(paramValue);
                     break;
                 case LOOP:
-                    metaState.loop = isValueTrue(paramValue);
+                    metaState.loop = Integer.parseInt(paramValue);
                     break;
                 case MOVEMENT:
                     metaState.movement = isValueTrue(paramValue);
@@ -125,7 +122,7 @@ final class MetaExtractor {
         }
 
         if (metaState.movement) {
-            metaState.name += MOVEMENT_SUFFIX;
+            metaState.name += DmiState.MOVEMENT_SUFFIX;
         }
 
         return metaState;
@@ -154,7 +151,7 @@ final class MetaExtractor {
         private int dirs;
         private int frames;
         private double[] delay;
-        private boolean loop;
+        private int loop;
         private boolean movement;
         private boolean rewind;
         private double[] hotspot;
