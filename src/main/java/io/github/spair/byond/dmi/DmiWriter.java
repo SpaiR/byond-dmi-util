@@ -27,6 +27,8 @@ import static io.github.spair.byond.dmi.DmiProperties.HOTSPOT;
 final class DmiWriter {
 
     private static final String NATIVE_METADATA_FORMAT_NAME = "javax_imageio_png_1.0";
+    private static final String COMPRESSED_META_ENTRY_NAME = "zTXtEntry";
+    private static final String COMPRESSED_META_NODE_NAME = "zTXt";
 
     private DmiWriter() {
     }
@@ -55,12 +57,12 @@ final class DmiWriter {
     }
 
     private static IIOMetadataNode collectMetadataNodeForImage(final Dmi dmi) {
-        val textEntry = new IIOMetadataNode("zTXtEntry");
+        val textEntry = new IIOMetadataNode(COMPRESSED_META_ENTRY_NAME);
         textEntry.setAttribute("compressionMethod", "deflate");
         textEntry.setAttribute("keyword", "Description");
         textEntry.setAttribute("text", getMetadataText(dmi));
 
-        val textNode = new IIOMetadataNode("zTXt");
+        val textNode = new IIOMetadataNode(COMPRESSED_META_NODE_NAME);
         textNode.appendChild(textEntry);
 
         val root = new IIOMetadataNode(NATIVE_METADATA_FORMAT_NAME);
