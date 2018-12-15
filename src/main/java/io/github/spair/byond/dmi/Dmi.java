@@ -35,8 +35,10 @@ public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
     private int spriteWidth = DEFAULT_SPRITE_SIZE;
     private int spriteHeight = DEFAULT_SPRITE_SIZE;
 
-    @Setter(AccessLevel.NONE) private Map<String, DmiState> states = new LinkedHashMap<>();
-    @Setter(AccessLevel.NONE) private Set<String> duplicateStatesNames = new HashSet<>();
+    @Setter(AccessLevel.NONE)
+    private Map<String, DmiState> states = new LinkedHashMap<>();
+    @Setter(AccessLevel.NONE)
+    private Set<String> duplicateStatesNames = new HashSet<>();
 
     public Dmi(final String name, final int totalWidth, final int totalHeight,
                final int spriteWidth, final int spriteHeight, final Map<String, DmiState> states) {
@@ -79,6 +81,11 @@ public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
     public DmiState removeState(final String stateName) {
         duplicateStatesNames.remove(stateName);
         return states.remove(stateName);
+    }
+
+    public void clearStates() {
+        states.clear();
+        duplicateStatesNames.clear();
     }
 
     /**
