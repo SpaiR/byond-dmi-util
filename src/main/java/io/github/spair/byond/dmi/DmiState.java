@@ -3,8 +3,6 @@ package io.github.spair.byond.dmi;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
-import lombok.Setter;
-import lombok.AccessLevel;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -30,10 +28,8 @@ public class DmiState implements Iterable<Map.Entry<SpriteDir, List<DmiSprite>>>
     private boolean rewind;
     private double[] hotspot;
 
-    @Setter(AccessLevel.NONE)
-    private Map<SpriteDir, List<DmiSprite>> sprites = new TreeMap<>(new SpriteDirComparator());
-    @Setter(AccessLevel.NONE)
-    private List<DmiState> duplicates = new ArrayList<>();
+    private final Map<SpriteDir, List<DmiSprite>> sprites = new TreeMap<>(new SpriteDirComparator());
+    private final List<DmiState> duplicates = new ArrayList<>();
 
     public boolean hasDuplicates() {
         return !duplicates.isEmpty();
