@@ -3,11 +3,7 @@ jdk: oraclejdk8
 os: linux
 sudo: false
 
-env:
-  - MAVEN_VERSION=3.3.9
-
-script:
-  - mvn --show-version --errors --batch-mode clean verify -PattachAll
+script: mvn --show-version --errors --batch-mode clean verify -PattachAll
 
 cache:
     directories:
