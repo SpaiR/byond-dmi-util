@@ -73,8 +73,8 @@ public class DmiTest {
 
         dmi.addState(dmiState);
 
-        assertNotEquals(Optional.empty(), dmi.getStateSprite("state"));
-        assertEquals(Optional.empty(), dmi.getStateSprite("1234567890"));
+        assertNotEquals(Optional.empty(), dmi.getStateSpriteSafe("state"));
+        assertEquals(Optional.empty(), dmi.getStateSpriteSafe("1234567890"));
     }
 
     @Test
@@ -84,8 +84,8 @@ public class DmiTest {
 
         dmi.addState(dmiState);
 
-        assertNotEquals(Optional.empty(), dmi.getStateSprite("state", SpriteDir.NORTH));
-        assertEquals(Optional.empty(), dmi.getStateSprite("state", SpriteDir.SOUTH));
+        assertNotEquals(Optional.empty(), dmi.getStateSpriteSafe("state", SpriteDir.NORTH));
+        assertEquals(Optional.empty(), dmi.getStateSpriteSafe("state", SpriteDir.SOUTH));
     }
 
     @Test
@@ -95,8 +95,8 @@ public class DmiTest {
 
         dmi.addState(dmiState);
 
-        assertNotEquals(Optional.empty(), dmi.getStateSprite("state", SpriteDir.SOUTHEAST, 1));
-        assertEquals(Optional.empty(), dmi.getStateSprite("state", SpriteDir.SOUTHEAST, 15));
+        assertNotEquals(Optional.empty(), dmi.getStateSpriteSafe("state", SpriteDir.SOUTHEAST, 1));
+        assertEquals(Optional.empty(), dmi.getStateSpriteSafe("state", SpriteDir.SOUTHEAST, 15));
     }
 
     @Test

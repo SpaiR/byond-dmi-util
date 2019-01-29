@@ -170,7 +170,7 @@ final class DmiWriter {
     private static void addStateSpritesToList(final List<BufferedImage> spritesList, final DmiState dmiState) {
         for (int frame = 1; frame <= dmiState.getFrames(); frame++) {
             for (val spriteDir : dmiState.getSprites().keySet()) {
-                spritesList.add(dmiState.getSprite(spriteDir, frame).orElseThrow(IllegalStateException::new).getSprite());
+                spritesList.add(dmiState.getSprite(spriteDir, frame).getSprite());
             }
         }
     }

@@ -23,8 +23,8 @@ public class DmiStateTest {
     public void testGetSprite() {
         dmiState.addSprite(new DmiSprite(mockedImage, SpriteDir.SOUTH, 1));
 
-        assertNotEquals(Optional.empty(), dmiState.getSprite(SpriteDir.SOUTH));
-        assertEquals(Optional.empty(), dmiState.getSprite(SpriteDir.NORTH));
+        assertNotEquals(Optional.empty(), dmiState.getSpriteSafe(SpriteDir.SOUTH));
+        assertEquals(Optional.empty(), dmiState.getSpriteSafe(SpriteDir.NORTH));
     }
 
     @Test
@@ -33,9 +33,9 @@ public class DmiStateTest {
         dmiState.addSprite(new DmiSprite(mockedImage, SpriteDir.EAST, 1));
         dmiState.addSprite(new DmiSprite(mockedImage, SpriteDir.EAST, 2));
 
-        assertNotEquals(Optional.empty(), dmiState.getSprite(SpriteDir.SOUTH, 1));
+        assertNotEquals(Optional.empty(), dmiState.getSpriteSafe(SpriteDir.SOUTH, 1));
 
-        Optional<DmiSprite> sprite = dmiState.getSprite(SpriteDir.EAST, 2);
+        Optional<DmiSprite> sprite = dmiState.getSpriteSafe(SpriteDir.EAST, 2);
 
         assertTrue(sprite.isPresent());
         assertEquals(2, sprite.get().getFrameNumber());
@@ -43,6 +43,6 @@ public class DmiStateTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void testGetSpriteWithIllegalFrame() {
-        dmiState.getSprite(SpriteDir.SOUTH, 0);
+        dmiState.getSpriteSafe(SpriteDir.SOUTH, 0);
     }
 }

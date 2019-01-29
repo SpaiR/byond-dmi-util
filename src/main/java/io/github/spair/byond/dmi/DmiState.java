@@ -14,7 +14,7 @@ import java.util.Iterator;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "OptionalGetWithoutIsPresent"})
 public class DmiState implements Iterable<Map.Entry<SpriteDir, List<DmiSprite>>> {
 
     public static final String MOVEMENT_SUFFIX = " (M)";
@@ -44,14 +44,22 @@ public class DmiState implements Iterable<Map.Entry<SpriteDir, List<DmiSprite>>>
         duplicates.add(dmiState);
     }
 
+    public DmiSprite getSprite() {
+        return getSpriteSafe().get();
+    }
+
     /**
      * Returns the first available sprite.
      * That means, that sprite will be the first frame and {@link SpriteDir#SOUTH} dir.
      *
      * @return first available sprite
      */
-    public Optional<DmiSprite> getSprite() {
-        return getSprite(SpriteDir.SOUTH);
+    public Optional<DmiSprite> getSpriteSafe() {
+        return getSpriteSafe(SpriteDir.SOUTH);
+    }
+
+    public DmiSprite getSprite(final SpriteDir dir) {
+        return getSpriteSafe(dir).get();
     }
 
     /**
@@ -61,8 +69,12 @@ public class DmiState implements Iterable<Map.Entry<SpriteDir, List<DmiSprite>>>
      * @param dir dir to search sprite
      * @return optional sprite instance
      */
-    public Optional<DmiSprite> getSprite(final SpriteDir dir) {
+    public Optional<DmiSprite> getSpriteSafe(final SpriteDir dir) {
         return Optional.ofNullable(sprites.get(dir)).map(dmiSprites -> dmiSprites.get(0));
+    }
+
+    public DmiSprite getSprite(final SpriteDir dir, final int frame) {
+        return getSpriteSafe(dir, frame).get();
     }
 
     /**
@@ -73,7 +85,7 @@ public class DmiState implements Iterable<Map.Entry<SpriteDir, List<DmiSprite>>>
      * @param frame frame to search sprite
      * @return optional sprite instance
      */
-    public Optional<DmiSprite> getSprite(final SpriteDir dir, final int frame) {
+    public Optional<DmiSprite> getSpriteSafe(final SpriteDir dir, final int frame) {
         if (frame <= 0) {
             throw new IllegalArgumentException("Frame count goes from 1 digit. Received: " + frame);
         }
@@ -82,13 +94,17 @@ public class DmiState implements Iterable<Map.Entry<SpriteDir, List<DmiSprite>>>
         );
     }
 
+    public List<DmiSprite> getSpriteList(final SpriteDir dir) {
+        return Optional.ofNullable(sprites.get(dir)).get();
+    }
+
     /**
      * Returns the list of sprites for specified dir.
      *
      * @param dir dir to search sprite
      * @return optional list of sprites for specified dir
      */
-    public Optional<List<DmiSprite>> getSpriteList(final SpriteDir dir) {
+    public Optional<List<DmiSprite>> getSpriteListSafe(final SpriteDir dir) {
         return Optional.ofNullable(sprites.get(dir));
     }
 

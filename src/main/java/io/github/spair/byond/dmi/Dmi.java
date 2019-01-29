@@ -16,7 +16,7 @@ import java.util.Iterator;
 
 @Data
 @NoArgsConstructor
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "OptionalGetWithoutIsPresent"})
 public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
 
     /**
@@ -84,14 +84,22 @@ public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
         duplicateStatesNames.clear();
     }
 
+    public DmiState getState(final String stateName) {
+        return getStateSafe(stateName).get();
+    }
+
     /**
      * Returns state with provided name or empty optional if not found.
      *
      * @param stateName state name to search
      * @return {@link DmiState} instance or empty optional if not found
      */
-    public Optional<DmiState> getState(final String stateName) {
+    public Optional<DmiState> getStateSafe(final String stateName) {
         return Optional.ofNullable(states.get(stateName));
+    }
+
+    public DmiSprite getStateSprite(final String stateName) {
+        return getStateSpriteSafe(stateName).get();
     }
 
     /**
@@ -100,8 +108,12 @@ public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
      * @param stateName state name to search
      * @return {@link DmiSprite} instance or empty optional if not found
      */
-    public Optional<DmiSprite> getStateSprite(final String stateName) {
-        return getState(stateName).flatMap(DmiState::getSprite);
+    public Optional<DmiSprite> getStateSpriteSafe(final String stateName) {
+        return getStateSafe(stateName).flatMap(DmiState::getSpriteSafe);
+    }
+
+    public DmiSprite getStateSprite(final String stateName, final SpriteDir dir) {
+        return getStateSpriteSafe(stateName, dir).get();
     }
 
     /**
@@ -111,8 +123,12 @@ public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
      * @param dir       dir value to search
      * @return {@link DmiSprite} instance or empty optional if not found
      */
-    public Optional<DmiSprite> getStateSprite(final String stateName, final SpriteDir dir) {
-        return getState(stateName).flatMap(s -> s.getSprite(dir));
+    public Optional<DmiSprite> getStateSpriteSafe(final String stateName, final SpriteDir dir) {
+        return getStateSafe(stateName).flatMap(s -> s.getSpriteSafe(dir));
+    }
+
+    public DmiSprite getStateSprite(final String stateName, final SpriteDir dir, final int frame) {
+        return getStateSpriteSafe(stateName, dir, frame).get();
     }
 
     /**
@@ -123,8 +139,8 @@ public class Dmi implements Iterable<Map.Entry<String, DmiState>> {
      * @param frame     dir number to search
      * @return {@link DmiSprite} instance or empty optional if not found
      */
-    public Optional<DmiSprite> getStateSprite(final String stateName, final SpriteDir dir, final int frame) {
-        return getState(stateName).flatMap(s -> s.getSprite(dir, frame));
+    public Optional<DmiSprite> getStateSpriteSafe(final String stateName, final SpriteDir dir, final int frame) {
+        return getStateSafe(stateName).flatMap(s -> s.getSpriteSafe(dir, frame));
     }
 
     public boolean hasState(final String stateName) {
